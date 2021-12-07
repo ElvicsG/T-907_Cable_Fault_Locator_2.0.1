@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.robinhood.spark:spark:1.2.0@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/07f8f5aa06a76237274c3a0df08856be/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/07f8f5aa06a76237274c3a0df08856be/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/07f8f5aa06a76237274c3a0df08856be/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.robinhood.spark/spark/1.2.0/880665e6299348a1470985c7df6e8f2346825a3c/spark-1.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

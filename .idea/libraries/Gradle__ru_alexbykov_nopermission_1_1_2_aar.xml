@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: ru.alexbykov:nopermission:1.1.2@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e98231f630531e955aa33b0f0750f5c8/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e98231f630531e955aa33b0f0750f5c8/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/ru.alexbykov/nopermission/1.1.2/3e9d655473f9e661910afd96845704e3826cf28f/nopermission-1.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,96 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AlertNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item><!--除去title-->
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent
+        </item> <!-- 窗口样式Dialog -->
+        <!-- <item name="android:backgroundDimEnabled">false</item> -->
+        <!--  <item name="android:windowBackground">@null</item> --><!--除去背景色-->
+    </style>
+
+    <style name="BaseDialogStyle" parent="Theme.AppCompat.Dialog.MinWidth">
+        <item name="android:windowBackground">@android:color/transparent</item><!--背景透明-->
+        <item name="android:windowFrame">@null</item><!--边框-->
+        <item name="android:windowNoTitle">true</item><!--无标题-->
+        <item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->
+        <item name="android:windowContentOverlay">@null</item><!--内容覆盖 -->
+    </style>
+
+    <declare-styleable name="move_MoveWaveView">
+        <attr name="move_viewColor" format="color|reference" />
+        <attr name="move_viewWidth" format="dimension|reference" />
+        <attr name="move_viewHeight" format="dimension|reference" />
+        <attr name="move_viewOrientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!--EnNuo-->
+    <style name="ZZBDatePickerDialogLStyle" parent="android:Theme.DeviceDefault.Light.Dialog">
+        <item name="android:datePickerStyle">@style/ZZBDatePickerLStyle</item>
+        <!-- 初始化的那一天和选中时的圆圈的颜色-->
+        <item name="android:colorControlActivated">@color/colorPrimaryDark</item>
+        <!-- LOLLIPOP，整个日历字体的颜色。Marshmallow，日历中星期字体颜色-->
+        <item name="android:textColorSecondary">@color/colorPrimaryDark</item>
+        <!-- Marshmallow，日历字体的颜色，不可选的日期依然有置灰效果。LOLLIPOP，无效-->
+        <item name="android:textColorPrimary">@color/blue_303f9f</item>
+    </style>
+
+    <style name="ZZBDatePickerLStyle" parent="android:Widget.Material.Light.DatePicker">
+        <!-- LOLLIPOP，最顶部，星期标题的背景色。Marshmallow星期标题被合并到header，所以字段无效-->
+        <item name="android:dayOfWeekBackground">@android:color/holo_blue_light</item>
+        <!-- LOLLIPOP，最顶部，星期字体的颜色、大小等。Marshmallow星期标题被合并到header，所以字段无效-->
+        <item name="android:dayOfWeekTextAppearance">@style/ZZBTitleDayOfWeekTextAppearance</item>
+        <!-- 中间部分，header的背景色 -->
+        <item name="android:headerBackground" >@android:color/holo_orange_dark</item>
+        <!-- 中间部分，header的字体大小和颜色-->
+        <!-- 对LOLLIPOP有效，对Marshmallow无效-->
+        <item name="android:headerYearTextAppearance">@style/ZZBHeaderYearTextAppearance</item>
+        <!-- 对LOLLIPOP和Marshmallow都是部分有效-->
+        <item name="android:headerMonthTextAppearance">@style/ZZBHeaderMonthTextAppearance</item>
+        <!-- 对LOLLIPOP有效，对Marshmallow无效-->
+        <item name="android:headerDayOfMonthTextAppearance">@style/ZZBHeaderDayOfMonthTextAppearance</item>
+        <!-- LOLLIPOP，控制整个日历字体颜色的最终字段，优先级最高，但是一旦使用了这个字段，不可选的日期就失去了置灰效果。对Marshmallow无效-->
+        <item name="android:calendarTextColor">@android:color/holo_green_dark</item>
+    </style>
+
+    <style name="ZZBTitleDayOfWeekTextAppearance" parent="android:TextAppearance.Material">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="ZZBHeaderYearTextAppearance" parent="android:TextAppearance.Material">
+        <item name="android:textColor">@android:color/holo_blue_light</item>
+        <item name="android:textSize">50sp</item>
+    </style>
+    <style name="ZZBHeaderMonthTextAppearance" parent="android:TextAppearance.Material">
+        <!-- LOLLIPOP无效，Marshmallow有效。控制Marshmallow中header部分所有的字体颜色。LOLLIPOP没有找到控制字体颜色的字段-->
+        <item name="android:textColor">@android:color/holo_blue_light</item>
+        <!-- LOLLIPOP有效，Marshmallow无效。Marshmallow没有找到控制header字体大小的字段-->
+        <item name="android:textSize">50sp</item>
+    </style>
+    <style name="ZZBHeaderDayOfMonthTextAppearance" parent="android:TextAppearance.Material">
+        <!-- 只可以控制字体的大小，没有找到控制字体颜色的字段-->
+        <item name="android:textSize">50sp</item>
+    </style>
+
+</resources>
