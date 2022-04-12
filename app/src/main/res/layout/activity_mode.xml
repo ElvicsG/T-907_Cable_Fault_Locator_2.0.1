@@ -514,7 +514,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:src="@drawable/bg_wave_pre_selector" />
+                android:src="@drawable/bg_wave_pre_s_selector" />
 
             <!--波形下翻-->
             <ImageView

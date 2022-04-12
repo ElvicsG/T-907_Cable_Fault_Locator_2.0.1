@@ -68,12 +68,10 @@ public class BaseActivity extends AppCompatActivity {
     public int[] pulselongtdrRemove = {45,45,66,74,86,92,138,288,576};  //jk202210303 低压脉冲去除波头  切换范围使用
     public int[] tdrPoint = {4,5,6,8,10,25,25,25,25};  //自动测距在对长距离因取点问题与实际距离不符的现象时的程序去除点数
     public int[] tdrPointuse = {4,4,8,16,32,64,128,256,512}; //脉宽里的点归零
-    //public int[] pulselongtdrRemove = {4,4,8,16,32,64,128,256,512};
+    public int[] secondtdr = {28,28,36,36,76,92,138,288,576}; //jk20220411
 
-
-
-    public int g;  // 低压脉冲极值最大或最小点
-    public int u;  //低压脉冲 曲线拟合脉冲起始点
+    public int g;  //低压脉冲极值最大或最小点
+    public int u;  //低压脉冲曲线拟合脉冲起始点
     public int autoLocation; //低压脉冲故障点位置
     public int autoLocation1; //过渡使用
 
@@ -93,6 +91,7 @@ public class BaseActivity extends AppCompatActivity {
     public int secondMAxPos;
     public int secondMInPos;
     public int Median_value = 128; //jk20210519  基准数
+    public int tdr_d = 0;  //jk20220411
     /**
      * 波形原始数据数组
      */
@@ -314,10 +313,6 @@ public class BaseActivity extends AppCompatActivity {
         density = 1;
         densityMax = 1;
         balance = 5;
-        /*if(isLongClick = false){                   //jk20200716   平衡自动调整时平衡初值改变
-        balance = 5;}else if(isLongClick = true){
-            balance = 8;
-        }*/
         inductor = 3;
         //二次脉冲多组数据选择
         selectSim = 1;
@@ -387,7 +382,6 @@ public class BaseActivity extends AppCompatActivity {
 //GN界面优化可能用到
 //GT 调试
 //GT20200619    每个点高度显示
-//GT20200629    数据库打开算法结果显示调试
 /*——————————其它——————————*/
 
 /*更改记录*/
@@ -442,20 +436,26 @@ public class BaseActivity extends AppCompatActivity {
 //jk20200716    平衡自动调整
 //jk20200804    二次脉冲光标定位
 //jk20200904    更改起始判断
+//jk20201022    低压脉冲自动定位以133为中心点
+//jk20201023    去掉数据库打开波形自动定位
+//jk20201130    多次脉冲增益判断数值更改
+//jk20201130    多次脉冲延时间隔增加
+//jk20201130    脉冲电流延长线不选就不计算
+//jk20210420    脉冲电流容错处理  添加标志false_flag
+//jk20210427    延长线界面，文件按钮不生效
+//jk20210527    求出曲线拟合后求解纵坐标值为0时横坐标的结果  一元三次方程求解
 
-//jk20201022     低压脉冲自动定位以133为中心点
-//jk20201023     去掉数据库打开波形自动定位
-//jk20201130     多次脉冲增益判断数值更改
-//jk20201130     多次脉冲延时间隔增加
-//jk20201130     脉冲电流延长线不选就不计算
-//jk20210420     脉冲电流容错处理  添加标志false_flag
-//jk20210427     延长线界面，文件按钮不生效
+//jk20210714    网络连接去除一个判断
 
-//jk20210714  网络连接去除一个判断
-//jk20210830balance  对平衡调整进行更改
-//jk20210901range  对范围切换进行处理，尝试解决对于故障距离靠近临界值的波形进行范围切换
+/*——————————2.0.1版本整理——————————*/
+//jk20210123    直接进入测试方式界面1
+//GC20211214    服务中toast只可以跟随系统语言
 
-/**
- * 2.0.0版本整理
- */
-//jk20210123    直接进入测试方式界面
+/*——————————2.0.2版本整理——————————*/
+//20200520  数据库相关
+//GC20210125    波形数据以文件形式保存
+//GC21220411    连接907WiFi名字可变
+
+//GT屏蔽算法
+
+//jk20220411    最新算法修改

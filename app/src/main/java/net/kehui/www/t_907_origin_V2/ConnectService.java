@@ -148,7 +148,8 @@ public class ConnectService extends Service {
     public Handler handler = new Handler(msg -> {
         switch (msg.what) {
             case DEVICE_CONNECTED:
-                Toast.makeText(this, getResources().getString(R.string.connect_success), Toast.LENGTH_SHORT).show();
+                //服务中toast只可以跟随系统语言     //GC20211214
+//                Toast.makeText(this, getResources().getString(R.string.connect_success), Toast.LENGTH_SHORT).show();
                 sendBroadcast(BROADCAST_ACTION_DEVICE_CONNECTED, null, null);
                 break;
             case DEVICE_DISCONNECTED:

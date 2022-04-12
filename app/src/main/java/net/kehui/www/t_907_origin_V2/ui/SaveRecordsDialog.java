@@ -2,6 +2,7 @@ package net.kehui.www.t_907_origin_V2.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,10 @@ import net.kehui.www.t_907_origin_V2.util.UnitUtils;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -183,28 +188,38 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
             case TDR:
                 tvMode.setText(getContext().getResources().getString(R.string.btn_tdr));
                 Constant.Mode = TDR;
+                //测试方式记录    //GC20210125
+                modeName = "TDR";
+                modeSave = 0;
                 break;
             case ICM:
                 tvMode.setText(getContext().getResources().getString(R.string.btn_icm));
                 Constant.Mode = ICM;
+                modeName = "ICM";
+                modeSave = 1;
                 break;
             case ICM_DECAY:
                 tvMode.setText(getContext().getResources().getString(R.string.btn_icm_decay));
                 Constant.Mode = ICM_DECAY;
+                modeName = "ICMDECAY";
+                modeSave = 1;
                 break;
             case SIM:
                 tvMode.setText(getContext().getResources().getString(R.string.btn_sim));
                 Constant.Mode = SIM;
+                modeName = "SIM";
+                modeSave = 2;
                 break;
             case DECAY:
                 tvMode.setText(getContext().getResources().getString(R.string.btn_decay));
                 Constant.Mode = DECAY;
+                modeName = "DECAY";
+                modeSave = 1;
                 break;
             default:
                 break;
         }
         tvMode.setEnabled(false);
-
     }
 
     private void setEtRange() {
@@ -291,7 +306,6 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
                 break;
         }
         tvRange.setEnabled(false);
-
     }
 
     private void setCableLength() {
@@ -311,7 +325,6 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
                 }
             }
         }
-
     }
 
     private void setEtLocation() {
@@ -321,7 +334,6 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
         } else {
             tvFaultLocation.setText(UnitUtils.miToFt(Constant.SaveLocation));
         }
-
     }
 
     private void setSpPhase() {
@@ -344,12 +356,10 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
 
             }
         });
-
     }
 
     private void getMainParamInfo() {
         paramInfo = (ParamInfo) StateUtils.getObject(getContext(), Constant.PARAM_INFO_KEY);
-
     }
 
     private void changeUnitView(int currentUnit) {
@@ -361,7 +371,6 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
             tvFalutLocationUnit.setText(R.string.ft);
             tvCableLengthUnit.setText(R.string.ft);
         }
-
     }
 
     @Override
@@ -402,14 +411,20 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
                         Toast.makeText(getContext(), getContext().getResources().getString(R.string.save_success), Toast.LENGTH_SHORT).show();
                     }
                 });
+                //点击“保存”按钮后存储文件 //GC20210125
+                saveClick();
                 dismiss();
                 break;
             default:
                 break;
         }
-
     }
 
+    /**
+     * 数据库数据赋值
+     * @param data
+     * @return
+     */
     private Data formatData(Data data) {
         data.date = Constant.Date.trim();
         data.cableId = tvCableId.getText().toString();
@@ -442,6 +457,92 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
         //参数数据 方式  范围 增益 波速度
         data.para = new int[]{Constant.ModeValue, Constant.RangeValue, Constant.SaveToDBGain, (int) Constant.Velocity};
         return data;
+    }
+
+    /**
+     * 波形数据以文件形式保存     //GC20210125
+     */
+    String waveData = "";
+    byte modeSave;
+    byte rangeSave;
+    byte gainSave;
+    private void saveClick() {
+        initDataName();
+        //直接将int数组转变为byte数组（int数据大小未超过byte显示）
+        int length = Constant.WaveData.length;
+        byte[] bytes = new byte[length + 20];
+        bytes[0] = modeSave;
+        bytes[1] = rangeSave;
+        bytes[2] = (byte) Constant.SaveToDBGain;
+        for (int i = 3; i < 20; i++) {
+            bytes[i] = 0;
+        }
+        for (int i = 20, j = 0; j < length; i++, j++) {
+            bytes[i] = (byte) Constant.WaveData[j];
+        }
+        //根据byte数组生成文件，保存到手机上
+        createFileWithByte(bytes);
+        waveData = "";
+        //弹出信息提示
+//        Toast.makeText(ModeActivity.this, "生成文件成功！", Toast.LENGTH_LONG).show();
+    }
+
+    private String fileName;
+    private String modeName;
+    private void initDataName() {
+//        fileName = "byte_to_file";
+        fileName = modeName + Constant.Date.trim() + Constant.Time.trim();
+        fileName = fileName.replaceAll(":","");
+        fileName = fileName.replaceAll("/","");
+    }
+
+    /**
+     * 根据byte数组生成文件
+     * @param bytes 生成文件用到的byte数组
+     */
+    private void createFileWithByte(byte[] bytes) {
+        //在sd卡中设置新目录存放文件
+        String path  = Environment.getExternalStorageDirectory().getPath();
+        File file = new File(path + "/907");
+        //创建FileOutputStream对象
+        FileOutputStream outputStream = null;
+        //创建BufferedOutputStream对象
+        BufferedOutputStream bufferedOutputStream = null;
+        try {
+            // 如果目录不存在则创建
+            if (!file.exists()) {
+                file.mkdir();
+            }
+            // 在文件系统中根据路径创建一个新的空文件
+            file.createNewFile();
+            // 获取FileOutputStream对象
+            outputStream = new FileOutputStream(file + "/" + fileName);
+            // 获取BufferedOutputStream对象
+            bufferedOutputStream = new BufferedOutputStream(outputStream);
+            // 往文件所在的缓冲输出流中写byte数据
+            bufferedOutputStream.write(bytes);
+            // 刷出缓冲输出流，该步很关键，要是不执行flush()方法，那么文件的内容是空的。
+            bufferedOutputStream.flush();
+        } catch (Exception e) {
+            // 打印异常信息
+            e.printStackTrace();
+        } finally {
+            // 关闭创建的流对象
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bufferedOutputStream != null) {
+                try {
+                    bufferedOutputStream.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
     }
 
 }
