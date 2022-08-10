@@ -141,6 +141,7 @@
     <string name="main_notice">The default test range is %1$s.The range will be determined automatically if the cable length is inputed.
         Select the test mode after setting parameters properly.</string>
     <string name="save_success">Saved successfully</string>
+    <string name="save_success_1">Saved successfully</string>
     <string name="distance">Distance</string>
     <string name="mi">m</string>
     <string name="ns">ns</string>
@@ -182,5 +183,8 @@
     <string name="testAgain">Please test again!</string>
     <string name="company_name">Kehui International Ltd.</string>
     <string name="v_name">V2.0.1</string>
+    <string name="current_device">current_device:</string>
+    <string name="current_device_set_success">Current device setting successfully, please restart!</string>
+    <string name="current_device_set_none">The input is empty and not saved!</string>
 
 </resources>

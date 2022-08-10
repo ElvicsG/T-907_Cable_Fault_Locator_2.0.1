@@ -36,12 +36,6 @@ import net.kehui.www.t_907_origin_V2.application.Constant;
 import net.kehui.www.t_907_origin_V2.application.MyApplication;
 import net.kehui.www.t_907_origin_V2.base.BaseActivity;
 import net.kehui.www.t_907_origin_V2.entity.ParamInfo;
-import net.kehui.www.t_907_origin_V2.fragment.AdjustFragment;
-import net.kehui.www.t_907_origin_V2.fragment.FileFragment;
-import net.kehui.www.t_907_origin_V2.fragment.ModeFragment;
-import net.kehui.www.t_907_origin_V2.fragment.RangeFragment;
-import net.kehui.www.t_907_origin_V2.fragment.SettingFragment;
-import net.kehui.www.t_907_origin_V2.fragment.WaveFragment;
 import net.kehui.www.t_907_origin_V2.ui.AppUpdateDialog;
 import net.kehui.www.t_907_origin_V2.ui.HelpCenterDialog;
 import net.kehui.www.t_907_origin_V2.ui.HelpHomeDialog;
@@ -145,16 +139,6 @@ public class MainActivity extends BaseActivity {
 
     public static double leadCat ;    //jk20201130  脉冲电流延长线不选就不计算
 
-    private FragmentManager fragmentManager;
-    private ModeFragment modeFragment;   //jk20210201
-    private RangeFragment rangeFragment;
-    private AdjustFragment adjustFragment;
-    private WaveFragment waveFragment;
-    private FileFragment fileFragment;
-    private SettingFragment settingFragment;
-
-    //public static MainActivity instance; //jk20210203 物理按键返回
-
     /**
      * 定义bundle的key-value（bundle就是个容器）
      */
@@ -215,7 +199,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
          super.onCreate(savedInstanceState);
-         //instance = this; //jk20210203
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 

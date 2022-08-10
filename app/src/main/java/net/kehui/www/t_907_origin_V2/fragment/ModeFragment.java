@@ -20,7 +20,8 @@ import butterknife.Unbinder;
 
 /**
  * @author Gong
- * @date 2019/07/04
+ * @date 2022/05/19
+ * 这是方式栏
  */
 public class ModeFragment extends Fragment {
     @BindView(R.id.btn_tdr)
@@ -36,9 +37,8 @@ public class ModeFragment extends Fragment {
     Unbinder unbinder;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View modeLayout = inflater.inflate(R.layout.mtd_layout, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View modeLayout = inflater.inflate(R.layout.fragment_mode, container, false);
         unbinder = ButterKnife.bind(this, modeLayout);
         return modeLayout;
     }
@@ -60,85 +60,32 @@ public class ModeFragment extends Fragment {
         unbinder.unbind();
     }
 
-
     @OnClick({R.id.btn_tdr, R.id.btn_icm, R.id.btn_sim, R.id.btn_decay, R.id.btn_icmc})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_tdr:
-                btnTdr.setImageResource(R.drawable.bg_tdr_mode_pressed);  //jk20210129
-                btnIcm.setImageResource(R.drawable.bg_icms_mode_normal);  //jk20210129
-                btnIcmc.setImageResource(R.drawable.icmz1);  //jk20210129
-                btnSim.setImageResource(R.drawable.bg_mim_mode_normal);  //jk20210129
-                btnDecay.setImageResource(R.drawable.bg_decay_mode_normal);  //jk20210129
+                //方式fragment显示调整  // GC20220727
                ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x11);
-               ((ModeActivity)getActivity()).test1();  //jk20210126
-                btnTdr.setEnabled(false);
-                btnIcm.setEnabled(true);
-                btnSim.setEnabled(true);
-                btnDecay.setEnabled(true);
-                btnIcmc.setEnabled(true);
-            break;
+               ((ModeActivity)getActivity()).modeRangeTest();
+                break;
             case R.id.btn_icm:
-                btnTdr.setImageResource(R.drawable.bg_tdr_mode_normal);  //jk20210129
-                btnIcm.setImageResource(R.drawable.bg_icms_mode_pressed);  //jk20210129
-                btnIcmc.setImageResource(R.drawable.icmz1);  //jk20210129
-                btnSim.setImageResource(R.drawable.bg_mim_mode_normal);  //jk20210129
-                btnDecay.setImageResource(R.drawable.bg_decay_mode_normal);  //jk20210129
                 ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x22);
-                ((ModeActivity)getActivity()).test1();  //jk20210126
-                btnTdr.setEnabled(true);
-                btnIcm.setEnabled(false);
-                btnSim.setEnabled(true);
-                btnDecay.setEnabled(true);
-                btnIcmc.setEnabled(true);
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             case R.id.btn_sim:
-                btnTdr.setImageResource(R.drawable.bg_tdr_mode_normal);  //jk20210129
-                btnIcm.setImageResource(R.drawable.bg_icms_mode_normal);  //jk20210129
-                btnIcmc.setImageResource(R.drawable.icmz1);  //jk20210129
-                btnSim.setImageResource(R.drawable.bg_mim_mode_pressed);  //jk20210129
-                btnDecay.setImageResource(R.drawable.bg_decay_mode_normal);  //jk20210129
-               ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x33);
-                ((ModeActivity)getActivity()).test1();  //jk20210126
-                btnTdr.setEnabled(true);
-                btnIcm.setEnabled(true);
-                btnSim.setEnabled(false);
-                btnDecay.setEnabled(true);
-                btnIcmc.setEnabled(true);
-
+                ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x33);
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             case R.id.btn_icmc:
-                btnTdr.setImageResource(R.drawable.bg_tdr_mode_normal);  //jk20210129
-                btnIcm.setImageResource(R.drawable.bg_icms_mode_normal);  //jk20210129
-                btnIcmc.setImageResource(R.drawable.icmz);  //jk20210129
-                btnSim.setImageResource(R.drawable.bg_mim_mode_normal);  //jk20210129
-                btnDecay.setImageResource(R.drawable.bg_decay_mode_normal);  //jk20210129
                 ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x55);
-                ((ModeActivity)getActivity()).test1();  //jk20210126
-                btnTdr.setEnabled(true);
-                btnIcm.setEnabled(true);
-                btnSim.setEnabled(true);
-                btnDecay.setEnabled(true);
-                btnIcmc.setEnabled(false);
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             case R.id.btn_decay:
-                //G?  方法报警告作用
-                btnTdr.setImageResource(R.drawable.bg_tdr_mode_normal);  //jk20210129
-                btnIcm.setImageResource(R.drawable.bg_icms_mode_normal);  //jk20210129
-                btnIcmc.setImageResource(R.drawable.icmz1);  //jk20210129
-                btnSim.setImageResource(R.drawable.bg_mim_mode_normal);  //jk20210129
-                btnDecay.setImageResource(R.drawable.bg_decay_mode_pressed);  //jk20210129
-               ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x44);
-                ((ModeActivity)getActivity()).test1();  //jk20210126
-                btnTdr.setEnabled(true);
-                btnIcm.setEnabled(true);
-                btnSim.setEnabled(true);
-                btnDecay.setEnabled(false);
-                btnIcmc.setEnabled(true);
+                ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x44);
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             default:
                 break;
         }
     }
-
 }

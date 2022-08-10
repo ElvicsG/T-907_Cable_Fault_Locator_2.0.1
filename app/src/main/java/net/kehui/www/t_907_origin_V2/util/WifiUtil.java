@@ -5,6 +5,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 import java.util.List;
 
@@ -27,8 +28,7 @@ public class WifiUtil {
     // 构造器
     public WifiUtil(Context context) {
         // 取得WifiManager对象
-        mWifiManager = (WifiManager) context.getApplicationContext()
-                .getSystemService(Context.WIFI_SERVICE);
+        mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         // 取得WifiInfo对象
         mWifiInfo = mWifiManager.getConnectionInfo();
     }
@@ -203,6 +203,7 @@ public class WifiUtil {
         }
         return config;
     }
+
 
     private WifiConfiguration IsExsits(String SSID) {
         List<WifiConfiguration> existingConfigs = mWifiManager.getConfiguredNetworks();

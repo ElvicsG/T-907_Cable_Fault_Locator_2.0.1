@@ -22,6 +22,7 @@ import androidx.room.Room;
 
 public class BaseActivity extends AppCompatActivity {
 
+    public boolean rangeChanged;    //GC20220801
     /**
      * sparkView图形绘制部分
      */
@@ -52,6 +53,11 @@ public class BaseActivity extends AppCompatActivity {
      */
     public int pulseWidth;
     /**
+     * 设备编号全局变量 //GC20220520
+     */
+    public String currentDevice;
+
+    /**
      * 0xF7,0xF7,0xED,0xBF,0xA5,0x4D,0x00,0x00
      *  247, 247, 237, 191, 165,  77,   0,   0
      *  320, 320, 720,2560,3600,7120,   10200      //GC20200527    255-X/40;X为输入值  二次脉冲脉宽命令发送值 （按照这个比例选择pulseRemove）
@@ -75,9 +81,6 @@ public class BaseActivity extends AppCompatActivity {
     public int autoLocation; //低压脉冲故障点位置
     public int autoLocation1; //过渡使用
 
-    public int[] search_start_list = {1,1,400,800,1600,3200,6400,12800,25600};//sc TDR自动测试使用
-    public int[] search_end_list = {251,501,1000,2000,4000,8000,16000,32000,64000};//sc TDR自动测试使用
-    public int[] gain_value_list = {13,13,13,10,10,10,9,9,9};
     public int step = 8;
     public int count = 6;
     public int balanceState;
@@ -192,14 +195,17 @@ public class BaseActivity extends AppCompatActivity {
 
     public int[] wifiStream;
     /**
-     * APP发送的命令(16进制)
+     * APP下发的命令协议(16进制)（8个字节）
      * 数据头     数据长度  指令  传输数据  校验和
      * eb90aa55     03      01      11       15
+     * 指令0x01测试命令
      * eb90aa55 03 01 11 15	    测试0x11
      * eb90aa55 03 01 22 26	    取消测试0x22
+     * 0x02方式
      * eb90aa55 03 02 11 16		TDR低压脉冲方式
      * eb90aa55 03 02 22 27		ICM脉冲电流方式
      * eb90aa55 03 02 33 38		SIM二次脉冲方式
+     * 0x03范围
      * eb90aa55 03 03 11 17		范围500m
      * eb90aa55 03 03 22 28
      * eb90aa55 03 03 33 39
@@ -208,14 +214,21 @@ public class BaseActivity extends AppCompatActivity {
      * eb90aa55 03 03 66 6c
      * eb90aa55 03 03 77 7d
      * eb90aa55 03 03 88 8e		范围64km
+     * 0x04增益
      * eb90aa55 03 04 11 18		增益+
      * eb90aa55 03 04 22 29		增益-
+     * 0x05延时
      * eb90aa55 03 05 11 19		延时+
      * eb90aa55 03 05 22 2a		延时-
+     * 0x06获取电池电量
+     * eb90aa55 03 06 13 1c
+     * 0x07平衡
      * eb90aa55 03 07 11 1b  	平衡+
      * eb90aa55 03 07 22 2c		平衡-
-     * eb90aa55 03 09 11 1d		//接收数据命令
-     * eb90aa55 03 0a 11 1e		//关机重连
+     * 0x09需要数据
+     * eb90aa55 03 09 11 1d
+     * 0x0a波宽度
+     * eb90aa55 03 0a xx xx
      */
     public int command;
     public final static int COMMAND_TEST = 0x01;
@@ -225,21 +238,16 @@ public class BaseActivity extends AppCompatActivity {
     public final static int COMMAND_DELAY = 0x05;
     public final static int COMMAND_BALANCE = 0x07;
     public final static int COMMAND_RECEIVE_WAVE = 0x09;
-    /**
-     * 波宽度发送指令
-     */
     public final static int COMMAND_PULSE_WIDTH = 0x0a;
 
     public int dataTransfer;
     public final static int TESTING = 0x11;
     public final static int CANCEL_TEST = 0x22;
-
     public final static int TDR = 0x11;
     public final static int ICM = 0x22;
     public final static int SIM = 0x33;
     public final static int DECAY     = 0x44;
     public final static int ICM_DECAY = 0x55;
-
     public final static int RANGE_250   = 0x99;
     public final static int RANGE_500   = 0x11;
     public final static int RANGE_1_KM  = 0x22;
@@ -251,24 +259,28 @@ public class BaseActivity extends AppCompatActivity {
     public final static int RANGE_64_KM = 0x88;
 
     /**
-     * APP接收的命令
+     * APP接收的命令（8个字节）
      * 数据头     数据长度  指令  传输数据  校验和
      * eb90aa55     03      01      33       ..  （0x33正确 0x44错误）
      * eb90aa55 03 08 11 1c		//接收到触发信号
      */
     public final static int COMMAND = 0x55;
-
-    public final static int POWER_DISPLAY = 0x06;
     public final static int COMMAND_TRIGGER = 0x08;
-
     public final static int TRIGGERED = 0x11;
-
+    /**
+     * 获取电池电量命令 传输数据2个字节（9个字节）
+     * eb90aa55 04 06 0c 53 69		//0x0c53=3155
+     */
+    public final static int POWER_DISPLAY = 0x06;
 
     /**
      * APP接收到的波形数据头
      * 数据头      数据长度    传输数据    校验和
-     * eb90aaXX   aabbccdd     X……X       xx
-     * 以XX区分—— 非二次脉冲 和 二次脉冲
+     * eb90aaXX    4个字节     X……X       xx
+     * 以XX区分——
+     * 0x66：为低压脉冲或脉冲电流波形数据
+     * 0x77：二次脉冲故障点未施加高压时的波形数据
+     * 0x88-0xff：分别为二次脉冲故障点施加高压时的第1到第8条波形数据
      */
     public final static int WAVE_TDR_ICM_DECAY = 0x66;
     public final static int WAVE_SIM = 0x77;
@@ -441,21 +453,62 @@ public class BaseActivity extends AppCompatActivity {
 //jk20201130    多次脉冲增益判断数值更改
 //jk20201130    多次脉冲延时间隔增加
 //jk20201130    脉冲电流延长线不选就不计算
+//jk20210202    保存延长线参数
 //jk20210420    脉冲电流容错处理  添加标志false_flag
-//jk20210427    延长线界面，文件按钮不生效
 //jk20210527    求出曲线拟合后求解纵坐标值为0时横坐标的结果  一元三次方程求解
 
 //jk20210714    网络连接去除一个判断
 
 /*——————————2.0.1版本整理——————————*/
 //jk20210123    直接进入测试方式界面1
-//GC20211214    服务中toast只可以跟随系统语言
+//jk20210130    切换方式重新绘制波形
 
+//GC20211214    服务中toast只可以跟随系统语言
+/**
+ * //                       _ooOoo_
+ * //                      o8888888o
+ * //                      88" . "88
+ * //                      (| -_- |)
+ * //                       O\ = /O
+ * //                   ____/`---'\____
+ * //                 .   ' \\| |// `.
+ * //                  / \\||| : |||// \
+ * //                / _||||| -:- |||||- \
+ * //                  | | \\\ - /// | |
+ * //                | \_| ''\---/'' | |
+ * //                 \ .-\__ `-` ___/-. /
+ * //              ______`. .' /--.--\ `. . __
+ * //           ."" '< `.___\_<|>_/___.' >'"".
+ * //          | | : `- \`.;`\ _ /`;.`/ - ` : | |
+ * //            \ \ `-. \_ __\ /__ _/ .-` / /
+ * //    ======`-.____`-.___\_____/___.-`____.-'======
+ * //                       `=---='
+ * //
+ * //    .............................................
+ * //             佛祖保佑             永无BUG
+ * =====================================================
+ */
 /*——————————2.0.2版本整理——————————*/
 //20200520  数据库相关
 //GC20210125    波形数据以文件形式保存
-//GC21220411    连接907WiFi名字可变
 
 //GT屏蔽算法
-
 //jk20220411    最新算法修改
+
+//GC20220517    添加设备编号输入弹窗
+//GC20220520    实现设备编号本地保存读取
+//GC20220621    如果是安卓10.0，需要后台获取连接的wifi名称则添加进程获取位置信息权限
+
+/*——————————2.0.3版本整理——————————*/
+//GC20220622    低压脉冲方式下调整增益发送测试命令功能代码优化
+//去掉activity_mode无用布局文件
+//GC20220701    本地存储范围记录
+//GC20220706    切换范围相关代码简化DEBUG
+//GC20220709    范围切换按钮状态变化代码简化DEBUG
+//GC20220727    fragment显示调整
+//GC20220801    操作fragment波宽度、延长线离线状态初始化 / 切换范围后“取消测试”波形重绘 / TDR增益调整后不发测试命令
+//GC20220808    打开数据库BUG修复/fragment对话框BUG修复
+//GC20220810    弹窗按钮控制
+
+//GC20220709    SIM范围要跟随TDR变化   //GC20220731 TDR自动测试范围记录
+//GC20220806    点击SIM范围自动寻找

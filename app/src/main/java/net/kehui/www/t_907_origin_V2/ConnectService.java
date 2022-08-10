@@ -16,11 +16,16 @@ import android.widget.Toast;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
+import net.kehui.www.t_907_origin_V2.application.AppConfig;
 import net.kehui.www.t_907_origin_V2.base.BaseActivity;
 import net.kehui.www.t_907_origin_V2.application.Constant;
 import net.kehui.www.t_907_origin_V2.thread.ConnectThread;
 import net.kehui.www.t_907_origin_V2.thread.ProcessThread;
+import net.kehui.www.t_907_origin_V2.util.StateUtils;
 import net.kehui.www.t_907_origin_V2.util.WifiUtil;
+import net.kehui.www.t_907_origin_V2.view.ModeActivity;
+import net.kehui.www.t_907_origin_V2.tookit.IWifiConnectListener;
+import net.kehui.www.t_907_origin_V2.tookit.WifiManagerProxy;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -234,11 +239,36 @@ public class ConnectService extends Service {
             wifiUtil.openWifi();
         }
         try {
+            //初始化网络SSID，默认T-907 //GC20220520
+            Constant.SSID = StateUtils.getString(ConnectService.this, AppConfig.CURRENT_DEVICE, "T-907-0");
+            if ((Constant.SSID).length() == 7) {
+                if ( "0".equals( (Constant.SSID).substring(6) ) ) {
+                    Constant.SSID = "T-907";
+                }
+            }
             if (!wifiUtil.getSSID().contains(Constant.SSID)) {
-                wifiUtil.addNetwork(wifiUtil.createWifiInfo(Constant.SSID, "123456789", 3));
+//                wifiUtil.addNetwork(wifiUtil.createWifiInfo(Constant.SSID, "123456789", 3));  //GC20220621
+                WifiManagerProxy.get().init(getApplication());
+                WifiManagerProxy.get().connect(Constant.SSID, "123456789", new IWifiConnectListener() {
+                    @Override
+                    public void onConnectStart() {
+                        Log.i("TAG", "onConnectStart: ");
+                    }
+
+                    @Override
+                    public void onConnectSuccess() {
+                        Log.i("TAG", "onConnectSuccess: ");
+                    }
+
+                    @Override
+                    public void onConnectFail(String errorMsg) {
+                        Log.i("TAG", "onConnectFail: " + errorMsg);
+                    }
+                });
             }
         } catch (Exception l_Ex) {
         }
+
     }
 
     private void connectDevice() {

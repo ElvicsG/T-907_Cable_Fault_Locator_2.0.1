@@ -18,7 +18,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -49,11 +48,9 @@ import net.kehui.www.t_907_origin_V2.application.Constant;
 import net.kehui.www.t_907_origin_V2.base.BaseActivity;
 import net.kehui.www.t_907_origin_V2.entity.ParamInfo;
 import net.kehui.www.t_907_origin_V2.fragment.AdjustFragment;
-import net.kehui.www.t_907_origin_V2.fragment.FileFragment;
 import net.kehui.www.t_907_origin_V2.fragment.ModeFragment;
+import net.kehui.www.t_907_origin_V2.fragment.OperationFragment;
 import net.kehui.www.t_907_origin_V2.fragment.RangeFragment;
-import net.kehui.www.t_907_origin_V2.fragment.SettingFragment;
-import net.kehui.www.t_907_origin_V2.fragment.WaveFragment;
 import net.kehui.www.t_907_origin_V2.ui.AppUpdateDialog;
 import net.kehui.www.t_907_origin_V2.ui.MoveView;
 import net.kehui.www.t_907_origin_V2.ui.MoveWaveView;
@@ -94,10 +91,6 @@ import static net.kehui.www.t_907_origin_V2.ConnectService.INTENT_KEY_WAVE;
 
 public class ModeActivity extends BaseActivity {
 
-    @BindView(R.id.tv_gain_add)
-    ImageView tvGainAdd;
-    @BindView(R.id.tv_gain_min)
-    ImageView tvGainMin;
     @BindView(R.id.tv_distance)
     TextView tvDistance;
     /**
@@ -110,33 +103,12 @@ public class ModeActivity extends BaseActivity {
      */
     @BindView(R.id.tv_information)
     TextView tvInformation;
-    @BindView(R.id.tv_pulse_width)
-    ImageView tvPulseWidth;
-    @BindView(R.id.tv_compare)
-    ImageView tvCompare;
-    @BindView(R.id.tv_cal)
-    ImageView tvCal;
-    @BindView(R.id.tv_range)
-    ImageView tvRange;
-    @BindView(R.id.tv_file)
-    ImageView tvFile;
-    @BindView(R.id.ll_adjust)
-    LinearLayout llAdjust;
-
-    @BindView(R.id.content)
-    FrameLayout Content1;
-    /*@BindView(R.id.tv_home)
-    ImageView tvHome;*/
     @BindView(R.id.tv_zero)
     ImageView tvZero;
     @BindView(R.id.tv_cursor_plus)
     ImageView tvCursorPlus;
     @BindView(R.id.tv_cursor_min)
     ImageView tvCursorMin;
-    @BindView(R.id.tv_zoom_plus)
-    ImageView tvZoomPlus;
-    @BindView(R.id.tv_zoom_min)
-    ImageView tvZoomMin;
     @BindView(R.id.tv_test)
     ImageView tvTest;
     @BindView(R.id.tv_help)
@@ -159,95 +131,30 @@ public class ModeActivity extends BaseActivity {
     TextView tvZoomValue;
     @BindView(R.id.ll_info)
     PercentRelativeLayout llInfo;
-    @BindView(R.id.tv_balance_plus)
-    ImageView tvBalancePlus;
-    @BindView(R.id.tv_balance_min)
-    ImageView tvBalanceMin;
-    @BindView(R.id.layout_tv_memory)
-    ImageView layoutTvMemory;
-    @BindView(R.id.layout_tv_both)
-    ImageView layoutTvBoth;
-    @BindView(R.id.ll_compare)
-    LinearLayout llCompare;
-    @BindView(R.id.tv_vop_plus)
-    ImageView tvVopPlus;
-    @BindView(R.id.tv_vop_min)
-    ImageView tvVopMin;
-    @BindView(R.id.tv_vop_save)
-    ImageView tvSave;
-    @BindView(R.id.ll_cal)
-    LinearLayout llCal;
-
     @BindView(R.id.tv_vop_j)
     ImageView tvVopj;
     @BindView(R.id.tv_vop_d)
     ImageView tvVopd;
     @BindView(R.id.tv_vop_g)
     ImageView tvVopg;
-
-    @BindView(R.id.ll_cal_adjust)  //jk20210201
-    LinearLayout llCalAdjust; //jk20210201
+    @BindView(R.id.ll_cal_adjust)
+    LinearLayout llCalAdjust;
+    @BindView(R.id.iv_cal_close1)
+    ImageView ivCalClose1;
     @BindView(R.id.ll_lead)  //jk20210202
-    LinearLayout llLead; //jk20210202
-    @BindView(R.id.tv_250m)
-    TextView tv250m;
-    @BindView(R.id.tv_500m)
-    TextView tv500m;
-    @BindView(R.id.tv_1km)
-    TextView tv1km;
-    @BindView(R.id.tv_2km)
-    TextView tv2km;
-    @BindView(R.id.tv_4km)
-    TextView tv4km;
-    @BindView(R.id.tv_8km)
-    TextView tv8km;
-    @BindView(R.id.tv_16km)
-    TextView tv16km;
-    @BindView(R.id.tv_32km)
-    TextView tv32km;
-    @BindView(R.id.tv_64km)
-    TextView tv64km;
-    @BindView(R.id.ll_range)
-    LinearLayout llRange;
+    LinearLayout llLead;
     @BindView(R.id.tv_file_records)
     ImageView tvFileRecords;
     @BindView(R.id.ll_records)
     LinearLayout llRecords;
-    @BindView(R.id.iv_compare_close)
-    ImageView ivCompareClose;
-    @BindView(R.id.iv_cal_close)
-    ImageView ivGainClose;
-    @BindView(R.id.iv_cal_close1) //jk20210201
-    ImageView ivGainClose1;
-    @BindView(R.id.iv_range_close)
-    ImageView ivRangeClose;
     @BindView(R.id.iv_records_close)
     ImageView ivRecordsClose;
     @BindView(R.id.tv_decay_value)
     TextView tvDelayValue;
     @BindView(R.id.tv_delay_text)
     TextView tvDelayText;
-    @BindView(R.id.tv_origin)
-    ImageView tvOrigin;
-    @BindView(R.id.tv_trigger_delay)
-    ImageView tvTriggerDelay;
     @BindView(R.id.tv_records_save)
     ImageView tvRecordsSave;
-    @BindView(R.id.tv_delay_plus)
-    ImageView tvDelayPlus;
-    @BindView(R.id.tv_delay_min)
-    ImageView tvDelayMin;
-    @BindView(R.id.ll_trigger_delay)
-    LinearLayout llTriggerDelay;
-    /**
-     * 波宽度添加保存信息
-     */
-    @BindView(R.id.ll_pulse_width)
-    LinearLayout llPulseWidth;
-    @BindView(R.id.iv_pulse_width_close)
-    ImageView ivPulseWidthClose;
-    @BindView(R.id.et_pulse_width_id)
-    public EditText etPulseWidth;
     @BindView(R.id.iv_wifi_status)
     ImageView ivWifiStatus;
     @BindView(R.id.iv_battery_status)
@@ -256,8 +163,6 @@ public class ModeActivity extends BaseActivity {
     TextView tvBalanceText;
     @BindView(R.id.tv_balance_space)
     TextView tvBalanceSpace;
-    @BindView(R.id.iv_close_trigger_delay)
-    ImageView ivCloseTriggerDelay;
     @BindView(R.id.tv_delay_space)
     TextView tvDelaySpace;
     @BindView(R.id.tv_wave_text)
@@ -268,10 +173,6 @@ public class ModeActivity extends BaseActivity {
     TextView tvWaveSpace;
     @BindView(R.id.view_move_vertical_wave)
     MoveWaveView viewMoveVerticalWave;
-    @BindView(R.id.tv_wave_pre)
-    ImageView tvWavePre;
-    @BindView(R.id.tv_wave_next)
-    ImageView tvWaveNext;
     @BindView(R.id.tv_distance_unit)
     TextView tvDistanceUnit;
     @BindView(R.id.rl_wave)
@@ -286,30 +187,24 @@ public class ModeActivity extends BaseActivity {
     ImageView tvPulseWidthSave;
     @BindView(R.id.ll_horizontal_view)
     LinearLayout llHorizontalView;
-
     @BindView(R.id.tv_mode1)
     ImageView tvMode1;  //jk20210123
     @BindView(R.id.tv_range1)
     ImageView tvRange1;
     @BindView(R.id.tv_adjust1)
     ImageView tvAdjust1;
-    @BindView(R.id.tv_wave1)
+    @BindView(R.id.tv_operation1)
     ImageView tvWave1;
-    @BindView(R.id.tv_file1)
-    ImageView tvFile1;
-    @BindView(R.id.tv_set1)
-    ImageView tvSet1;
-
     @BindView(R.id.cb_test_lead1)
     CheckBox cbtestlead1;
     @BindView(R.id.et_pulse_length_id)
     EditText etLength1;
     @BindView(R.id.et_pulse_vop_id)
     EditText etVop1;
-    @BindView(R.id.tv_save1)
-    ImageView tvsave1;
-    @BindView(R.id.iv_close)
-    ImageView ivclose1;
+    @BindView(R.id.tv_lead_save)
+    ImageView tvLeadSave;
+    @BindView(R.id.iv_lead_close)
+    ImageView ivLeadClose;
     @BindView (R.id.tv_cable_lengtn_text)
     TextView tvlength1;
     @BindView (R.id.tv_cable_vop_unit2)
@@ -318,6 +213,22 @@ public class ModeActivity extends BaseActivity {
     TextView tvvoplength;
     @BindView (R.id.tv_cable_vop_unit1)
     TextView tvvopu;
+    /**
+     * 添加波宽度保存
+     */
+    @BindView(R.id.ll_pulse_width)
+    LinearLayout llPulseWidth;
+    @BindView(R.id.iv_pulse_width_close)
+    ImageView ivPulseWidthClose;
+    @BindView(R.id.et_pulse_width_id)
+    public EditText etPulseWidth;
+    /**
+     * 添加设备编号保存 //GC20220517
+     */
+    @BindView(R.id.ll_current_device)
+    LinearLayout llCurrentDevice;
+    @BindView(R.id.et_current_device_id)
+    EditText etCurrentDeviceId;
 
     private int index;
     //计算滑动时的基数
@@ -340,11 +251,8 @@ public class ModeActivity extends BaseActivity {
     private ModeFragment modeFragment;   //jk20210123
     private RangeFragment rangeFragment;
     private AdjustFragment adjustFragment;
-    private WaveFragment waveFragment;
-    private FileFragment fileFragment;
-    private SettingFragment settingFragment;
+    private OperationFragment operationFragment;
 
-    public static int flag_close; //jk20210203  物理按键返回控制
     /**
      * 定义bundle的key-value
      */
@@ -383,7 +291,6 @@ public class ModeActivity extends BaseActivity {
                if (mode == TDR) {    //jk20200807
                     //长按测试按键，调整平衡、范围、增益后再自动定位   //GC20200916
                     if (isLongClick) {
-                        llAdjust.setVisibility(View.GONE); //jk20210125
                         if (!longTestInit) {
                             longTestInit();
                         } else {
@@ -411,6 +318,8 @@ public class ModeActivity extends BaseActivity {
             case DISPLAY_DATABASE:
                 //显示记录波形
                 setDateBaseParameter();
+                //去掉信息栏信息 //GC20220808
+                tvInformation.setText("");
                 try {
                     organizeWaveData();
                     displayWave();
@@ -534,9 +443,9 @@ public class ModeActivity extends BaseActivity {
     };
 
     /**
-     * 开始下载文件  //jk20210202  changshi
+     * 开始下载文件
      */
-    public void showup(){
+    public void showUp(){
         Toast.makeText(ModeActivity.this, R.string.check_update, Toast.LENGTH_SHORT).show();
     }
 
@@ -548,19 +457,12 @@ public class ModeActivity extends BaseActivity {
             Log.e("【启动页面】", "进入mode页面。");
             Log.e("【启动页面】", "baseset" + MainActivity.baseset);
             ButterKnife.bind(this);
-            tvZoomPlus.setVisibility(View.GONE); //jk20210126
-            tvZoomMin.setVisibility(View.GONE);
-            tvSet1.setVisibility(View.GONE);
-            tvFile1.setVisibility(View.GONE);
-            tvHelp.setVisibility(View.GONE);    //去掉帮助
 
-            alreadyDisplayWave = false;
             mode = getIntent().getIntExtra(BUNDLE_MODE_KEY, 0);
             isReceiveData = getIntent().getBooleanExtra("isReceiveData", true);
             initUnit();
             initSparkView();
             initViewMoveWave();
-            initBtnRangeView();
             //波宽度初始化
             initPulseWidth();
             initRange();
@@ -617,7 +519,6 @@ public class ModeActivity extends BaseActivity {
      * 初始化波形移动监听事件
      */
     private void initViewMoveWave() {
-
         viewMoveVerticalWave.setViewMoveWaveListener(new MoveWaveView.ViewMoveWaveListener() {
             @Override
             public void onMoved(float x, float y) {
@@ -692,29 +593,22 @@ public class ModeActivity extends BaseActivity {
     private void displayWave() {
         if (densityMax == 1) {
             //如果最大比例为1，不允许按缩放按键     //20200523  //GN界面优化可能用到
-            tvZoomPlus.setEnabled(false);
-            tvZoomMin.setEnabled(false);
-            waveFragment.btnZoomIn.setEnabled(false);//jk20210126
-            waveFragment.btnZoomOut.setEnabled(false);//jk20210126
-            waveFragment.btnZoomIn.setImageResource(R.drawable.bg_fangda);//jk20210130cs
-            waveFragment.btnZoomOut.setImageResource(R.drawable.bg_suoxiao);//jk20210130cs
-            waveFragment.btnRes.setImageResource(R.drawable.bg_huanyuan);//jk20210130cs
+            operationFragment.btnZoomIn.setEnabled(false);//jk20210126
+            operationFragment.btnZoomOut.setEnabled(false);
+            operationFragment.btnZoomIn.setImageResource(R.drawable.bg_fangda);//jk20210130cs
+            operationFragment.btnZoomOut.setImageResource(R.drawable.bg_suoxiao);
+            operationFragment.btnRes.setImageResource(R.drawable.bg_huanyuan);
         } else {
-            tvZoomPlus.setEnabled(true);
-            waveFragment.btnZoomIn.setEnabled(true);//jk20210126
-            waveFragment.btnZoomIn.setImageResource(R.drawable.bg_zoom1_selector);//jk20210130cs
+            operationFragment.btnZoomIn.setEnabled(true);//jk20210126
+            operationFragment.btnZoomIn.setImageResource(R.drawable.bg_zoom1_selector);//jk20210130cs
         }
         if (mode == SIM) {
             if (isDatabase) {
                 //数据库SIM上翻下翻按钮无效  //GC20200604
-                tvWavePre.setEnabled(false);
-                waveFragment.btnWavePrevious.setEnabled(false);
-                tvWavePre.setImageResource(R.drawable.bg_wave_pre_s_false);
-                waveFragment.btnWavePrevious.setImageResource(R.drawable.wave_shang);
-                tvWaveNext.setEnabled(false);
-                waveFragment.btnWaveNext.setEnabled(false);
-                tvWaveNext.setImageResource(R.drawable.bg_wave_next_s_false);
-                waveFragment.btnWaveNext.setImageResource(R.drawable.wave_xia);
+                operationFragment.btnWavePrevious.setEnabled(false);
+                operationFragment.btnWavePrevious.setImageResource(R.drawable.wave_shang);
+                operationFragment.btnWaveNext.setEnabled(false);
+                operationFragment.btnWaveNext.setImageResource(R.drawable.wave_xia);
                 //数据库SIM波形无波形序号
                 tvWaveText.setVisibility(View.GONE);
                 tvWaveValue.setVisibility(View.GONE);
@@ -739,23 +633,6 @@ public class ModeActivity extends BaseActivity {
         }
         alreadyDisplayWave = true;
 
-    }
-
-    /**
-     * 初始化英尺状态下范围按钮文字
-     */
-    private void initBtnRangeView() {
-        if (Constant.CurrentUnit == FT_UNIT) {
-            tv250m.setText(getResources().getString(R.string.btn_250m_to_ft));
-            tv500m.setText(getResources().getString(R.string.btn_500m_to_ft));
-            tv1km.setText(getResources().getString(R.string.btn_1km_to_yingli));
-            tv2km.setText(getResources().getString(R.string.btn_2km_to_yingli));
-            tv4km.setText(getResources().getString(R.string.btn_4km_to_yingli));
-            tv8km.setText(getResources().getString(R.string.btn_8km_to_yingli));
-            tv16km.setText(getResources().getString(R.string.btn_16km_to_yingli));
-            tv32km.setText(getResources().getString(R.string.btn_32km_to_yingli));
-            tv64km.setText(getResources().getString(R.string.btn_64km_to_yingli));
-        }
     }
 
     /**
@@ -993,14 +870,10 @@ public class ModeActivity extends BaseActivity {
     public void initFrame() {
         //jk20210123
         fragmentManager = getSupportFragmentManager();
-        //setTabSelection(0);
         setTabSelection(1);
         setTabSelection(2);
         setTabSelection(3);
-        setTabSelection(4);
-        setTabSelection(5);
         //第一次启动时选中第0个tab
-        llAdjust.setVisibility(View.GONE);
         setTabSelection(0);
         tvMode1.setImageResource(R.drawable.bg_mode_pressed1); //jk20210129
         //modeFragment.btnTdr.setImageResource(R.drawable.bg_tdr_mode_pressed);  //jk20210129
@@ -1381,7 +1254,7 @@ public class ModeActivity extends BaseActivity {
                 tDialog.dismiss();
             }
             tDialog = new TDialog.Builder(getSupportFragmentManager())
-                    .setLayoutRes(R.layout.receiving_data)
+                    .setLayoutRes(R.layout.dialog_receiving_data)
                     .setScreenWidthAspect(this, 0.25f)
                     .setCancelableOutside(false)
                     .create()
@@ -1412,18 +1285,12 @@ public class ModeActivity extends BaseActivity {
     private void initTDRView() {
         viewMoveVerticalWave.setVisibility(View.INVISIBLE);
         tvMode.setText(getResources().getText(R.string.btn_tdr));
-        tvWaveNext.setVisibility(View.GONE);
-        tvWavePre.setVisibility(View.GONE);
         tvDelayValue.setVisibility(View.GONE);
         tvDelayText.setVisibility(View.GONE);
         tvDelaySpace.setVisibility(View.GONE);
-        tvOrigin.setVisibility(View.GONE);
-        tvTriggerDelay.setVisibility(View.GONE);
         tvWaveValue.setVisibility(View.GONE);
         tvWaveText.setVisibility(View.GONE);
         tvWaveSpace.setVisibility(View.GONE);
-        tvBalancePlus.setVisibility(View.VISIBLE);  //jk20210125
-        tvBalanceMin.setVisibility(View.VISIBLE);
         tvBalanceSpace.setVisibility(View.VISIBLE);
         tvBalanceText.setVisibility(View.VISIBLE);
         tvBalanceValue.setVisibility(View.VISIBLE);
@@ -1431,15 +1298,9 @@ public class ModeActivity extends BaseActivity {
 
     private void initICMSURGEView() {
         viewMoveVerticalWave.setVisibility(View.INVISIBLE);
-        tvWaveNext.setVisibility(View.GONE);
-        tvWavePre.setVisibility(View.GONE);
-        tvBalancePlus.setVisibility(View.GONE);
-        tvBalanceMin.setVisibility(View.GONE);
         tvBalanceSpace.setVisibility(View.GONE);
         tvBalanceText.setVisibility(View.GONE);
         tvBalanceValue.setVisibility(View.GONE);
-        tvPulseWidth.setVisibility(View.GONE);
-        tvOrigin.setVisibility(View.GONE);
         tvMode.setText(getResources().getText(R.string.btn_icm));
         tvWaveValue.setVisibility(View.GONE);
         tvWaveText.setVisibility(View.GONE);
@@ -1451,10 +1312,6 @@ public class ModeActivity extends BaseActivity {
 
     private void initICMDECAYView() {
         viewMoveVerticalWave.setVisibility(View.INVISIBLE);
-        tvWaveNext.setVisibility(View.GONE);
-        tvWavePre.setVisibility(View.GONE);
-        tvBalancePlus.setVisibility(View.GONE);
-        tvBalanceMin.setVisibility(View.GONE);
         //信息框比例前方多了空格   布局修正  //GC20200525
         tvBalanceSpace.setVisibility(View.GONE);
         tvBalanceText.setVisibility(View.GONE);
@@ -1462,10 +1319,7 @@ public class ModeActivity extends BaseActivity {
         tvDelayValue.setVisibility(View.GONE);
         tvDelayText.setVisibility(View.GONE);
         tvDelaySpace.setVisibility(View.GONE);
-        tvTriggerDelay.setVisibility(View.GONE);
 
-        tvPulseWidth.setVisibility(View.GONE);
-        tvOrigin.setVisibility(View.GONE);
         tvMode.setText(getResources().getText(R.string.btn_icm_decay));
         tvWaveValue.setVisibility(View.GONE);
         tvWaveText.setVisibility(View.GONE);
@@ -1475,61 +1329,32 @@ public class ModeActivity extends BaseActivity {
     private void initSIMView() {
         tvMode.setText(getResources().getText(R.string.btn_sim));
         viewMoveVerticalWave.setVisibility(View.VISIBLE);
-        tvWaveNext.setVisibility(View.VISIBLE);
-        tvWavePre.setVisibility(View.VISIBLE);
 
-        tvBalanceMin.setVisibility(View.GONE);
-        tvBalancePlus.setVisibility(View.GONE);
-        tvCompare.setVisibility(View.GONE);
         tvBalanceValue.setVisibility(View.GONE);
         tvBalanceText.setVisibility(View.GONE);
         tvBalanceSpace.setVisibility(View.GONE);
         tvDelayValue.setVisibility(View.VISIBLE);
         tvDelayText.setVisibility(View.VISIBLE);
-        tvPulseWidth.setVisibility(View.GONE);
 
-        //SIM模式切换图片宽度   //20200521
-        tvGainAdd.setImageResource(R.drawable.bg_gain_plus_s_selector);
-        tvGainMin.setImageResource(R.drawable.bg_gain_min_s_selector);
-        tvOrigin.setImageResource(R.drawable.bg_origin_s_selector);
-        tvTriggerDelay.setImageResource(R.drawable.bg_trigger_delay_s_selector);
-        tvCal.setImageResource(R.drawable.bg_cal_s_selector);
-        tvRange.setImageResource(R.drawable.bg_range_s_selector);
         //SIM波形上翻状态初始化   //GC20200604
-        tvWavePre.setImageResource(R.drawable.bg_wave_pre_s_false);
-        waveFragment.btnWavePrevious.setImageResource(R.drawable.wave_shang);
-        tvWaveNext.setImageResource(R.drawable.bg_wave_next_s_false);
-        waveFragment.btnWaveNext.setImageResource(R.drawable.wave_xia);
-        tvFile.setImageResource(R.drawable.bg_file_s_selector);
+        operationFragment.btnWavePrevious.setImageResource(R.drawable.wave_shang);
+        operationFragment.btnWaveNext.setImageResource(R.drawable.wave_xia);
 
         tvRecordsSave.setImageResource(R.drawable.bg_save_s_selector);
         tvFileRecords.setImageResource(R.drawable.bg_records_s_selector);
-        tvSave.setImageResource(R.drawable.bg_save_s_selector);
-        tvVopMin.setImageResource(R.drawable.bg_vop_min_s_selector);
-        tvVopPlus.setImageResource(R.drawable.bg_vop_plus_s_selector);
-        tvDelayMin.setImageResource(R.drawable.bg_delay_min_s_selector);
-        tvDelayPlus.setImageResource(R.drawable.bg_delay_plus_s_selector);
     }
 
     private void initDecayView() {
         tvMode.setText(getResources().getText(R.string.btn_decay));
         viewMoveVerticalWave.setVisibility(View.INVISIBLE);
-        tvWaveNext.setVisibility(View.GONE);
-        tvWavePre.setVisibility(View.GONE);
         tvBalanceValue.setVisibility(View.GONE);
         tvBalanceText.setVisibility(View.GONE);
         tvBalanceSpace.setVisibility(View.GONE);
         tvDelayValue.setVisibility(View.GONE);
         tvDelayText.setVisibility(View.GONE);
         tvDelaySpace.setVisibility(View.GONE);
-        tvBalancePlus.setVisibility(View.GONE);
-        tvBalanceMin.setVisibility(View.GONE);
         tvBalanceText.setVisibility(View.GONE);
         tvBalanceValue.setVisibility(View.GONE);
-        tvPulseWidth.setVisibility(View.GONE);
-        tvOrigin.setVisibility(View.GONE);
-        tvPulseWidth.setVisibility(View.GONE);
-        tvTriggerDelay.setVisibility(View.GONE);
         tvWaveText.setVisibility(View.GONE);
         tvWaveValue.setVisibility(View.GONE);
         tvWaveSpace.setVisibility(View.GONE);
@@ -1896,7 +1721,6 @@ public class ModeActivity extends BaseActivity {
         setBalance(balance);
         longTestInit = true;
         handler.postDelayed(ModeActivity.this::clickTest, 100);
-        llAdjust.setVisibility(View.GONE); //jk20210125
 
         rangeFragment.btn250m.setEnabled(true);
         rangeFragment.btn500m.setEnabled(false);
@@ -1993,7 +1817,8 @@ public class ModeActivity extends BaseActivity {
         //平衡调整结束 重置参数
         step = 8;
         count = 6;
-        isLongClick = false;  //长按测试重置
+        //长按测试重置
+        isLongClick = false;
     }
 
     /**
@@ -2042,7 +1867,6 @@ public class ModeActivity extends BaseActivity {
         count = 6;
         balanceIsReady = true;
         handler.postDelayed(ModeActivity.this::clickTest, 100);
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     /**
@@ -2300,7 +2124,6 @@ public class ModeActivity extends BaseActivity {
         rangeCount = 1;
         rangeIsReady = true;
         handler.postDelayed(ModeActivity.this::clickTest, 100);
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     /**
@@ -2423,7 +2246,6 @@ public class ModeActivity extends BaseActivity {
         longTestInit = false;
         balanceIsReady = false;
         rangeIsReady = false;
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     private void selectGain1() {
@@ -2450,7 +2272,6 @@ public class ModeActivity extends BaseActivity {
             default:
                 break;
         }
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     private void selectGain2() {
@@ -2461,7 +2282,6 @@ public class ModeActivity extends BaseActivity {
         longTestInit = false;
         balanceIsReady = false;
         rangeIsReady = false;
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     /**
@@ -3717,7 +3537,6 @@ public class ModeActivity extends BaseActivity {
             D1[i - w1] = waveArrayFilter[i];
         }
 
-
         for (i = (start + faultResult); i < pos; i++) {
             for(k = i; k < (i + 100); k++) {
                 D2[k - i] = waveArrayFilter[k];
@@ -3764,7 +3583,7 @@ public class ModeActivity extends BaseActivity {
             }
         }
         //实光标位置
-        breakBk = breakBk + start + faultResult + 10;
+        breakBk = breakBk + start + faultResult + 10;       //GT20220520
     }
 
     /**
@@ -5288,7 +5107,6 @@ public class ModeActivity extends BaseActivity {
     /**
      * @param mode 需要发送的方式控制命令值 / 响应信息栏方式变化
      */
-
     public void setMode(int mode) {
         this.mode = mode;
         command = COMMAND_MODE;
@@ -5301,137 +5119,176 @@ public class ModeActivity extends BaseActivity {
                 initTDRView();//jk20210125
                 switchDensity();
                 initCursor();
-
-                //adjustFragment.btnBalancePlus.setVisibility(View.GONE);
-               //adjustFragment.btnBalanceMinus.setVisibility(View.VISIBLE);
-                /*调节栏显示*/
-               adjustFragment.btnBalancePlus.setVisibility(View.VISIBLE);
-               adjustFragment.btnBalanceMinus.setVisibility(View.VISIBLE);
-               adjustFragment.btnDelayPlus.setVisibility(View.GONE);
-               adjustFragment.btnDelayMinus.setVisibility(View.GONE);
-               //操作栏fragment显示
-                waveFragment.btnMemory.setVisibility(View.VISIBLE);
-                waveFragment.btnCompare.setVisibility(View.VISIBLE);
-                waveFragment.btnPulse.setVisibility(View.VISIBLE);
-                waveFragment.btnZero.setVisibility(View.GONE);
-                waveFragment.btnWavePrevious.setVisibility(View.GONE);
-                waveFragment.btnWaveNext.setVisibility(View.GONE);
-                waveFragment.btnLead1.setVisibility(View.GONE);
-
-                settingFragment.btnZero.setVisibility(View.GONE);
-                settingFragment.btnPulse.setVisibility(View.VISIBLE);
+                //方式栏fragment显示     //GC20220727
+                modeFragment.btnTdr.setEnabled(false);
+                modeFragment.btnIcm.setEnabled(true);
+                modeFragment.btnSim.setEnabled(true);
+                modeFragment.btnDecay.setEnabled(true);
+                modeFragment.btnIcmc.setEnabled(true);
+                modeFragment.btnTdr.setImageResource(R.drawable.bg_tdr_mode_pressed);
+                modeFragment.btnIcm.setImageResource(R.drawable.bg_icms_mode_normal);
+                modeFragment.btnIcmc.setImageResource(R.drawable.icmz1);
+                modeFragment.btnSim.setImageResource(R.drawable.bg_mim_mode_normal);
+                modeFragment.btnDecay.setImageResource(R.drawable.bg_decay_mode_normal);
+                //调节栏显示
                 adjustFragment.btnGainPlus.setEnabled(true);
                 adjustFragment.btnGainMinus.setEnabled(true);
-
-
+                adjustFragment.btnBalancePlus.setVisibility(View.VISIBLE);
+                adjustFragment.btnBalanceMinus.setVisibility(View.VISIBLE);
+                adjustFragment.btnDelayPlus.setVisibility(View.GONE);
+                adjustFragment.btnDelayMinus.setVisibility(View.GONE);
+                //操作栏fragment显示
+                operationFragment.btnMemory.setVisibility(View.VISIBLE);
+                operationFragment.btnCompare.setVisibility(View.VISIBLE);
+                operationFragment.btnPulse.setVisibility(View.GONE);    //GC20220801 TDR操作fragment去掉波宽度 VISIBLE
+                operationFragment.btnZero.setVisibility(View.GONE);
+                operationFragment.btnWavePrevious.setVisibility(View.GONE);
+                operationFragment.btnWaveNext.setVisibility(View.GONE);
+                operationFragment.btnLead1.setVisibility(View.GONE);
                 break;
             case ICM:
                 tvMode.setText(getResources().getString(R.string.btn_icm));
-                initSparkView();//jk20210130changshi
+                //重新绘制波形    //jk20210130
+                initSparkView();
+                alreadyDisplayWave = false;
+                tvInformation.setText("");
                 initICMSURGEView();
                 switchDensity();
                 initCursor();
-                //  tvInductor.setVisibility(View.VISIBLE);
-                //  vlInductor.setVisibility(View.VISIBLE);
+                //方式栏fragment显示     //GC20220727
+                modeFragment.btnTdr.setEnabled(true);
+                modeFragment.btnIcm.setEnabled(false);
+                modeFragment.btnIcmc.setEnabled(true);
+                modeFragment.btnSim.setEnabled(true);
+                modeFragment.btnDecay.setEnabled(true);
+                modeFragment.btnTdr.setImageResource(R.drawable.bg_tdr_mode_normal);
+                modeFragment.btnIcm.setImageResource(R.drawable.bg_icms_mode_pressed);
+                modeFragment.btnIcmc.setImageResource(R.drawable.icmz1);
+                modeFragment.btnSim.setImageResource(R.drawable.bg_mim_mode_normal);
+                modeFragment.btnDecay.setImageResource(R.drawable.bg_decay_mode_normal);
+                //调节栏fragment显示
+                adjustFragment.btnGainPlus.setEnabled(true);
+                adjustFragment.btnGainMinus.setEnabled(true);
                 adjustFragment.btnBalancePlus.setVisibility(View.GONE);
                 adjustFragment.btnBalanceMinus.setVisibility(View.GONE);
                 adjustFragment.btnDelayPlus.setVisibility(View.VISIBLE);
                 adjustFragment.btnDelayMinus.setVisibility(View.VISIBLE);
-                // adjustFragment.btnInductorPlus.setVisibility(View.VISIBLE);
-                // adjustFragment.btnInductorMinus.setVisibility(View.VISIBLE);
-                waveFragment.btnMemory.setVisibility(View.VISIBLE);
-                waveFragment.btnCompare.setVisibility(View.VISIBLE);
-                waveFragment.btnWavePrevious.setVisibility(View.GONE);
-                waveFragment.btnWaveNext.setVisibility(View.GONE);
-                waveFragment.btnLead1.setVisibility(View.VISIBLE);
-                settingFragment.btnZero.setVisibility(View.GONE);
-                settingFragment.btnPulse.setVisibility(View.GONE);
-                waveFragment.btnZero.setVisibility(View.GONE);
-                waveFragment.btnPulse.setVisibility(View.GONE);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                alreadyDisplayWave = false; //jk20210130
-                //mainWave.setAdapter(myChartAdapterMainWave);  //jk20210130changshi
-                tvInformation.setText("");  //20210130
+                //操作栏fragment显示
+                operationFragment.btnMemory.setVisibility(View.VISIBLE);
+                operationFragment.btnCompare.setVisibility(View.VISIBLE);
+                operationFragment.btnWavePrevious.setVisibility(View.GONE);
+                operationFragment.btnWaveNext.setVisibility(View.GONE);
+                operationFragment.btnLead1.setVisibility(View.VISIBLE);
+                operationFragment.btnZero.setVisibility(View.GONE);
+                operationFragment.btnPulse.setVisibility(View.GONE);
                 break;
             case ICM_DECAY:
                 tvMode.setText(getResources().getString(R.string.btn_icm_decay));
-                initSparkView();//jk20210130changshi
+                //重新绘制波形    //jk20210130
+                initSparkView();
+                alreadyDisplayWave = false;
+                tvInformation.setText("");
                 initICMDECAYView();
                 switchDensity();
                 initCursor();
-                adjustFragment.btnBalancePlus.setVisibility(View.GONE);
-                adjustFragment.btnBalanceMinus.setVisibility(View.GONE);
-                waveFragment.btnMemory.setVisibility(View.VISIBLE);
-                waveFragment.btnCompare.setVisibility(View.VISIBLE);
-                waveFragment.btnWavePrevious.setVisibility(View.GONE);
-                waveFragment.btnWaveNext.setVisibility(View.GONE);
-                waveFragment.btnLead1.setVisibility(View.VISIBLE);
-                settingFragment.btnZero.setVisibility(View.GONE);
-                settingFragment.btnPulse.setVisibility(View.GONE);
-                waveFragment.btnZero.setVisibility(View.GONE);
-                waveFragment.btnPulse.setVisibility(View.GONE);
+                //方式栏fragment显示     //GC20220727
+                modeFragment.btnTdr.setEnabled(true);
+                modeFragment.btnIcm.setEnabled(true);
+                modeFragment.btnIcmc.setEnabled(false);
+                modeFragment.btnSim.setEnabled(true);
+                modeFragment.btnDecay.setEnabled(true);
+                modeFragment.btnTdr.setImageResource(R.drawable.bg_tdr_mode_normal);
+                modeFragment.btnIcm.setImageResource(R.drawable.bg_icms_mode_normal);
+                modeFragment.btnIcmc.setImageResource(R.drawable.icmz);
+                modeFragment.btnSim.setImageResource(R.drawable.bg_mim_mode_normal);
+                modeFragment.btnDecay.setImageResource(R.drawable.bg_decay_mode_normal);
+                //调节栏fragment显示
                 adjustFragment.btnGainPlus.setEnabled(true);
                 adjustFragment.btnGainMinus.setEnabled(true);
-                alreadyDisplayWave = false; //jk20210130
-                tvInformation.setText("");  //20210130
+                adjustFragment.btnBalancePlus.setVisibility(View.GONE);
+                adjustFragment.btnBalanceMinus.setVisibility(View.GONE);
+                //操作栏fragment显示
+                operationFragment.btnMemory.setVisibility(View.VISIBLE);
+                operationFragment.btnCompare.setVisibility(View.VISIBLE);
+                operationFragment.btnWavePrevious.setVisibility(View.GONE);
+                operationFragment.btnWaveNext.setVisibility(View.GONE);
+                operationFragment.btnLead1.setVisibility(View.VISIBLE);
+                operationFragment.btnZero.setVisibility(View.GONE);
+                operationFragment.btnPulse.setVisibility(View.GONE);
                 break;
             case SIM:
                 tvMode.setText(getResources().getString(R.string.btn_sim));
-                initSparkView();//jk20210130changshi
+                //重新绘制波形    //jk20210130
+                initSparkView();
+                alreadyDisplayWave = false;
+                tvInformation.setText("");
                 initSIMView();
                 switchDensity();
                 initCursor();
+                //方式栏fragment显示     //GC20220727
+                modeFragment.btnTdr.setEnabled(true);
+                modeFragment.btnIcm.setEnabled(true);
+                modeFragment.btnIcmc.setEnabled(true);
+                modeFragment.btnSim.setEnabled(false);
+                modeFragment.btnDecay.setEnabled(true);
+                modeFragment.btnTdr.setImageResource(R.drawable.bg_tdr_mode_normal);
+                modeFragment.btnIcm.setImageResource(R.drawable.bg_icms_mode_normal);
+                modeFragment.btnIcmc.setImageResource(R.drawable.icmz1);
+                modeFragment.btnSim.setImageResource(R.drawable.bg_mim_mode_pressed);
+                modeFragment.btnDecay.setImageResource(R.drawable.bg_decay_mode_normal);
+                //调节栏fragment显示
+                adjustFragment.btnGainPlus.setEnabled(true);
+                adjustFragment.btnGainMinus.setEnabled(true);
                 adjustFragment.btnBalancePlus.setVisibility(View.GONE);
                 adjustFragment.btnBalanceMinus.setVisibility(View.GONE);
                 adjustFragment.btnDelayPlus.setVisibility(View.GONE);
                 adjustFragment.btnDelayMinus.setVisibility(View.GONE);
                 adjustFragment.btnDelayPlus.setVisibility(View.VISIBLE);
                 adjustFragment.btnDelayMinus.setVisibility(View.VISIBLE);
-                //adjustFragment.btnInductorPlus.setVisibility(View.GONE);
-                //adjustFragment.btnInductorMinus.setVisibility(View.GONE);
-                waveFragment.btnMemory.setVisibility(View.GONE);
-                waveFragment.btnCompare.setVisibility(View.GONE);
-                waveFragment.btnWavePrevious.setVisibility(View.VISIBLE);
-                waveFragment.btnWaveNext.setVisibility(View.VISIBLE);
-                waveFragment.btnLead1.setVisibility(View.GONE);
-                settingFragment.btnZero.setVisibility(View.VISIBLE);
-                settingFragment.btnPulse.setVisibility(View.GONE);
-                waveFragment.btnZero.setVisibility(View.VISIBLE);
-                waveFragment.btnPulse.setVisibility(View.GONE);
-                //waveFragment.btnWaveNext.setEnabled(false);
-                //waveFragment.btnWavePrevious.setEnabled(false);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                alreadyDisplayWave = false; //jk20210130
-                tvInformation.setText("");  //20210130
+                //操作栏fragment显示
+                operationFragment.btnMemory.setVisibility(View.GONE);
+                operationFragment.btnCompare.setVisibility(View.GONE);
+                operationFragment.btnWavePrevious.setVisibility(View.VISIBLE);
+                operationFragment.btnWaveNext.setVisibility(View.VISIBLE);
+                operationFragment.btnLead1.setVisibility(View.GONE);
+                operationFragment.btnZero.setVisibility(View.VISIBLE);
+                operationFragment.btnPulse.setVisibility(View.GONE);
                 break;
             case DECAY:
                 tvMode.setText(getResources().getString(R.string.btn_decay));
-                initSparkView();//jk20210130changshi
+                //重新绘制波形    //jk20210130
+                initSparkView();
+                alreadyDisplayWave = false;
+                tvInformation.setText("");
                 initDecayView();
                 switchDensity();
                 initCursor();
-
+                //方式栏fragment显示     //GC20220727
+                modeFragment.btnTdr.setEnabled(true);
+                modeFragment.btnIcm.setEnabled(true);
+                modeFragment.btnIcmc.setEnabled(true);
+                modeFragment.btnSim.setEnabled(true);
+                modeFragment.btnDecay.setEnabled(false);
+                modeFragment.btnTdr.setImageResource(R.drawable.bg_tdr_mode_normal);
+                modeFragment.btnIcm.setImageResource(R.drawable.bg_icms_mode_normal);
+                modeFragment.btnIcmc.setImageResource(R.drawable.icmz1);
+                modeFragment.btnSim.setImageResource(R.drawable.bg_mim_mode_normal);
+                modeFragment.btnDecay.setImageResource(R.drawable.bg_decay_mode_pressed);
+                //调节栏fragment显示
+                adjustFragment.btnGainPlus.setEnabled(true);
+                adjustFragment.btnGainMinus.setEnabled(true);
                 adjustFragment.btnBalancePlus.setVisibility(View.GONE);
                 adjustFragment.btnBalanceMinus.setVisibility(View.GONE);
                 adjustFragment.btnDelayPlus.setVisibility(View.GONE);
                 adjustFragment.btnDelayMinus.setVisibility(View.GONE);
-                //adjustFragment.btnInductorPlus.setVisibility(View.GONE);
-                //adjustFragment.btnInductorMinus.setVisibility(View.GONE);
-                waveFragment.btnMemory.setVisibility(View.VISIBLE);
-                waveFragment.btnCompare.setVisibility(View.VISIBLE);
-                waveFragment.btnWavePrevious.setVisibility(View.GONE);
-                waveFragment.btnWaveNext.setVisibility(View.GONE);
-                waveFragment.btnLead1.setVisibility(View.GONE);
-                settingFragment.btnZero.setVisibility(View.GONE);
-                settingFragment.btnPulse.setVisibility(View.GONE);
-                waveFragment.btnZero.setVisibility(View.GONE);
-                waveFragment.btnPulse.setVisibility(View.GONE);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                alreadyDisplayWave = false; //jk20210130
-                tvInformation.setText("");  //20210130
+                //操作栏fragment显示
+                operationFragment.btnMemory.setVisibility(View.VISIBLE);
+                operationFragment.btnCompare.setVisibility(View.VISIBLE);
+                operationFragment.btnWavePrevious.setVisibility(View.GONE);
+                operationFragment.btnWaveNext.setVisibility(View.GONE);
+                operationFragment.btnLead1.setVisibility(View.GONE);
+                operationFragment.btnZero.setVisibility(View.GONE);
+                operationFragment.btnPulse.setVisibility(View.GONE);
                 break;
             default:
                 break;
@@ -5489,15 +5346,11 @@ public class ModeActivity extends BaseActivity {
         density = getDensity();
 
         //默认显示滚动条
-        tvZoomMin.setEnabled(true);
-        waveFragment.btnZoomOut.setEnabled(true);//jk20210126
+        operationFragment.btnZoomOut.setEnabled(true);//jk20210126
         llHorizontalView.setVisibility(View.VISIBLE);
 
-        tvZoomPlus.setEnabled(true);
-        tvZoomMin.setEnabled(true);
-        waveFragment.btnZoomIn.setEnabled(true);//jk20210126
-        waveFragment.btnZoomOut.setEnabled(true);//jk20210126
-        //jk20210130cs hai
+        operationFragment.btnZoomIn.setEnabled(true);//jk20210126
+        operationFragment.btnZoomOut.setEnabled(true);
         //设置滑动块的宽度
         setHorizontalMoveViewOnlyHeight();
     }
@@ -5597,247 +5450,345 @@ public class ModeActivity extends BaseActivity {
                 //GC20190709
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_250m));
-                } else if (Constant.CurrentUnit == FT_UNIT) {
+                } else if (CurrentUnit == FT_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_250m_to_ft));
                 }
-                if (!hasSavedPulseWidth && mode == TDR) {  //jk20210129
-                    handler.postDelayed(() -> {
-                        pulseWidth = 40;
-                        setPulseWidth(40);
-                    }, 20);
+                if (!hasSavedPulseWidth && mode == TDR) {
+                    pulseWidth = 40;
                     etPulseWidth.setText(String.valueOf(40));
                 }
                 //切换范围时改变SIM的发射脉宽   //GC20200527
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
+                    pulseWidthSim = 320;
                 }
                 gain = 13;
                 //增益转为百分比   //GC20200313
                 tvGainValue.setText("41");
-                //handler.postDelayed(this::clickTest, 50);//jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //范围切换时按钮跟随变化 //GC20220709
+                rangeFragment.btn250m.setEnabled(false);
+                rangeFragment.btn500m.setEnabled(true);
+                rangeFragment.btn1km.setEnabled(true);
+                rangeFragment.btn2km.setEnabled(true);
+                rangeFragment.btn4km.setEnabled(true);
+                rangeFragment.btn8km.setEnabled(true);
+                rangeFragment.btn16km.setEnabled(true);
+                rangeFragment.btn32km.setEnabled(true);
+                rangeFragment.btn64km.setEnabled(true);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m1);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1k);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2k);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4k);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8k);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16k);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32k);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64k);
                 break;
             case RANGE_500:
                 rangeState = 1;
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_500m));
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_500m_to_ft));
                 }
-                if (!hasSavedPulseWidth && mode == TDR) {  //jk20210129
-                    handler.postDelayed(() -> {
-                        pulseWidth = 40;
-                        setPulseWidth(40);
-                    }, 20);
+                if (!hasSavedPulseWidth && mode == TDR) {
+                    pulseWidth = 40;
                     etPulseWidth.setText(String.valueOf(40));
                 }
-                //切换范围时改变SIM的发射脉宽   //GC20200527
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
+                    pulseWidthSim = 320;
                 }
                 gain = 13;
                 tvGainValue.setText("41");
-                //handler.postDelayed(this::clickTest, 50); //jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //GC20220709
+                rangeFragment.btn250m.setEnabled(true);
+                rangeFragment.btn500m.setEnabled(false);
+                rangeFragment.btn1km.setEnabled(true);
+                rangeFragment.btn2km.setEnabled(true);
+                rangeFragment.btn4km.setEnabled(true);
+                rangeFragment.btn8km.setEnabled(true);
+                rangeFragment.btn16km.setEnabled(true);
+                rangeFragment.btn32km.setEnabled(true);
+                rangeFragment.btn64km.setEnabled(true);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m1);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1k);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2k);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4k);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8k);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16k);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32k);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64k);
                 break;
             case RANGE_1_KM:
                 rangeState = 2;
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_1km));
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_1km_to_yingli));
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 80;
-                        setPulseWidth(80);
-                    }, 20);
+                    pulseWidth = 80;
                     etPulseWidth.setText(String.valueOf(80));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
+                    pulseWidthSim = 320;
                 }
                 gain = 13;
                 tvGainValue.setText("41");
-               // handler.postDelayed(this::clickTest, 50); //jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //GC20220709
+                rangeFragment.btn250m.setEnabled(true);
+                rangeFragment.btn500m.setEnabled(true);
+                rangeFragment.btn1km.setEnabled(false);
+                rangeFragment.btn2km.setEnabled(true);
+                rangeFragment.btn4km.setEnabled(true);
+                rangeFragment.btn8km.setEnabled(true);
+                rangeFragment.btn16km.setEnabled(true);
+                rangeFragment.btn32km.setEnabled(true);
+                rangeFragment.btn64km.setEnabled(true);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1km1);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2k);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4k);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8k);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16k);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32k);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64k);
                 break;
             case RANGE_2_KM:
                 rangeState = 3;
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_2km));
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_2km_to_yingli));
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 160;
-                        setPulseWidth(160);
-                    }, 20);
+                    pulseWidth = 160;
                     etPulseWidth.setText(String.valueOf(160));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 720;
-                        setPulseWidth(720);
-                    }, 20);
+                    pulseWidthSim = 720;
                 }
                 gain = 10;
                 tvGainValue.setText("32");
-               // handler.postDelayed(this::clickTest, 50); //jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //GC20220709
+                rangeFragment.btn250m.setEnabled(true);
+                rangeFragment.btn500m.setEnabled(true);
+                rangeFragment.btn1km.setEnabled(true);
+                rangeFragment.btn2km.setEnabled(false);
+                rangeFragment.btn4km.setEnabled(true);
+                rangeFragment.btn8km.setEnabled(true);
+                rangeFragment.btn16km.setEnabled(true);
+                rangeFragment.btn32km.setEnabled(true);
+                rangeFragment.btn64km.setEnabled(true);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1k);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2km);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4k);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8k);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16k);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32k);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64k);
                 break;
             case RANGE_4_KM:
                 rangeState = 4;
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_4km));
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_4km_to_yingli));
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 320;
-                        setPulseWidth(320);
-                    }, 20);
+                    pulseWidth = 320;
                     etPulseWidth.setText(String.valueOf(320));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 2560;
-                        setPulseWidth(2560);
-                    }, 20);
+                    pulseWidth = 2560;
                 }
                 gain = 10;
                 tvGainValue.setText("32");
-                //handler.postDelayed(this::clickTest, 50); //jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //GC20220709
+                rangeFragment.btn250m.setEnabled(true);
+                rangeFragment.btn500m.setEnabled(true);
+                rangeFragment.btn1km.setEnabled(true);
+                rangeFragment.btn2km.setEnabled(true);
+                rangeFragment.btn4km.setEnabled(false);
+                rangeFragment.btn8km.setEnabled(true);
+                rangeFragment.btn16km.setEnabled(true);
+                rangeFragment.btn32km.setEnabled(true);
+                rangeFragment.btn64km.setEnabled(true);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1k);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2k);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4km);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8k);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16k);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32k);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64k);
                 break;
             case RANGE_8_KM:
                 rangeState = 5;
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_8km));
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_8km_to_yingli));
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 640;
-                        setPulseWidth(640);
-                    }, 20);
+                    pulseWidth = 640;
                     etPulseWidth.setText(String.valueOf(640));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 3600;
-                        setPulseWidth(3600);
-                    }, 20);
+                    pulseWidth = 3600;
                 }
                 gain = 10;
                 tvGainValue.setText("32");
-                //handler.postDelayed(this::clickTest, 50); //jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //GC20220709
+                rangeFragment.btn250m.setEnabled(true);
+                rangeFragment.btn500m.setEnabled(true);
+                rangeFragment.btn1km.setEnabled(true);
+                rangeFragment.btn2km.setEnabled(true);
+                rangeFragment.btn4km.setEnabled(true);
+                rangeFragment.btn8km.setEnabled(false);
+                rangeFragment.btn16km.setEnabled(true);
+                rangeFragment.btn32km.setEnabled(true);
+                rangeFragment.btn64km.setEnabled(true);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1k);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2k);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4k);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8km);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16k);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32k);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64k);
                 break;
             case RANGE_16_KM:
                 rangeState = 6;
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_16km));
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_16km_to_yingli));
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 1280;
-                        setPulseWidth(1280);
-                    }, 20);
+                    pulseWidth = 1280;
                     etPulseWidth.setText(String.valueOf(1280));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 7120;
-                        setPulseWidth(7120);
-                    }, 20);
+                    pulseWidthSim = 7120;
                 }
                 gain = 9;
                 tvGainValue.setText("29");
-                //handler.postDelayed(this::clickTest, 50); //jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //GC20220709
+                rangeFragment.btn250m.setEnabled(true);
+                rangeFragment.btn500m.setEnabled(true);
+                rangeFragment.btn1km.setEnabled(true);
+                rangeFragment.btn2km.setEnabled(true);
+                rangeFragment.btn4km.setEnabled(true);
+                rangeFragment.btn8km.setEnabled(true);
+                rangeFragment.btn16km.setEnabled(false);
+                rangeFragment.btn32km.setEnabled(true);
+                rangeFragment.btn64km.setEnabled(true);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1k);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2k);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4k);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8k);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16km);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32k);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64k);
                 break;
             case RANGE_32_KM:
                 rangeState = 7;
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_32km));
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_32km_to_yingli));
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 2560;
-                        setPulseWidth(2560);
-                    }, 20);
+                    pulseWidth = 2560;
                     etPulseWidth.setText(String.valueOf(2560));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 10200;
-                        setPulseWidth(10200);
-                    }, 20);
+                    pulseWidthSim = 10200;
                 }
                 gain = 9;
                 tvGainValue.setText("29");
-                //handler.postDelayed(this::clickTest, 50); //jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //GC20220709
+                rangeFragment.btn250m.setEnabled(true);
+                rangeFragment.btn500m.setEnabled(true);
+                rangeFragment.btn1km.setEnabled(true);
+                rangeFragment.btn2km.setEnabled(true);
+                rangeFragment.btn4km.setEnabled(true);
+                rangeFragment.btn8km.setEnabled(true);
+                rangeFragment.btn16km.setEnabled(true);
+                rangeFragment.btn32km.setEnabled(false);
+                rangeFragment.btn64km.setEnabled(true);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1k);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2k);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4k);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8k);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16k);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32km);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64k);
                 break;
             case RANGE_64_KM:
                 rangeState = 8;
                 switchDensity();
                 initCursor();
-                if (Constant.CurrentUnit == MI_UNIT) {
+                if (CurrentUnit == MI_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_64km));
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_64km_to_yingli));
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 5120;
-                        setPulseWidth(5120);
-                    }, 20);
+                    pulseWidth = 5120;
                     etPulseWidth.setText(String.valueOf(5120));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 10200;
-                        setPulseWidth(10200);
-                    }, 20);
+                    pulseWidthSim = 10200;
                 }
                 gain = 9;
                 tvGainValue.setText("29");
-                //handler.postDelayed(this::clickTest, 50); //jk20210125
-                llAdjust.setVisibility(View.GONE); //jk20210125
+                //GC20220709
+                rangeFragment.btn250m.setEnabled(true);
+                rangeFragment.btn500m.setEnabled(true);
+                rangeFragment.btn1km.setEnabled(true);
+                rangeFragment.btn2km.setEnabled(true);
+                rangeFragment.btn4km.setEnabled(true);
+                rangeFragment.btn8km.setEnabled(true);
+                rangeFragment.btn16km.setEnabled(true);
+                rangeFragment.btn32km.setEnabled(true);
+                rangeFragment.btn64km.setEnabled(false);
+                rangeFragment.btn250m.setImageResource(R.drawable.bg_250m);
+                rangeFragment.btn500m.setImageResource(R.drawable.bg_500m);
+                rangeFragment.btn1km.setImageResource(R.drawable.bg_1k);
+                rangeFragment.btn2km.setImageResource(R.drawable.bg_2k);
+                rangeFragment.btn4km.setImageResource(R.drawable.bg_4k);
+                rangeFragment.btn8km.setImageResource(R.drawable.bg_8k);
+                rangeFragment.btn16km.setImageResource(R.drawable.bg_16k);
+                rangeFragment.btn32km.setImageResource(R.drawable.bg_32k);
+                rangeFragment.btn64km.setImageResource(R.drawable.bg_64km);
                 break;
             default:
                 break;
@@ -5849,7 +5800,6 @@ public class ModeActivity extends BaseActivity {
         command = COMMAND_RANGE;
         dataTransfer = range;
         startService();
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     public void setRangeNoCmd(int range) {
@@ -6244,55 +6194,37 @@ public class ModeActivity extends BaseActivity {
         dataTransfer = gain;
         //增益按钮状态变化（包含数据库打开）    //GC20200604
         if (gain == 31) {
-            tvGainAdd.setEnabled(false);
             adjustFragment.btnGainPlus.setEnabled(false);
-            tvGainMin.setEnabled(true);
             adjustFragment.btnGainMinus.setEnabled(true);
             if (mode == SIM) {
-                tvGainAdd.setImageResource(R.drawable.bg_gain_plus_s_false);
                 adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_1);  //jk20210130
-                tvGainMin.setImageResource(R.drawable.bg_gain_min_s_selector);
-                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);//jk20210130
+                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);
             } else {
-                tvGainAdd.setImageResource(R.drawable.bg_gain_plus_false);
                 adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_1);  //jk20210130
-                tvGainMin.setImageResource(R.drawable.bg_gain_min_selector);
-                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);//jk20210130
+                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);
             }
             gainButtonChanged = true;
         } else if (gain == 0) {
-            tvGainAdd.setEnabled(true);
             adjustFragment.btnGainPlus.setEnabled(true);
-            tvGainMin.setEnabled(false);
             adjustFragment.btnGainMinus.setEnabled(false);
             if (mode == SIM) {
-                tvGainAdd.setImageResource(R.drawable.bg_gain_plus_s_selector);
                 adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_plus_selector);  //jk20210130
-                tvGainMin.setImageResource(R.drawable.bg_gain_min_s_false);
-                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_2);//jk20210130
+                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_2);
             } else {
-                tvGainAdd.setImageResource(R.drawable.bg_gain_plus_selector);
                 adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_plus_selector);  //jk20210130
-                tvGainMin.setImageResource(R.drawable.bg_gain_min_false);
-                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_2);//jk20210130
+                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_2);
             }
             gainButtonChanged = true;
         } else {
             if (gainButtonChanged) {
-                tvGainAdd.setEnabled(true);
                 adjustFragment.btnGainPlus.setEnabled(true);
-                tvGainMin.setEnabled(true);
                 adjustFragment.btnGainMinus.setEnabled(true);
                 if (mode == SIM) {
-                    tvGainAdd.setImageResource(R.drawable.bg_gain_plus_s_selector);
                     adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_plus_selector);  //jk20210130
-                    tvGainMin.setImageResource(R.drawable.bg_gain_min_s_selector);
-                    adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);//jk20210130
+                    adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);
                 } else {
-                    tvGainAdd.setImageResource(R.drawable.bg_gain_plus_selector);
                     adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_plus_selector);  //jk20210130
-                    tvGainMin.setImageResource(R.drawable.bg_gain_min_selector);
-                    adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);//jk20210130
+                    adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);
                 }
                 gainButtonChanged = false;
             }
@@ -6302,74 +6234,6 @@ public class ModeActivity extends BaseActivity {
         tvGainValue.setText(String.valueOf(temp));
         startService();
     }
-
-    public void setGain1(int gain) {
-        this.gain = gain;
-        Constant.Gain = gain;
-        command = COMMAND_GAIN;
-        dataTransfer = gain;
-        //增益按钮状态变化（包含数据库打开）    //GC20200604
-        if (gain == 31) {
-            tvGainAdd.setEnabled(false);
-            adjustFragment.btnGainPlus.setEnabled(false);
-            tvGainMin.setEnabled(true);
-            adjustFragment.btnGainMinus.setEnabled(true);
-            if (mode == SIM) {
-                tvGainAdd.setImageResource(R.drawable.bg_gain_plus_s_false);
-                adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_1);  //jk20210130
-                tvGainMin.setImageResource(R.drawable.bg_gain_min_s_selector);
-                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);//jk20210130
-            } else {
-                tvGainAdd.setImageResource(R.drawable.bg_gain_plus_false);
-                adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_1);  //jk20210130
-                tvGainMin.setImageResource(R.drawable.bg_gain_min_selector);
-                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);//jk20210130
-            }
-            gainButtonChanged = true;
-        } else if (gain == 0) {
-            tvGainAdd.setEnabled(true);
-            adjustFragment.btnGainPlus.setEnabled(true);
-            tvGainMin.setEnabled(false);
-            adjustFragment.btnGainMinus.setEnabled(false);
-            if (mode == SIM) {
-                tvGainAdd.setImageResource(R.drawable.bg_gain_plus_s_selector);
-                adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_plus_selector);  //jk20210130
-                tvGainMin.setImageResource(R.drawable.bg_gain_min_s_false);
-                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_2);//jk20210130
-            } else {
-                tvGainAdd.setImageResource(R.drawable.bg_gain_plus_selector);
-                adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_plus_selector);  //jk20210130
-                tvGainMin.setImageResource(R.drawable.bg_gain_min_false);
-                adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_2);//jk20210130
-            }
-            gainButtonChanged = true;
-        } else {
-            if (gainButtonChanged) {
-                tvGainAdd.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                if (mode == SIM) {
-                    tvGainAdd.setImageResource(R.drawable.bg_gain_plus_s_selector);
-                    adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_plus_selector);  //jk20210130
-                    tvGainMin.setImageResource(R.drawable.bg_gain_min_s_selector);
-                    adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);//jk20210130
-                } else {
-                    tvGainAdd.setImageResource(R.drawable.bg_gain_plus_selector);
-                    adjustFragment.btnGainPlus.setImageResource(R.drawable.bg_gain_plus_selector);  //jk20210130
-                    tvGainMin.setImageResource(R.drawable.bg_gain_min_selector);
-                    adjustFragment.btnGainMinus.setImageResource(R.drawable.bg_gain_min_selector);//jk20210130
-                }
-                gainButtonChanged = false;
-            }
-        }
-        //增益转为百分比   //GC20200313
-        int temp = s2b(gain);
-        tvGainValue.setText(String.valueOf(temp));
-        handler.postDelayed(ModeActivity.this::clickTest, 100);
-        startService();
-
-    }  //jk20210129
 
     /**
      * 增益转为百分比31转100    //GC20200313
@@ -6406,26 +6270,18 @@ public class ModeActivity extends BaseActivity {
         dataTransfer = balance;
         //平衡按钮状态变化    //GC20200604
         if (balance == 15) {
-            tvBalancePlus.setEnabled(false);
             adjustFragment.btnBalancePlus.setEnabled(false); //jk20210130
-            tvBalancePlus.setImageResource(R.drawable.bg_balance_plus_false);
-            adjustFragment.btnBalancePlus.setImageResource(R.drawable.bg_balance_jia); //jk20210130
+            adjustFragment.btnBalancePlus.setImageResource(R.drawable.bg_balance_jia);
             balanceButtonChanged = true;
         } else if (balance == 0) {
-            tvBalanceMin.setEnabled(false);
             adjustFragment.btnBalanceMinus.setEnabled(false); //jk20210130
-            tvBalanceMin.setImageResource(R.drawable.bg_balance_min_false);
-            adjustFragment.btnBalanceMinus.setImageResource(R.drawable.bg_balance_jian); //jk20210130
+            adjustFragment.btnBalanceMinus.setImageResource(R.drawable.bg_balance_jian);
             balanceButtonChanged = true;
         } else {
             if (balanceButtonChanged) {
-                tvBalancePlus.setEnabled(true);
                 adjustFragment.btnBalancePlus.setEnabled(true); //jk20210130
-                tvBalancePlus.setImageResource(R.drawable.bg_balance_plus_selector);
-                adjustFragment.btnBalancePlus.setImageResource(R.drawable.bg_balance_plus_selector); //jk20210130
-                tvBalanceMin.setEnabled(true);
+                adjustFragment.btnBalancePlus.setImageResource(R.drawable.bg_balance_plus_selector);
                 adjustFragment.btnBalanceMinus.setEnabled(true); //jk20210130
-                tvBalanceMin.setImageResource(R.drawable.bg_balance_min_selector);
                 adjustFragment.btnBalanceMinus.setImageResource(R.drawable.bg_balance_min_selector); //jk20210130
                 balanceButtonChanged = false;
             }
@@ -6447,15 +6303,11 @@ public class ModeActivity extends BaseActivity {
         tvDelayValue.setText(delay + "μs");
         //延时按钮状态修改    //GC20200613
         if (delay == 0) {
-            tvDelayMin.setEnabled(false);
             adjustFragment.btnDelayMinus.setEnabled(false);
         } else if (delay == 1250) {
-            tvDelayPlus.setEnabled(false);
             adjustFragment.btnDelayPlus.setEnabled(false);
         } else {
-            tvDelayPlus.setEnabled(true);
             adjustFragment.btnDelayMinus.setEnabled(true);
-            tvDelayMin.setEnabled(true);
             adjustFragment.btnDelayPlus.setEnabled(true);
         }
         command = COMMAND_DELAY;
@@ -6518,99 +6370,34 @@ public class ModeActivity extends BaseActivity {
 
     }
 
-
-
-    @OnClick({R.id.tv_500m, R.id.tv_250m, R.id.tv_1km, R.id.tv_2km, R.id.tv_4km, R.id.tv_8km, R.id.tv_16km, R.id.tv_32km, R.id.tv_64km,
-            R.id.tv_gain_add, R.id.tv_gain_min, R.id.layout_tv_both, R.id.layout_tv_memory, R.id.tv_cursor_plus, R.id.tv_balance_plus, R.id.tv_balance_min, R.id.tv_pulse_width, R.id.tv_cal, R.id.tv_range,
-            R.id.tv_file, /*R.id.tv_home, */R.id.tv_zero, R.id.tv_cursor_min, R.id.tv_zoom_plus, R.id.tv_zoom_min, R.id.tv_test, R.id.tv_help,
-            R.id.tv_compare,R.id.tv_mode1,R.id.tv_range1,R.id.tv_adjust1,R.id.tv_wave1,R.id.tv_file1,R.id.tv_set1,
-            R.id.ll_adjust,R.id.content,
-            R.id.iv_pulse_width_close, R.id.tv_pulse_width_save,R.id.tv_save1,R.id.iv_close,
-            R.id.tv_vop_save, R.id.iv_compare_close, R.id.iv_cal_close, R.id.iv_range_close, R.id.iv_records_close,R.id.iv_cal_close1,
-            R.id.tv_vop_min, R.id.tv_vop_plus,R.id.tv_vop_j,R.id.tv_vop_d,R.id.tv_vop_g,
-            R.id.tv_records_save, R.id.tv_file_records,
-            R.id.tv_origin, R.id.tv_trigger_delay, R.id.tv_delay_plus, R.id.tv_delay_min, R.id.ll_trigger_delay, R.id.iv_close_trigger_delay,
-            R.id.tv_wave_next, R.id.tv_wave_pre})
+    @OnClick({
+            R.id.tv_mode1, R.id.tv_range1, R.id.tv_adjust1, R.id.tv_operation1, R.id.tv_cursor_min, R.id.tv_cursor_plus, R.id.tv_zero, R.id.tv_help, R.id.tv_test,
+            R.id.tv_lead_save, R.id.iv_lead_close, R.id.tv_records_save, R.id.tv_file_records, R.id.iv_records_close, R.id.tv_device_save, R.id.iv_device_close,
+            R.id.tv_vop_j, R.id.tv_vop_d, R.id.tv_vop_g, R.id.iv_cal_close1,
+            R.id.tv_pulse_width_save, R.id.iv_pulse_width_close
+    })
     public void onClick(View view) {
         //未与硬件连接状态下可以响应的按钮  //GC20200630
         switch (view.getId()) {
-            case R.id.tv_file:
-                showFileView();
-                break;
-            case R.id.tv_file_records:
-                showRecordsDialog();
-                break;
-            case R.id.tv_records_save:
-                showSaveDialog();
-                break;
-            /*case R.id.tv_home:
-                finish();
-                break;*/
-            case R.id.tv_mode1: //jk20210125
-                tvMode1.setImageResource(R.drawable.bg_mode_pressed1);  //jk20210129
-                tvRange1.setImageResource(R.drawable.bg_range_normal_111);
-                tvAdjust1.setImageResource(R.drawable.bg_adjust_normal_1);
-                tvWave1.setImageResource(R.drawable.bg_wave_normal);
-                llCalAdjust.setVisibility(View.GONE);
-                llRecords.setVisibility(View.GONE);
-                llLead.setVisibility(View.GONE);
-                waveFragment.btnFile1.setEnabled(true);  //jk20210427
+            case R.id.tv_mode1:
+                closeAllView();
                 clickMode();
                 break;
             case R.id.tv_range1:
-                tvMode1.setImageResource(R.drawable.bg_mode_normal1);//jk20210129
-                tvRange1.setImageResource(R.drawable.bg_range_pressed_1);
-                tvAdjust1.setImageResource(R.drawable.bg_adjust_normal_1);
-                tvWave1.setImageResource(R.drawable.bg_wave_normal);
-                llCalAdjust.setVisibility(View.GONE);
-                llRecords.setVisibility(View.GONE);
-                llLead.setVisibility(View.GONE);
-                waveFragment.btnFile1.setEnabled(true);  //jk20210427
+                closeAllView();
                 clickRange();
                 break;
             case R.id.tv_adjust1:
-                tvMode1.setImageResource(R.drawable.bg_mode_normal1);//jk20210129
-                tvRange1.setImageResource(R.drawable.bg_range_normal_111);
-                tvAdjust1.setImageResource(R.drawable.bg_adjust_pressed1);
-                tvWave1.setImageResource(R.drawable.bg_wave_normal);
-                llCalAdjust.setVisibility(View.GONE);
-                llRecords.setVisibility(View.GONE);
-                llLead.setVisibility(View.GONE);
-                waveFragment.btnFile1.setEnabled(true);  //jk20210427
+                closeAllView();
                 clickAdjust();
                 break;
-            case R.id.tv_wave1:
-                tvMode1.setImageResource(R.drawable.bg_mode_normal1);//jk20210129
-                tvRange1.setImageResource(R.drawable.bg_range_normal_111);
-                tvAdjust1.setImageResource(R.drawable.bg_adjust_normal_1);
-                tvWave1.setImageResource(R.drawable.bg_wave_pressed1);
-                llCalAdjust.setVisibility(View.GONE);
-                llRecords.setVisibility(View.GONE);
-                llLead.setVisibility(View.GONE);
-                waveFragment.btnFile1.setEnabled(true);  //jk20210427
-                clickWave();
-                break;
-            case R.id.tv_file1:
-                clickFile();
-                break;
-            case R.id.tv_set1:
-                clickSet();
-                break;  //jk20210125
-            case R.id.tv_zero:
-                //零点切换  //GC20200612
+            case R.id.tv_operation1:
                 closeAllView();
-                llAdjust.setVisibility(View.GONE); //jk20210125
-                mainWave.setScrubLineReal(positionVirtual);
-                positionReal = positionVirtual;
-                //在原始数据中的位置
-                zero = pointDistance;
-                calculateDistance(0);
+                clickOperation();
                 break;
             case R.id.tv_cursor_min:
                 closeAllView();
-                llAdjust.setVisibility(View.GONE); //jk20210125
                 if (positionVirtual > 0) {
-
                     int positionVirtualtemp = positionVirtual;
                     positionVirtualtemp -= 1;
                     mainWave.setScrubLineVirtual(positionVirtualtemp);
@@ -6634,7 +6421,6 @@ public class ModeActivity extends BaseActivity {
                 break;
             case R.id.tv_cursor_plus:
                 closeAllView();
-                llAdjust.setVisibility(View.GONE); //jk20210125
                 if (positionVirtual < 509) {
                     int positionVirtualtemp = positionVirtual;
                     positionVirtualtemp += 1;
@@ -6653,32 +6439,72 @@ public class ModeActivity extends BaseActivity {
                     tvHeight.setText("高度" + height);*/
                 }
                 break;
-            case R.id.tv_zoom_plus:
+            case R.id.tv_zero:
+                //零点切换  //GC20200612
                 closeAllView();
-                llAdjust.setVisibility(View.GONE); //jk20210125
-                int density = getDensity();
-                if (density > 1) {
-                    density = density / 2;
-                    setDensity(density);
-                    tvZoomMin.setEnabled(true);
-                }
-                //无法放大
-                if (density == 1) {
-                    tvZoomPlus.setEnabled(false);
-                }
+                mainWave.setScrubLineReal(positionVirtual);
+                positionReal = positionVirtual;
+                //在原始数据中的位置
+                zero = pointDistance;
+                calculateDistance(0);
                 break;
-            case R.id.tv_zoom_min:
+            case R.id.tv_help:
                 closeAllView();
-                llAdjust.setVisibility(View.GONE); //jk20210125
-                density = getDensity();
-                if (density < Constant.DensityMax) {
-                    density = density * 2;
-                    setDensity(density);
-                    tvZoomPlus.setEnabled(true);
-                }
-                if (density == Constant.DensityMax) {
-                    tvZoomMin.setEnabled(false);
-                }
+                showHelpModeDialog();
+                break;
+            case R.id.tv_lead_save:
+                llLead.setVisibility(View.GONE);
+                setOperationTrue();    //GC20220810
+                saveCableInit();
+                break;
+            case R.id.iv_lead_close:
+                llLead.setVisibility(View.GONE);
+                setOperationTrue();    //GC20220810
+                break;
+            case R.id.tv_records_save:
+                llRecords.setVisibility(View.GONE);
+                setOperationTrue();    //GC20220810
+                showSaveDialog();
+                break;
+            case R.id.tv_file_records:
+                llRecords.setVisibility(View.GONE);
+                setOperationTrue();    //GC20220810
+                showRecordsDialog();
+                break;
+            case R.id.iv_records_close:
+                llRecords.setVisibility(View.GONE);
+                setOperationTrue();    //GC20220810
+                break;
+            case R.id.tv_device_save:  //保存设备编号 //GC20220517
+                llCurrentDevice.setVisibility(View.GONE);
+                setOperationTrue();    //GC20220810
+                saveCurrentDevice();
+                break;
+            case R.id.iv_device_close:  //关闭设备编号弹窗  //GC20220517
+                llCurrentDevice.setVisibility(View.GONE);
+                setOperationTrue();    //GC20220810
+                break;
+            case R.id.tv_vop_j:
+                llCalAdjust.setVisibility(View.GONE);
+                setAdjustTrue();    //GC20220810
+                setVelocity(172);
+                Toast.makeText(this, "交联聚乙烯电缆波速度范围170-174m/us，推荐使用172m/us", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_vop_d:
+                llCalAdjust.setVisibility(View.GONE);
+                setAdjustTrue();    //GC20220810
+                setVelocity(192);
+                Toast.makeText(this, "聚乙烯电缆波速度范围190-194m/us，推荐使用192m/us", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_vop_g:
+                llCalAdjust.setVisibility(View.GONE);
+                setAdjustTrue();    //GC20220810
+                setVelocity(165);
+                Toast.makeText(this, "聚氯乙烯电缆波速度范围160-168m/us，推荐使用165m/us", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.iv_cal_close1:
+                llCalAdjust.setVisibility(View.GONE);
+                setAdjustTrue();    //GC20220810
                 break;
             default:
                 break;
@@ -6688,462 +6514,29 @@ public class ModeActivity extends BaseActivity {
             Toast.makeText(ModeActivity.this, R.string.test_on_no_connect, Toast.LENGTH_SHORT).show();
             return;
         }
-        //如果测试中不执行
+        //如果测试中不执行后续代码
         if (Constant.isTesting) {
             return;
         }
-
         switch (view.getId()) {
-            case R.id.ll_adjust:
-                break;
-            case R.id.content:
-                break;
-            case R.id.tv_wave_pre:
-                //SIM共8组，从1-8
-                selectSim = getSelectSim();
-                if (selectSim > 1) {
-                    selectSim--;
-                    setSelectSim(selectSim);
-                }
-                break;
-            case R.id.tv_wave_next:
-                selectSim = getSelectSim();
-                if (selectSim < 8) {
-                    selectSim++;
-                    setSelectSim(selectSim);
-                }
-                break;
-            case R.id.iv_close_trigger_delay:
-                closeTriggerDelayView();
-                break;
-            case R.id.tv_origin:
-                //光标零点按钮    //GC20200612
-                int simZero = zero;
-                if (mode == SIM && range == RANGE_250) {
-                    simZero = simZero / 2;
-                }
-                setSimZero(simZero);
-                break;
-            case R.id.tv_trigger_delay:
-                showTriggerDelayView();
-                break;
-            case R.id.tv_delay_plus:
-                int delay = getDelay();
-                //jk20201130 多次脉冲延时间隔增加
-                if(mode == SIM){
-                    if (delay < 1250) {
-                        delay = delay + 15;
-                        if(delay >1250){
-                            delay = 1250;
-                        }
-                        //GC20190704 延时发送命令修改   (延时从0到1250，点击一次增加5，共250阶)
-                        setDelay(delay);
-                    }
-                }
-                else if (delay < 1250) {
-                    delay = delay + 5;
-                    //GC20190704 延时发送命令修改   (延时从0到1250，点击一次增加5，共250阶)
-                    setDelay(delay);
-                }
-                break;
-            case R.id.tv_delay_min:
-                delay = getDelay();
-                if(mode == SIM){  //jk20201130 多次脉冲延时间隔增加
-                    if (delay > 0) {
-                        delay = delay - 15;
-                        if(delay < 0){
-                            delay = 0;
-                        }
-                        //GC20190704 延时发送命令修改   (延时从0到1250，点击一次增加5，共250阶)
-                        setDelay(delay);
-                    }
-                }
-                else if (delay > 0) {
-                    delay = delay - 5;
-                    setDelay(delay);
-                }
-                break;
-            case R.id.iv_compare_close:
-                closeCompareView();
-                break;
-            case R.id.iv_cal_close:
-                closeCalView();
-                break;
-            case R.id.iv_cal_close1:
-                closeCalView1();
-                break;
-            case R.id.iv_close:
-                closeA1();
-                waveFragment.btnFile1.setEnabled(true);  //jk20210427
-                break;
-            case R.id.iv_pulse_width_close:
-                closePulseWidthView();
-                break;
-            case R.id.iv_range_close:
-                closeRangeView();
-                break;
-            case R.id.iv_records_close:
-                closeFileView();
-                break;
-            case R.id.tv_vop_save:
-                saveVop();
-                llCal.setVisibility(View.INVISIBLE);
-                break;
-            case R.id.tv_pulse_width_save:
-                savePulseWidth();
-                break;
-            case R.id.tv_save1:  //jk20210203
-                saveCableInit();
-                llLead.setVisibility(View.GONE);
-                waveFragment.btnFile1.setEnabled(true);
-                break;
-            case R.id.tv_250m:
-                setRange(0x99);
-                setGain(gain);
-                //切换范围时改变脉宽（未保存过脉宽且只在TDR模式下发射该命令）    //GC20200331
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 40;
-                        setPulseWidth(40);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(40));
-                }
-                //切换范围时改变SIM的发射脉宽   //GC20200527
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-            break;
-            case R.id.tv_500m:
-                setRange(0x11);
-                setGain(gain);
-                //GC20200331
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 40;
-                        setPulseWidth(40);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(40));
-                }
-                //GC20200527
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                break;
-            case R.id.tv_1km:
-                setRange(0x22);
-                setGain(gain);
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 80;
-                        setPulseWidth(80);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(80));
-                }
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                break;
-            case R.id.tv_2km:
-                setRange(0x33);
-                setGain(gain);
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 160;
-                        setPulseWidth(160);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(160));
-                }
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 720;
-                        setPulseWidth(720);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                break;
-            case R.id.tv_4km:
-                setRange(0x44);
-                setGain(gain);
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 320;
-                        setPulseWidth(320);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(320));
-                }
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 2560;
-                        setPulseWidth(2560);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                break;
-            case R.id.tv_8km:
-                setRange(0x55);
-                setGain(gain);
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 640;
-                        setPulseWidth(640);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(640));
-                }
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 3600;
-                        setPulseWidth(3600);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                break;
-            case R.id.tv_16km:
-                setRange(0x66);
-                setGain(gain);
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 1280;
-                        setPulseWidth(1280);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(1280));
-                }
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 7120;
-                        setPulseWidth(7120);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                break;
-            case R.id.tv_32km:
-                setRange(0x77);
-                setGain(gain);
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 2560;
-                        setPulseWidth(2560);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(2560));
-                }
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 10200;
-                        setPulseWidth(10200);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                break;
-            case R.id.tv_64km:
-                setRange(0x88);
-                setGain(gain);
-                //GC20200331
-                if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 5120;
-                        setPulseWidth(5120);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(5120));
-                }
-                //GC20200527
-                if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 10200;
-                        setPulseWidth(10200);
-                    }, 20);
-                }
-                handler.postDelayed(this::clickTest, 50);
-                tvGainAdd.setEnabled(true);
-                tvGainMin.setEnabled(true);
-                adjustFragment.btnGainPlus.setEnabled(true);
-                adjustFragment.btnGainMinus.setEnabled(true);
-                break;
-            case R.id.tv_gain_add:
-                int gain = getGain();
-                if (gain < 31) {
-                    gain++;
-                    //GC20190704 增益发送命令修改   (命令范围0-31阶)
-                    setGain(gain);
-                }
-                closeAllView();
-                break;
-            case R.id.tv_gain_min:
-                gain = getGain();
-                if (gain > 0) {
-                    gain--;
-                    //GC20190704 增益发送命令修改   (命令范围0-31阶)
-                    setGain(gain);
-                }
-                closeAllView();
-                break;
-            case R.id.tv_balance_plus:
-                int balance = getBalance();
-                if (balance < 15) {
-                    balance++;
-                    setBalance(balance);
-                }
-                closeAllView();
-                break;
-            case R.id.tv_balance_min:
-                balance = getBalance();
-                if (balance > 0) {
-                    balance--;
-                    setBalance(balance);
-                }
-                closeAllView();
-                break;
-            case R.id.tv_vop_min:
-                velocity = getVelocity();
-                if (velocity > 90) {
-                    velocity--;
-                    setVelocity(velocity);
-                    saveVop();
-                }
-                break;
-            case R.id.tv_vop_plus:
-                int velocity = (int) getVelocity();
-                if (velocity < 300) {
-                    velocity++;
-                    setVelocity(velocity);
-                    saveVop();
-                }
-                break;
-            case R.id.tv_vop_j:   //jk20210201
-                int velocity1 = 172;
-                setVelocity(velocity1);
-                Toast.makeText(this, "交联聚乙烯电缆波速度范围170-174，推荐使用172", Toast.LENGTH_SHORT).show();
-                llCalAdjust.setVisibility(View.GONE);
-                adjustFragment.btnVelPlus.setEnabled(true);  //jk20210407
-                adjustFragment.btnVelMinus.setEnabled(true);
-                break;
-            case R.id.tv_vop_d:   //jk20210201
-                int velocity2 = 192;
-                setVelocity(velocity2);
-                Toast.makeText(this, "聚乙烯电缆波速度范围190-194，推荐使用192", Toast.LENGTH_SHORT).show();
-                llCalAdjust.setVisibility(View.GONE);
-                adjustFragment.btnVelPlus.setEnabled(true);  //jk20210407
-                adjustFragment.btnVelMinus.setEnabled(true);
-                break;
-            case R.id.tv_vop_g:   //jk20210201
-                int velocity3 = 165;
-                setVelocity(velocity3);
-                Toast.makeText(this, "聚氯乙烯电缆波速度范围160-168，推荐使用165", Toast.LENGTH_SHORT).show();
-                llCalAdjust.setVisibility(View.GONE);
-                adjustFragment.btnVelPlus.setEnabled(true);  //jk20210407
-                adjustFragment.btnVelMinus.setEnabled(true);
-                break;
-            case R.id.tv_pulse_width:
-                showPulseWidth();
-                break;
-            case R.id.layout_tv_memory:
-                clickMemory();
-                break;
-            case R.id.layout_tv_both:
-                clickCompare();
-                break;
-            case R.id.tv_compare:
-                showCompareView();
-                break;
-            case R.id.tv_cal:
-                showCalView();
-                break;
-            case R.id.tv_range:
-                showRangeView();
-                break;
             case R.id.tv_test:
+                closeAllView();     //GC20220808
                 isReceiveData = true;
                 clickTest();
-                llAdjust.setVisibility(View.GONE); //jk20210125
                 step = 8;   //jk20200716
                 count = 6;
                 isLongClick = false;  //jk20200716
                 break;
-            case R.id.tv_help:
-                closeAllView();
-                showHelpModeDialog();
+            case R.id.tv_pulse_width_save:
+                savePulseWidth();
+                break;
+            case R.id.iv_pulse_width_close:
+                llPulseWidth.setVisibility(View.GONE);
+                break;
             default:
                 break;
         }
     }
-
-/*
- handler.postDelayed(this::clickTest, 50);changshi
- */
-    public void test1(){
-        handler.postDelayed(() -> {
-            //范围
-            setRange(range);
-        }, 20);
-        handler.postDelayed(() -> {
-            //增益
-            setGain(gain);
-        }, 20);
-        //不同模式下初始化发射不同命令  //GC20200424
-        if (mode == TDR) {
-            handler.postDelayed(() -> {
-                //脉宽
-                setPulseWidth(pulseWidth);
-            }, 20);
-        } else if (mode == ICM || mode == SIM) {
-            handler.postDelayed(() -> {
-                //延时
-                delay = 0;
-                setDelay(delay);
-            }, 20);
-            if (mode == SIM) {
-                handler.postDelayed(() -> {
-                    //脉宽
-                    setPulseWidth(pulseWidthSim);
-                }, 20);
-            }
-        }
-        //延时100毫秒发送测试命令，100毫秒是等待设备回复命令信息，如果不延时，有可能设备执行不完命令。
-        handler.postDelayed(ModeActivity.this::clickTest, 100);
-    }
-
 
     /**
      * @param index 侧边栏设置   //jk20210123
@@ -7181,27 +6574,11 @@ public class ModeActivity extends BaseActivity {
                 }
                 break;
             case 3:
-                if (waveFragment == null) {
-                    waveFragment = new WaveFragment();
-                    transaction.add(R.id.content, waveFragment);
+                if (operationFragment == null) {
+                    operationFragment = new OperationFragment();
+                    transaction.add(R.id.content, operationFragment);
                 } else {
-                    transaction.show(waveFragment);
-                }
-                break;
-            case 4:
-                if (fileFragment == null) {
-                    fileFragment = new FileFragment();
-                    transaction.add(R.id.content, fileFragment);
-                } else {
-                    transaction.show(fileFragment);
-                }
-                break;
-            case 5:
-                if (settingFragment == null) {
-                    settingFragment = new SettingFragment();
-                    transaction.add(R.id.content, settingFragment);
-                } else {
-                    transaction.show(settingFragment);
+                    transaction.show(operationFragment);
                 }
                 break;
             default:
@@ -7224,107 +6601,70 @@ public class ModeActivity extends BaseActivity {
         if (adjustFragment != null) {
             transaction.hide(adjustFragment);
         }
-        if (waveFragment != null) {
-            transaction.hide(waveFragment);
-        }
-        if (fileFragment != null) {
-            transaction.hide(fileFragment);
-        }
-        if (settingFragment != null) {
-            transaction.hide(settingFragment);
+        if (operationFragment != null) {
+            transaction.hide(operationFragment);
         }
     }
 
-
-
-    /*
-    **方式按钮响应 //jk20210123
+    /**
+     * 方式按钮响应
      */
     private void clickMode(){
-        llAdjust.setVisibility(View.GONE);
-        llPulseWidth.setVisibility(View.GONE);
         setTabSelection(0);
         tvMode1.setEnabled(false);
         tvRange1.setEnabled(true);
         tvAdjust1.setEnabled(true);
         tvWave1.setEnabled(true);
-        tvFile1.setEnabled(true);
-        tvSet1.setEnabled(true);
+        tvMode1.setImageResource(R.drawable.bg_mode_pressed1);
+        tvRange1.setImageResource(R.drawable.bg_range_normal_111);
+        tvAdjust1.setImageResource(R.drawable.bg_adjust_normal_1);
+        tvWave1.setImageResource(R.drawable.bg_wave_normal);
     }
 
-    /*
-    **范围按钮响应  //jk20210125
+    /**
+     * 范围按钮响应
      */
     private void clickRange(){
-        llAdjust.setVisibility(View.GONE);
-        llPulseWidth.setVisibility(View.GONE);
         setTabSelection(1);
         tvMode1.setEnabled(true);
         tvRange1.setEnabled(false);
         tvAdjust1.setEnabled(true);
         tvWave1.setEnabled(true);
-        tvFile1.setEnabled(true);
-        tvSet1.setEnabled(true);
+        tvMode1.setImageResource(R.drawable.bg_mode_normal1);
+        tvRange1.setImageResource(R.drawable.bg_range_pressed_1);
+        tvAdjust1.setImageResource(R.drawable.bg_adjust_normal_1);
+        tvWave1.setImageResource(R.drawable.bg_wave_normal);
     }
-    /*
-     **调节按钮响应  //jk20210125
+
+    /**
+     * 调节按钮响应
      */
     private void clickAdjust(){
-        llAdjust.setVisibility(View.GONE);
-        llPulseWidth.setVisibility(View.GONE);
         setTabSelection(2);
         tvMode1.setEnabled(true);
         tvRange1.setEnabled(true);
         tvAdjust1.setEnabled(false);
         tvWave1.setEnabled(true);
-        tvFile1.setEnabled(true);
-        tvSet1.setEnabled(true);
+        tvMode1.setImageResource(R.drawable.bg_mode_normal1);
+        tvRange1.setImageResource(R.drawable.bg_range_normal_111);
+        tvAdjust1.setImageResource(R.drawable.bg_adjust_pressed1);
+        tvWave1.setImageResource(R.drawable.bg_wave_normal);
     }
-    /*
-     **操作按钮响应  //jk20210125
+
+    /**
+     * 操作按钮响应
      */
-    private void clickWave(){
-        llAdjust.setVisibility(View.GONE);
-        llPulseWidth.setVisibility(View.GONE);
+    private void clickOperation(){
         setTabSelection(3);
         tvMode1.setEnabled(true);
         tvRange1.setEnabled(true);
         tvAdjust1.setEnabled(true);
         tvWave1.setEnabled(false);
-        tvFile1.setEnabled(true);
-        tvSet1.setEnabled(true);
+        tvMode1.setImageResource(R.drawable.bg_mode_normal1);
+        tvRange1.setImageResource(R.drawable.bg_range_normal_111);
+        tvAdjust1.setImageResource(R.drawable.bg_adjust_normal_1);
+        tvWave1.setImageResource(R.drawable.bg_wave_pressed1);
     }
-
-    /*
-     **文件按钮响应  //jk20210125
-     */
-    public void clickFile(){
-        llAdjust.setVisibility(View.GONE);
-        llPulseWidth.setVisibility(View.GONE);
-        setTabSelection(4);
-        tvMode1.setEnabled(true);
-        tvRange1.setEnabled(true);
-        tvAdjust1.setEnabled(true);
-        tvWave1.setEnabled(true);
-        tvFile1.setEnabled(false);
-        tvSet1.setEnabled(true);
-    }
-    /*
-     **设置按钮响应  //jk20210125
-     */
-    private void clickSet(){
-        llAdjust.setVisibility(View.GONE);
-        llPulseWidth.setVisibility(View.GONE);
-        setTabSelection(5);
-        tvMode1.setEnabled(true);
-        tvRange1.setEnabled(true);
-        tvAdjust1.setEnabled(true);
-        tvWave1.setEnabled(true);
-        tvFile1.setEnabled(true);
-        tvSet1.setEnabled(false);
-    }
-
-
 
     /**
      * 长按测试按键响应     //jk20200715
@@ -7334,7 +6674,6 @@ public class ModeActivity extends BaseActivity {
         isLongClick = true;
         isReceiveData = true;
         clickTest();
-        llAdjust.setVisibility(View.GONE); //jk20210125
         return true;
     }
 
@@ -7342,7 +6681,6 @@ public class ModeActivity extends BaseActivity {
      * 模式界面帮助按钮   //GC20200327
      */
     private void showHelpModeDialog() {
-        llAdjust.setVisibility(View.GONE); //jk20210125
         HelpModeDialog helpModeDialog = new HelpModeDialog(this);
         Constant.ModeValue = mode;
         if (!helpModeDialog.isShowing()) {
@@ -7363,35 +6701,23 @@ public class ModeActivity extends BaseActivity {
         this.selectSim = selectSim;
         //波形上翻下翻按钮状态变化    //GC20200604
         if (selectSim == 1) {
-            tvWavePre.setEnabled(false);
-            waveFragment.btnWavePrevious.setEnabled(false);
-            tvWavePre.setImageResource(R.drawable.bg_wave_pre_s_false);
-            waveFragment.btnWavePrevious.setImageResource(R.drawable.wave_shang);
-            tvWaveNext.setEnabled(true);
-            waveFragment.btnWaveNext.setEnabled(true);
-            tvWaveNext.setImageResource(R.drawable.bg_wave_next_s_selector);
-            waveFragment.btnWaveNext.setImageResource(R.drawable.bg_wavenext_selector);
+            operationFragment.btnWavePrevious.setEnabled(false);
+            operationFragment.btnWavePrevious.setImageResource(R.drawable.wave_shang);
+            operationFragment.btnWaveNext.setEnabled(true);
+            operationFragment.btnWaveNext.setImageResource(R.drawable.bg_wavenext_selector);
             waveButtonChanged = true;
         } else if (selectSim == 8) {
-            tvWavePre.setEnabled(true);
-            waveFragment.btnWavePrevious.setEnabled(true);
-            tvWavePre.setImageResource(R.drawable.bg_wave_pre_s_selector);
-            waveFragment.btnWavePrevious.setImageResource(R.drawable.bg_wavepre_selector);
-            tvWaveNext.setEnabled(false);
-            waveFragment.btnWaveNext.setEnabled(false);
-            tvWaveNext.setImageResource(R.drawable.bg_wave_next_s_false);
-            waveFragment.btnWaveNext.setImageResource(R.drawable.wave_xia);
+            operationFragment.btnWavePrevious.setEnabled(true);
+            operationFragment.btnWavePrevious.setImageResource(R.drawable.bg_wavepre_selector);
+            operationFragment.btnWaveNext.setEnabled(false);
+            operationFragment.btnWaveNext.setImageResource(R.drawable.wave_xia);
             waveButtonChanged = true;
         } else {
             if (waveButtonChanged) {
-                tvWavePre.setEnabled(true);
-                waveFragment.btnWavePrevious.setEnabled(true);
-                tvWavePre.setImageResource(R.drawable.bg_wave_pre_s_selector);
-                waveFragment.btnWavePrevious.setImageResource(R.drawable.bg_wavepre_selector);
-                tvWaveNext.setEnabled(true);
-                waveFragment.btnWaveNext.setEnabled(true);
-                tvWaveNext.setImageResource(R.drawable.bg_wave_next_s_selector);
-                waveFragment.btnWaveNext.setImageResource(R.drawable.bg_wavenext_selector);
+                operationFragment.btnWavePrevious.setEnabled(true);
+                operationFragment.btnWavePrevious.setImageResource(R.drawable.bg_wavepre_selector);
+                operationFragment.btnWaveNext.setEnabled(true);
+                operationFragment.btnWaveNext.setImageResource(R.drawable.bg_wavenext_selector);
                 waveButtonChanged = false;
             }
         }
@@ -7456,20 +6782,6 @@ public class ModeActivity extends BaseActivity {
 
     }
 
-    private void saveVop() {
-        ParamInfo paramInfo = (ParamInfo) StateUtils.getObject(ModeActivity.this, Constant.PARAM_INFO_KEY);
-        //单位转化逻辑修正  //20200522
-        if (paramInfo != null) {
-            paramInfo.setCableVop(String.valueOf(velocity));
-        } else {
-            paramInfo = new ParamInfo();
-            paramInfo.setCableVop(String.valueOf(velocity));
-        }
-        Constant.Velocity = velocity;
-        StateUtils.setObject(ModeActivity.this, paramInfo, Constant.PARAM_INFO_KEY);
-
-    }
-
     /**
      * 该方法检测一个点击事件是否落入在一个View内，换句话说，检测这个点击事件是否发生在该View上。
      *
@@ -7482,7 +6794,6 @@ public class ModeActivity extends BaseActivity {
         if (view == null) {
             return false;
         }
-
         int[] location = new int[2];
         view.getLocationOnScreen(location);
 
@@ -7495,151 +6806,130 @@ public class ModeActivity extends BaseActivity {
         if (y >= top && y <= bottom && x >= left && x <= right) {
             return true;
         }
-
         return false;
     }
 
-
-    public void showFileView() {
-        llAdjust.setVisibility(View.GONE);
-        llRecords.setVisibility(View.VISIBLE);
-        llRecords.setOnClickListener(null);
-        closeCompareView();
-        closeRangeView();
-        closeCalView();
-        closeTriggerDelayView();
-        closePulseWidthView();
-    }
-
-    private void closeFileView() {
-        llAdjust.setVisibility(View.VISIBLE);
-        llRecords.setVisibility(View.GONE);
-        llAdjust.setVisibility(View.GONE);
-    }
-
-    private void showRangeView() {
-        //点击范围按钮的前提是与设备连接成功，否则吐司，禁止继续执行代码
-        if (!ConnectService.isConnected) {
-            Toast.makeText(ModeActivity.this, R.string.test_on_no_connect, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        llRange.setVisibility(View.VISIBLE);
-        llRange.setOnClickListener(null);
-        closeFileView();
-        closeCompareView();
-        closeCalView();
-        closeTriggerDelayView();
-        closePulseWidthView();
-    }
-
-    private void closeRangeView() {
-        llAdjust.setVisibility(View.VISIBLE);
-        llRange.setVisibility(View.GONE);
-    }
-
-    private void showTriggerDelayView() {
-        llTriggerDelay.setVisibility(View.VISIBLE);
-        closeFileView();
-        closeRangeView();
-        closeCalView();
-        closeCompareView();
-        closePulseWidthView();
-    }
-
-    private void closeTriggerDelayView() {
-        llAdjust.setVisibility(View.VISIBLE);
-        llTriggerDelay.setVisibility(View.GONE);
-    }
-
     public void showCalView() {
-        llCal.setVisibility(View.VISIBLE);
-        llCal.setOnClickListener(null);
-        closeFileView();
-        closeRangeView();
-        closeCompareView();
-        closeTriggerDelayView();
-        closePulseWidthView();
-    }
-
-    public void showCalView1() {
         llCalAdjust.setVisibility(View.VISIBLE);
-        llCalAdjust.setOnClickListener(null);
-        closeFileView();
-        closeRangeView();
-        closeCompareView();
-        closeTriggerDelayView();
-        closePulseWidthView();
+        setAdjustFalse();   //GC20220810
     }
 
     public void showLeadView1() {
         llLead.setVisibility(View.VISIBLE);
-        closeFileView();
-        closeRangeView();
-        closeCompareView();
-        closeTriggerDelayView();
-        closePulseWidthView();
+        setOperationFalse();    //GC20220810
     }
 
-
-    private void closeCalView() {
-       // llAdjust.setVisibility(View.VISIBLE); jk20210201
-        llCal.setVisibility(View.GONE);
-    }
-
-    private void closeCalView1() {
-        // llAdjust.setVisibility(View.VISIBLE); jk20210201
-        llCalAdjust.setVisibility(View.GONE);
-    }
-    private void closeA1() {
-        // llAdjust.setVisibility(View.VISIBLE); jk20210201
-        llLead.setVisibility(View.GONE);
-    }
-
-
-    private void closePulseWidthView() {
-        //llAdjust.setVisibility(View.VISIBLE);
-        llPulseWidth.setVisibility(View.GONE);
-        llAdjust.setVisibility(View.GONE); //jk20210125
-    }
-
-
-    private void closeCompareView() {
-        llAdjust.setVisibility(View.VISIBLE);
-        llCompare.setVisibility(View.GONE);
-    }
-
-    private void showCompareView() {
-        llCompare.setVisibility(View.VISIBLE);
-        llCompare.setOnClickListener(null);
-        closeFileView();
-        closeRangeView();
-        closeCalView();
-        closeTriggerDelayView();
-        closePulseWidthView();
+    public void showFileView() {
+        llRecords.setVisibility(View.VISIBLE);
+        setOperationFalse();    //GC20220810
     }
 
     private void closeAllView() {
-        closeCalView();
-        closeCompareView();
-        closeRangeView();
-        closeTriggerDelayView();
-        closeFileView();
-        closePulseWidthView();
+        //GC20220808
+        llCalAdjust.setVisibility(View.GONE);
+        llLead.setVisibility(View.GONE);
+        llRecords.setVisibility(View.GONE);
+        //去掉设备编号弹窗  //GC20220517
+        llCurrentDevice.setVisibility(View.GONE);
+        //波宽度已经去掉，不显示
+        llPulseWidth.setVisibility(View.GONE);
+        //弹窗取消后，按钮恢复有效   //GC20220810
+        setAdjustTrue();
+        setOperationTrue();
+    }
+
+    /**
+     * 弹窗弹出后按钮无效    //GC20220810
+     */
+    public void setAdjustFalse() {
+        adjustFragment.btnGainPlus.setEnabled(false);
+        adjustFragment.btnGainMinus.setEnabled(false);
+        adjustFragment.btnBalancePlus.setEnabled(false);
+        adjustFragment.btnBalanceMinus.setEnabled(false);
+        adjustFragment.btnDelayPlus.setEnabled(false);
+        adjustFragment.btnDelayMinus.setEnabled(false);
+        adjustFragment.btnVelPlus.setEnabled(false);
+        adjustFragment.btnVelMinus.setEnabled(false);
+        adjustFragment.btnVelAdjust.setEnabled(false);
+    }
+
+    public void setOperationFalse() {
+        operationFragment.btnZoomIn.setEnabled(false);
+        operationFragment.btnZoomOut.setEnabled(false);
+        operationFragment.btnMemory.setEnabled(false);
+        operationFragment.btnCompare.setEnabled(false);
+        operationFragment.btnRes.setEnabled(false);
+        operationFragment.btnLead1.setEnabled(false);
+        operationFragment.btnFile1.setEnabled(false);
+        operationFragment.btnUP.setEnabled(false);
+        operationFragment.btnWavePrevious.setEnabled(false);
+        operationFragment.btnWaveNext.setEnabled(false);
+        operationFragment.btnZero.setEnabled(false);
+        operationFragment.btnPulse.setEnabled(false);
+    }
+
+    /**
+     * 弹窗取消后按钮恢复有效    //GC20220810
+     */
+    public void setAdjustTrue() {
+        adjustFragment.btnGainPlus.setEnabled(true);
+        adjustFragment.btnGainMinus.setEnabled(true);
+        adjustFragment.btnBalancePlus.setEnabled(true);
+        adjustFragment.btnBalanceMinus.setEnabled(true);
+        adjustFragment.btnDelayPlus.setEnabled(true);
+        adjustFragment.btnDelayMinus.setEnabled(true);
+        adjustFragment.btnVelPlus.setEnabled(true);
+        adjustFragment.btnVelMinus.setEnabled(true);
+        adjustFragment.btnVelAdjust.setEnabled(true);
+    }
+
+    private void setOperationTrue() {
+        operationFragment.btnZoomIn.setEnabled(true);
+        operationFragment.btnZoomOut.setEnabled(true);
+        operationFragment.btnMemory.setEnabled(true);
+        operationFragment.btnCompare.setEnabled(true);
+        operationFragment.btnRes.setEnabled(true);
+        operationFragment.btnLead1.setEnabled(true);
+        operationFragment.btnFile1.setEnabled(true);
+        operationFragment.btnUP.setEnabled(true);
+        operationFragment.btnWavePrevious.setEnabled(true);
+        operationFragment.btnWaveNext.setEnabled(true);
+        operationFragment.btnZero.setEnabled(true);
+        operationFragment.btnPulse.setEnabled(true);
+    }
+
+    /**
+     * 显示设备编号弹窗 //GC20220517
+     */
+    public void showCurrentDevice() {
+        llCurrentDevice.setVisibility(View.VISIBLE);
+        currentDevice = StateUtils.getString(ModeActivity.this, AppConfig.CURRENT_DEVICE, "T-907-0");
+        etCurrentDeviceId.setText(currentDevice.substring(6));    //初始化编号显示   //GC20220520
+        setOperationFalse();    //GC20220810
+    }
+
+    /**
+     * 设备编号弹窗的保存按键操作    //GC20220517
+     */
+    private void saveCurrentDevice() {
+        //判断输入 //GC20220520
+        if ( etCurrentDeviceId.getText().toString().isEmpty() ) {
+            //输入为空时认为没有保存操作
+            Toast.makeText(this, getResources().getString(R.string.current_device_set_none), Toast.LENGTH_SHORT).show();
+        } else {
+            currentDevice = "T-907-" + etCurrentDeviceId.getText().toString();
+            Constant.SSID = currentDevice;
+            StateUtils.setString(ModeActivity.this, AppConfig.CURRENT_DEVICE,currentDevice);
+            Toast.makeText(this, getResources().getString(R.string.current_device_set_success), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
      * 设置波宽度，存储本地保存
      */
     public void showPulseWidth() {
-        llPulseWidth.setOnClickListener(null);
         llPulseWidth.setVisibility(View.VISIBLE);
-        closeFileView();
-        closeRangeView();
-        closeCompareView();
-        closeCalView();
-        closeTriggerDelayView();
-        llAdjust.setVisibility(View.GONE); //jk20210125
-
+        setOperationFalse();    //GC20220810
     }
 
     /**
@@ -7647,7 +6937,7 @@ public class ModeActivity extends BaseActivity {
      */
     private void savePulseWidth() {
         // 01 初始化操作值
-        if (etPulseWidth.getText().toString().isEmpty() || "0".equals(etPulseWidth.getText().toString()) ) {
+        if (etPulseWidth.getText().toString().isEmpty() || "0".equals(etPulseWidth.getText().toString())) {
             //输入为空时认为没有保存操作   //GC20200331
             etPulseWidth.setText(String.valueOf(pulseWidth));
             hasSavedPulseWidth = false;
@@ -7660,7 +6950,7 @@ public class ModeActivity extends BaseActivity {
         savePulseWidthInfo();
         // 03 指令下达
         setPulseWidth(pulseWidth);
-        closePulseWidthView();
+        llPulseWidth.setVisibility(View.GONE);
     }
 
     /**
@@ -7703,7 +6993,6 @@ public class ModeActivity extends BaseActivity {
      * 弹出波形存储对话框
      */
     public void showSaveDialog() {
-        closeFileView();
         SaveRecordsDialog saveRecordsDialog = new SaveRecordsDialog(this);
         Constant.ModeValue = mode;
         //TODO 20191226 存储zero和pointDistance
@@ -7712,29 +7001,23 @@ public class ModeActivity extends BaseActivity {
         if (!saveRecordsDialog.isShowing()) {
             saveRecordsDialog.show();
         }
-        llAdjust.setVisibility(View.GONE); //jk20210126
     }
 
     /**
      * 弹出波形记录对话框
      */
     public void showRecordsDialog() {
-        closeFileView();
         ShowRecordsDialog showRecordsDialog = new ShowRecordsDialog(this);
         showRecordsDialog.setMode(mode);
         if (!showRecordsDialog.isShowing()) {
             showRecordsDialog.show();
         }
-        llAdjust.setVisibility(View.GONE); //jk20210126
     }
 
     /**
      * 测试按钮
      */
     private void clickTest() {
-        llAdjust.setVisibility(View.GONE); //jk20210125
-        llCalAdjust.setVisibility(View.GONE);
-        llLead.setVisibility(View.GONE);
         //TODO 20200407 点击测试按钮的前提是与设备连接成功，否则吐司，禁止继续执行代码
         if (!ConnectService.isConnected) {
             Toast.makeText(ModeActivity.this, R.string.test_on_no_connect, Toast.LENGTH_SHORT).show();
@@ -7749,8 +7032,6 @@ public class ModeActivity extends BaseActivity {
         tvTest.setEnabled(false);
 
         Constant.SaveToDBGain = Constant.Gain;
-        closeAllView();
-        llRange.setVisibility(View.INVISIBLE);
 
         if (tDialog != null) {
             tDialog.dismiss();
@@ -7758,7 +7039,7 @@ public class ModeActivity extends BaseActivity {
         //初始化距离
         if (mode == TDR) {
             tDialog = new TDialog.Builder(getSupportFragmentManager())
-                    .setLayoutRes(R.layout.receiving_data)
+                    .setLayoutRes(R.layout.dialog_receiving_data)
                     .setScreenWidthAspect(this, 0.25f)
                     .setCancelableOutside(false)
                     .create()
@@ -7778,7 +7059,7 @@ public class ModeActivity extends BaseActivity {
 
         } else if ((mode == ICM) || (mode == ICM_DECAY) || (mode == SIM) || (mode == DECAY)) {
             tDialog = new TDialog.Builder(getSupportFragmentManager())
-                    .setLayoutRes(R.layout.wait_trigger)
+                    .setLayoutRes(R.layout.dialog_wait_trigger)
                     .setScreenWidthAspect(this, 0.3f)
                     .setCancelableOutside(false)
                     .addOnClickListener(R.id.tv_cancel)
@@ -7796,42 +7077,37 @@ public class ModeActivity extends BaseActivity {
                         @Override
                         public void onViewClick(BindViewHolder viewHolder, View view,
                                                 TDialog tDialog) {
+                            //范围切换后重新绘制波形   //GC20220801
+                            if (rangeChanged) {
+                                initSparkView();
+                                alreadyDisplayWave = false;
+                                tvInformation.setText("");
+                                rangeChanged = false;
+                            }
                             //取消测试逻辑修正    //20200523    //GC
                             if (canClickCancelButton) {
                                 //允许点击取消测试按钮为否
                                 canClickCancelButton = false;
                                 if (!alreadyDisplayWave) {
-                                    tvZoomMin.setEnabled(false);
-                                    tvZoomPlus.setEnabled(false);
-                                    waveFragment.btnZoomIn.setEnabled(false);//jk20210126
-                                    waveFragment.btnZoomOut.setEnabled(false);//jk20210126
-                                    waveFragment.btnZoomIn.setImageResource(R.drawable.bg_fangda);//jk20210130cs
-                                    waveFragment.btnZoomOut.setImageResource(R.drawable.bg_suoxiao);//jk20210130cs
-                                    waveFragment.btnRes.setImageResource(R.drawable.bg_huanyuan);//jk20210130cs
-                                    tvWavePre.setEnabled(false);
-                                    waveFragment.btnWavePrevious.setEnabled(false);
-                                    tvWavePre.setImageResource(R.drawable.bg_wave_pre_s_false);
-                                    waveFragment.btnWavePrevious.setImageResource(R.drawable.wave_shang);
-                                    tvWaveNext.setEnabled(false);
-                                    waveFragment.btnWaveNext.setEnabled(false);
-                                    tvWaveNext.setImageResource(R.drawable.bg_wave_next_s_false);
-                                    waveFragment.btnWaveNext.setImageResource(R.drawable.wave_xia);
+                                    operationFragment.btnZoomIn.setEnabled(false);//jk20210126
+                                    operationFragment.btnZoomOut.setEnabled(false);
+                                    operationFragment.btnZoomIn.setImageResource(R.drawable.bg_fangda);//jk20210130cs
+                                    operationFragment.btnZoomOut.setImageResource(R.drawable.bg_suoxiao);
+                                    operationFragment.btnRes.setImageResource(R.drawable.bg_huanyuan);
+                                    operationFragment.btnWavePrevious.setEnabled(false);
+                                    operationFragment.btnWavePrevious.setImageResource(R.drawable.wave_shang);
+                                    operationFragment.btnWaveNext.setEnabled(false);
+                                    operationFragment.btnWaveNext.setImageResource(R.drawable.wave_xia);
                                     //后续优化保留  //GC20200604
                                 } else {
-                                    tvZoomMin.setEnabled(true);
-                                    tvZoomPlus.setEnabled(true);
-                                    waveFragment.btnZoomIn.setEnabled(true);//jk20210126
-                                    waveFragment.btnZoomOut.setEnabled(true);//jk20210126
-                                    waveFragment.btnZoomIn.setImageResource(R.drawable.bg_zoom1_selector);//jk20210130cs
-                                    waveFragment.btnZoomOut.setImageResource(R.drawable.bg_zoom2_selector);//jk20210130cs
-                                    tvWavePre.setEnabled(true);
-                                    waveFragment.btnWavePrevious.setEnabled(true);
-                                    tvWavePre.setImageResource(R.drawable.bg_wave_pre_s_selector);
-                                    waveFragment.btnWavePrevious.setImageResource(R.drawable.bg_wavepre_selector);
-                                    tvWaveNext.setEnabled(true);
-                                    waveFragment.btnWaveNext.setEnabled(true);
-                                    tvWaveNext.setImageResource(R.drawable.bg_wave_next_s_selector);
-                                    waveFragment.btnWaveNext.setImageResource(R.drawable.bg_wavenext_selector);
+                                    operationFragment.btnZoomIn.setEnabled(true);//jk20210126
+                                    operationFragment.btnZoomOut.setEnabled(true);
+                                    operationFragment.btnZoomIn.setImageResource(R.drawable.bg_zoom1_selector);//jk20210130cs
+                                    operationFragment.btnZoomOut.setImageResource(R.drawable.bg_zoom2_selector);
+                                    operationFragment.btnWavePrevious.setEnabled(true);
+                                    operationFragment.btnWavePrevious.setImageResource(R.drawable.bg_wavepre_selector);
+                                    operationFragment.btnWaveNext.setEnabled(true);
+                                    operationFragment.btnWaveNext.setImageResource(R.drawable.bg_wavenext_selector);
                                 }
                                 tDialog.dismiss();
                                 //TODO 20200407 取消测试后，恢复测试按钮可用性
@@ -7863,10 +7139,53 @@ public class ModeActivity extends BaseActivity {
     }
 
     /**
+     * 选择方式、范围后立刻测试
+     */
+    public void modeRangeTest(){
+        handler.postDelayed(() -> {
+            //范围
+            setRange(range);
+        }, 20);
+        handler.postDelayed(() -> {
+            //增益
+            setGain(gain);
+        }, 20);
+        //不同模式下初始化发射不同命令  //GC20200424
+        if (mode == TDR) {
+            handler.postDelayed(() -> {
+                //脉宽
+                setPulseWidth(pulseWidth);
+            }, 20);
+        } else if (mode == ICM || mode == SIM) {
+            handler.postDelayed(() -> {
+                //延时
+                delay = 0;
+                setDelay(delay);
+            }, 20);
+            if (mode == SIM) {
+                handler.postDelayed(() -> {
+                    //脉宽
+                    setPulseWidth(pulseWidthSim);
+                }, 20);
+            }
+        }
+        //延时100毫秒发送测试命令，100毫秒是等待设备回复命令信息，如果不延时，有可能设备执行不完命令。
+        handler.postDelayed(ModeActivity.this::clickTest, 100);
+    }
+
+    /**
+     * 低压脉冲方式下调整增益发送测试命令    //GC20220622
+     */
+    public void gainTest() {
+        if (mode == TDR) {
+            handler.postDelayed(ModeActivity.this::clickTest, 100);
+        }
+    }
+
+    /**
      * 比较按钮执行的方法  //GC20190703
      */
     public void clickCompare() {
-        closeCompareView();
         if (isMemory) {
             //再优化   //GC20190703
             if ((modeBefore == mode) && (rangeBefore == range)) {
@@ -7883,7 +7202,6 @@ public class ModeActivity extends BaseActivity {
         } else {
             Toast.makeText(this, getResources().getString(R.string.You_have_no_memory_data_can_not_compare), Toast.LENGTH_SHORT).show();
         }
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     /**
@@ -7891,7 +7209,6 @@ public class ModeActivity extends BaseActivity {
      */
     public void clickMemory() {
         if (alreadyDisplayWave) {
-            closeCompareView();
             isMemory = true;
             waveCompare = new int[Constant.WaveData.length];
             System.arraycopy(Constant.WaveData, 0, waveCompare, 0, Constant.WaveData.length);
@@ -7899,8 +7216,6 @@ public class ModeActivity extends BaseActivity {
             modeBefore = mode;
             rangeBefore = range;
         }
-
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     /**
@@ -7915,7 +7230,6 @@ public class ModeActivity extends BaseActivity {
         bundle.putInt(BUNDLE_DATA_TRANSFER_KEY, dataTransfer);
         intent.putExtra(BUNDLE_PARAM_KEY, bundle);
         startService(intent);
-        llAdjust.setVisibility(View.GONE); //jk20210125
     }
 
     public boolean getReceiveData() {
@@ -7946,7 +7260,6 @@ public class ModeActivity extends BaseActivity {
     private int unit1;
     public int catlead1;
     private void CableInit(){
-
         ParamInfo paramInfo = (ParamInfo) StateUtils.getObject(ModeActivity.this, Constant.PARAM_INFO_KEY);
         unit1 = StateUtils.getInt(ModeActivity.this, AppConfig.CURRENT_UNIT, MI_UNIT);
         CurrentUnit = unit1;
