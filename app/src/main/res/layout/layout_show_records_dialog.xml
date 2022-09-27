@@ -253,7 +253,7 @@
                         android:textSize="@dimen/sp_11" />
                 </RelativeLayout>
 
-                <!--GC?界面改的不一样，看效果-->
+                <!--界面改的不一样，看效果-->
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

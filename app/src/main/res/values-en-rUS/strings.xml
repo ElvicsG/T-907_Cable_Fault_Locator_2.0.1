@@ -182,7 +182,7 @@
     <string name="chineseSpace">&#12288;</string>
     <string name="testAgain">Please test again!</string>
     <string name="company_name">Kehui International Ltd.</string>
-    <string name="v_name">V2.0.1</string>
+    <string name="v_name">V2.0.4</string>
     <string name="current_device">current_device:</string>
     <string name="current_device_set_success">Current device setting successfully, please restart!</string>
     <string name="current_device_set_none">The input is empty and not saved!</string>

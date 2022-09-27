@@ -137,12 +137,14 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
         getWindow().setAttributes(params);
         getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         initAdapter();
-        if (fromMain) {
+        /*if (fromMain) {
             setSpMode();
         } else {
             spMode.setVisibility(View.GONE);
             tvSelectModeText.setVisibility(View.GONE);
-        }
+        }*/
+        //测试方式可选择 //GC20220821
+        setSpMode();
 
     }
 
@@ -430,6 +432,7 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
                         }
                         adapter.datas.addAll(list);
                         adapter.notifyDataSetChanged();
+                        adapter.changeSelected(0);  //方式改变后，刷新点击位置  //GC20220821
                         setDataByPosition(list.get(0));
                         selectedId = list.get(0).dataId;
                         //GC20190713

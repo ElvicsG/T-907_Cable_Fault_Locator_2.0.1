@@ -60,10 +60,6 @@ public class ConnectService extends Service {
      */
     public static boolean isConnected;
     /**
-     * 是否需要连接   //GC? 优化逻辑去掉了
-     */
-    public static boolean needConnect = true;
-    /**
      *是否正在连接中    //20200523
      */
     private boolean isConnecting;
@@ -131,7 +127,7 @@ public class ConnectService extends Service {
             public void run() {
                 //如果连接正常并且允许收取电量。
                 if (isConnected && canAskPower) {
-                    //EN20200324    //G??   有必要么
+                    //EN20200324
                     canAskPower = false;
                     command = 0x06;
                     dataTransfer = 0x13;
@@ -146,7 +142,7 @@ public class ConnectService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        //GN 服务启动相关
+        //服务启动相关
         return null;
     }
 
@@ -198,15 +194,12 @@ public class ConnectService extends Service {
             assert action != null;
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                       // (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 assert connectivityManager != null;
-               // NetworkInfo info = connectivityManager.getActiveNetworkInfo();
                 NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-                /*if (info != null && isWifiConnect == false) {*/
+//                if (info != null && isWifiConnect == false) { //jk20210714
                 if (info != null) {
-                    //if ((info.isConnected() && info.getExtraInfo().contains(Constant.SSID)) && !isWifiConnect) { //jk20210706
-                    if (info.isConnected() && !isWifiConnect) { //jk20210714
-                    //if ((info.isConnected() && info.getExtraInfo().contains(Constant.SSID)) && !isWifiConnect) {
+//                    if ((info.isConnected() && info.getExtraInfo().contains(Constant.SSID)) && !isWifiConnect) {  //jk20210714
+                    if (info.isConnected() && !isWifiConnect) {
                         //EN20200324
                         Log.e("【SOCKET连接】", "网络连接状态变化，重连");
                         handler.sendEmptyMessage(DEVICE_DO_CONNECT);
@@ -222,7 +215,7 @@ public class ConnectService extends Service {
                         connectThread.getSocket().close();
                         /*socket = null;
                         connectThread = null;
-                        processThread = null;*/ //EN20200324    //G?? 可以去掉吧
+                        processThread = null;*/ //EN20200324    //G? 可以去掉吧
                     } catch (Exception e1) {
                         e1.printStackTrace();
                     }
@@ -289,12 +282,12 @@ public class ConnectService extends Service {
                         socket.setKeepAlive(true);
                     }
                     if (connectThread == null) {
-                        Log.e("【SOCKET连接】", "启动接收数据线程");
+                        Log.e("【SOCKET连接】", "启动接收数据线程connectThread");
                         connectThread = new ConnectThread(socket, handler, Constant.DEVICE_IP);
                         connectThread.start();
                     }
                     if (processThread == null) {
-                        Log.e("【SOCKET连接】", "启动接收数据线程");
+                        Log.e("【SOCKET连接】", "启动接收数据线程processThread");
                         processThread = new ProcessThread(handler);
                         processThread.start();
                     }
@@ -318,7 +311,6 @@ public class ConnectService extends Service {
                 handler.sendEmptyMessageDelayed(DEVICE_DO_CONNECT, 2000);
             }
         });
-        Log.e("DIA", "WIFI连接：" + "隐藏");
         singleThreadPool.shutdown();
     }
 

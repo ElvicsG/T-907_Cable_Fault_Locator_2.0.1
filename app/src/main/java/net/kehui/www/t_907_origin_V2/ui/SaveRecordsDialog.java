@@ -195,6 +195,7 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
             case ICM:
                 tvMode.setText(getContext().getResources().getString(R.string.btn_icm));
                 Constant.Mode = ICM;
+                //测试方式记录    //GC20210125
                 modeName = "ICM";
                 modeSave = 1;
                 break;
@@ -228,51 +229,46 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
             case RANGE_250:
                 if (CurrentUnit == FT_UNIT) {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_250m_to_ft));
-                    Constant.Range = RANGE_250;
                 } else {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_250m));
-                    Constant.Range = RANGE_250;
                 }
+                Constant.Range = RANGE_250;
                 rangeSave = 0;  //本地存储范围记录  //GC20220701
                 break;
             case RANGE_500:
                 if (CurrentUnit == FT_UNIT) {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_500m_to_ft));
-                    Constant.Range = RANGE_500;
                 } else {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_500m));
-                    Constant.Range = RANGE_500;
                 }
-                rangeSave = 0;
+                Constant.Range = RANGE_500;
+                rangeSave = 0;  //GC20220701
                 break;
             case RANGE_1_KM:
                 if (CurrentUnit == FT_UNIT) {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_1km_to_yingli));
-                    Constant.Range = RANGE_1_KM;
                 } else {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_1km));
-                    Constant.Range = RANGE_1_KM;
                 }
-                rangeSave = 1;
+                Constant.Range = RANGE_1_KM;
+                rangeSave = 1;  //GC20220701
                 break;
             case RANGE_2_KM:
                 if (CurrentUnit == FT_UNIT) {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_2km_to_yingli));
-                    Constant.Range = RANGE_2_KM;
                 } else {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_2km));
-                    Constant.Range = RANGE_2_KM;
                 }
+                Constant.Range = RANGE_2_KM;
                 rangeSave = 2;
                 break;
             case RANGE_4_KM:
                 if (CurrentUnit == FT_UNIT) {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_4km_to_yingli));
-                    Constant.Range = RANGE_4_KM;
                 } else {
                     tvRange.setText(getContext().getResources().getString(R.string.btn_4km));
-                    Constant.Range = RANGE_4_KM;
                 }
+                Constant.Range = RANGE_4_KM;
                 rangeSave = 3;
                 break;
             case RANGE_8_KM:

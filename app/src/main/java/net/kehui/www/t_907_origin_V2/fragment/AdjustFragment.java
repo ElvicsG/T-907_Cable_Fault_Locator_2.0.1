@@ -54,11 +54,9 @@ public class AdjustFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //GC20190705 调节栏fragment初始化——无延时、电感按钮
+        //按照TDR方式初始化    //GC20220819
         btnDelayPlus.setVisibility(View.GONE);
         btnDelayMinus.setVisibility(View.GONE);
-        //初始化按键无效显示效果
-        btnDelayMinus.setEnabled(false);
     }
 
     @Override
@@ -79,11 +77,6 @@ public class AdjustFragment extends Fragment {
                     gain++;
                     ((ModeActivity) getActivity()).setGain(gain);
 //                    ((ModeActivity) getActivity()).gainTest();  //GC20220622    //GC20220801 TDR增益调整后不发测试命令
-                    btnGainMinus.setEnabled(true);
-                }
-                //增益命令到最大，按钮点击无效
-                if (gain == 31) {
-                    btnGainPlus.setEnabled(false);
                 }
                 break;
             case R.id.btn_gain_minus:
@@ -92,10 +85,6 @@ public class AdjustFragment extends Fragment {
                     gain--;
                     ((ModeActivity) getActivity()).setGain(gain);
 //                    ((ModeActivity) getActivity()).gainTest();  //GC20220622      //GC20220801 TDR增益调整后不发测试命令
-                    btnGainPlus.setEnabled(true);
-                }
-                if (gain == 0) {
-                    btnGainMinus.setEnabled(false);
                 }
                 break;
             case R.id.btn_balance_plus:
@@ -104,10 +93,6 @@ public class AdjustFragment extends Fragment {
                     balance++;
                     //GC20190704 平衡发送命令修改   (命令范围0-15阶)
                     ((ModeActivity) getActivity()).setBalance(balance);
-                    btnBalanceMinus.setEnabled(true);
-                }
-                if (balance == 15) {
-                    btnBalancePlus.setEnabled(false);
                 }
                 break;
             case R.id.btn_balance_minus:
@@ -115,10 +100,6 @@ public class AdjustFragment extends Fragment {
                 if (balance > 0) {
                     balance--;
                     ((ModeActivity) getActivity()).setBalance(balance);
-                    btnBalancePlus.setEnabled(true);
-                }
-                if (balance == 0) {
-                    btnBalanceMinus.setEnabled(false);
                 }
                 break;
             case R.id.btn_delay_plus:
@@ -127,10 +108,6 @@ public class AdjustFragment extends Fragment {
                     delay = delay + 5;
                     //GC20190704 延时发送命令修改   (延时从0到1250，点击一次增加5，共250阶)
                     ((ModeActivity) getActivity()).setDelay(delay);
-                    btnDelayMinus.setEnabled(true);
-                }
-                if (delay == 1250) {
-                    btnDelayPlus.setEnabled(false);
                 }
                 break;
             case R.id.btn_delay_minus:
@@ -138,10 +115,6 @@ public class AdjustFragment extends Fragment {
                 if (delay > 0) {
                     delay = delay - 5;
                     ((ModeActivity) getActivity()).setDelay(delay);
-                    btnDelayPlus.setEnabled(true);
-                }
-                if (delay == 0) {
-                    btnDelayMinus.setEnabled(false);
                 }
                 break;
             case R.id.btn_vel_plus:
@@ -149,10 +122,6 @@ public class AdjustFragment extends Fragment {
                 if (velocity < 300) {
                     velocity++;
                     ((ModeActivity) getActivity()).setVelocity(velocity);
-                    btnVelPlus.setEnabled(true);
-                }
-                if(velocity == 300){
-                    btnVelPlus.setEnabled(false);
                 }
                 break;
             case R.id.btn_vel_minus:
@@ -160,10 +129,6 @@ public class AdjustFragment extends Fragment {
                 if (velocity > 90) {
                     velocity--;
                     ((ModeActivity) getActivity()).setVelocity(velocity);
-                    btnVelMinus.setEnabled(true);
-                }
-                if(velocity == 90){
-                    btnVelMinus.setEnabled(false);
                 }
                 break;
           case R.id.btn_vel_adjust:

@@ -64,18 +64,17 @@ public class OperationFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //GC20190705 操作栏fragment初始化——无波形选择按钮
+        //按照TDR方式初始化    //GC20220819
+        btnZoomIn.setEnabled(false);
+        btnZoomIn.setImageResource(R.drawable.bg_fangda);
+        btnZoomOut.setEnabled(false);
+        btnZoomOut.setImageResource(R.drawable.bg_suoxiao);
+        btnRes.setEnabled(false);
+        btnRes.setImageResource(R.drawable.bg_huanyuan);
         btnWavePrevious.setVisibility(View.GONE);
         btnWaveNext.setVisibility(View.GONE);
         btnZero.setVisibility(View.GONE);
-
-        //初始化按键无效显示效果
-        btnZoomOut.setEnabled(false);
-        btnZoomIn.setEnabled(false);   //jk20210125
-        btnRes.setEnabled(false);
-        btnWaveNext.setEnabled(false);
-        btnWavePrevious.setEnabled(false);
-
+        btnLead1.setVisibility(View.GONE);  //GC20220914    “延长线”按钮不显示
     }
 
     @Override
@@ -90,47 +89,20 @@ public class OperationFragment extends Fragment {
             case R.id.btn_zoom_in:
                 //GC20190711
                 int density = ((ModeActivity) Objects.requireNonNull(getActivity())).getDensity();
-
                 if (density > 1) {
                     density = density / 2;
-                    ((ModeActivity) getActivity()).setDensity(density);
-                    btnZoomOut.setEnabled(true);
-                    btnRes.setEnabled(true);
-                    btnZoomOut.setImageResource(R.drawable.bg_zoom2_selector); //jk20210130cs
-                    btnRes.setImageResource(R.drawable.bg_res_selector);  //jk20210130cs
-                }
-                //无法放大
-                if (density == 1) {
-                    btnZoomIn.setEnabled(false);
-                    btnZoomIn.setImageResource(R.drawable.bg_fangda); //jk20210130cs
+                    ((ModeActivity) getActivity()).setDensity(density); //GC20220822
                 }
                 break;
             case R.id.btn_zoom_out:
                 density = ((ModeActivity) Objects.requireNonNull(getActivity())).getDensity();
                 if (density < Constant.DensityMax) {
                     density = density * 2;
-                    ((ModeActivity) getActivity()).setDensity(density);
-                    btnZoomIn.setEnabled(true);
-                    btnRes.setEnabled(true);
-                    btnZoomIn.setImageResource(R.drawable.bg_zoom1_selector); //jk20210130cs
-                    btnRes.setImageResource(R.drawable.bg_res_selector);  //jk20210130cs
-                }
-                //缩小到最初显示，只显示放大按钮
-                if (density == Constant.DensityMax) {
-                    btnZoomOut.setEnabled(false);
-                    btnRes.setEnabled(false);
-                    btnZoomOut.setImageResource(R.drawable.bg_suoxiao);//jk20210130cs
-                    btnRes.setImageResource(R.drawable.bg_huanyuan);//jk20210130cs
+                    ((ModeActivity) getActivity()).setDensity(density); //GC20220822
                 }
                 break;
             case R.id.btn_res:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).setDensity(Constant.DensityMax);
-                btnZoomIn.setEnabled(true);
-                btnZoomOut.setEnabled(false);
-                btnRes.setEnabled(false);
-                btnZoomIn.setImageResource(R.drawable.bg_zoom1_selector); //jk20210130cs
-                btnZoomOut.setImageResource(R.drawable.bg_suoxiao);//jk20210130cs
-                btnRes.setImageResource(R.drawable.bg_huanyuan);//jk20210130cs
+                ((ModeActivity) Objects.requireNonNull(getActivity())).setDensity(Constant.DensityMax); //GC20220822
                 break;
             case R.id.btn_memory:
                 ((ModeActivity) Objects.requireNonNull(getActivity())).clickMemory();
@@ -143,25 +115,15 @@ public class OperationFragment extends Fragment {
                 ((ModeActivity) getActivity()).selectSim = ((ModeActivity) Objects.requireNonNull(getActivity())).getSelectSim();
                 if (((ModeActivity) getActivity()).selectSim > 1) {
                     ((ModeActivity) getActivity()).selectSim--;
-                    ((ModeActivity) getActivity()).setSelectSim(((ModeActivity) getActivity()).selectSim);
-                    btnWaveNext.setEnabled(true);
                 }
-                //到第1组波形，下翻按钮点击无效
-                if (((ModeActivity) getActivity()).selectSim == 1) {
-                    btnWavePrevious.setEnabled(false);
-                }
+                ((ModeActivity) getActivity()).setSelectSim(((ModeActivity) getActivity()).selectSim);  //GC20220820
                 break;
             case R.id.waveNext:
                 ((ModeActivity) getActivity()).selectSim = ((ModeActivity) Objects.requireNonNull(getActivity())).getSelectSim();
                 if (((ModeActivity) getActivity()).selectSim < 8) {
                     ((ModeActivity) getActivity()).selectSim++;
-                    ((ModeActivity) getActivity()).setSelectSim(((ModeActivity) getActivity()).selectSim);
-                    btnWavePrevious.setEnabled(true);
                 }
-                //到第8组波形，上翻按钮点击无效
-                if (((ModeActivity) getActivity()).selectSim == 8) {
-                    btnWaveNext.setEnabled(false);
-                }
+                ((ModeActivity) getActivity()).setSelectSim(((ModeActivity) getActivity()).selectSim);  //GC20220820
                 break;
             case R.id.bt_pulse_width:
                 ((ModeActivity) getActivity()).showPulseWidth();

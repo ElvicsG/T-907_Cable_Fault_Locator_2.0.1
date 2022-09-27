@@ -55,15 +55,8 @@ public class RangeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        btn250m.setEnabled(true);
+        //按照TDR方式初始化    //GC20220819
         btn500m.setEnabled(false);
-        btn1km.setEnabled(true);
-        btn2km.setEnabled(true);
-        btn4km.setEnabled(true);
-        btn8km.setEnabled(true);
-        btn16km.setEnabled(true);
-        btn32km.setEnabled(true);
-        btn64km.setEnabled(true);
         btn500m.setImageResource(R.drawable.bg_500m1);
     }
 
@@ -78,50 +71,41 @@ public class RangeFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_250m:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;     //范围切换后状态记录 //GC20220801
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x99;
-                //切换范围后直接发送测试命令    //GC20220706
+                //切换范围后直接发送测试命令
                 ((ModeActivity) getActivity()).modeRangeTest();
                 break;
             case R.id.btn_500m:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x11;
-                ((ModeActivity) getActivity()).modeRangeTest();  //GC20220706
+                ((ModeActivity) getActivity()).modeRangeTest();
                 break;
             case R.id.btn_1km:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x22;
-                ((ModeActivity) getActivity()).modeRangeTest();  //GC20220706
+                ((ModeActivity) getActivity()).modeRangeTest();
                 break;
             case R.id.btn_2km:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x33;
-                ((ModeActivity)getActivity()).modeRangeTest();  //GC20220706
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             case R.id.btn_4km:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x44;
-                ((ModeActivity)getActivity()).modeRangeTest();  //GC20220706
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             case R.id.btn_8km:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x55;
-                ((ModeActivity)getActivity()).modeRangeTest();  //GC20220706
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             case R.id.btn_16km:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x66;
-                ((ModeActivity)getActivity()).modeRangeTest();  //GC20220706
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             case R.id.btn_32km:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x77;
-                ((ModeActivity)getActivity()).modeRangeTest();  //GC20220706
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             case R.id.btn_64km:
-                ((ModeActivity) Objects.requireNonNull(getActivity())).rangeChanged = true;
                 ((ModeActivity) Objects.requireNonNull(getActivity())).range = 0x88;
-                ((ModeActivity)getActivity()).modeRangeTest();  //GC20220706
+                ((ModeActivity)getActivity()).modeRangeTest();
                 break;
             default:
                 break;

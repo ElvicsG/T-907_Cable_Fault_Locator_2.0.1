@@ -52,7 +52,7 @@ public class PermissionUtil {
         builder.setNegativeButton("算了", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                activity.finish();//没有权限，关闭当前页面  //jk20210129cs
+                activity.finish();//没有权限，关闭当前页面
             }
         });
         builder.setPositiveButton("去设置", new DialogInterface.OnClickListener() {

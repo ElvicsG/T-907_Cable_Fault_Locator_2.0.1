@@ -46,12 +46,9 @@ public class ModeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //按照TDR方式初始化    //GC20220819
         btnTdr.setEnabled(false);
-        btnIcm.setEnabled(true);
-        btnSim.setEnabled(true);
-        btnDecay.setEnabled(true);
-        btnIcmc.setEnabled(true);
-        btnTdr.setImageResource(R.drawable.bg_tdr_mode_pressed);  //jk20210129
+        btnTdr.setImageResource(R.drawable.bg_tdr_mode_pressed);
     }
 
     @Override
@@ -64,7 +61,6 @@ public class ModeFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_tdr:
-                //方式fragment显示调整  // GC20220727
                ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x11);
                ((ModeActivity)getActivity()).modeRangeTest();
                 break;

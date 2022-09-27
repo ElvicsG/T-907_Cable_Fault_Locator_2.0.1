@@ -163,7 +163,7 @@ public class MainActivity extends BaseActivity {
                     //网络连接，更换网络图标
                     ConnectService.isConnected = true;
                     ivWifiStatus.setImageResource(R.drawable.ic_wifi_connected);
-                    //发送获取电量命令  //EN20200324    //G??   有必要么——每次重新进模式界面还会调用这里，所以需要避免重复发送电量命令
+                    //发送获取电量命令  //EN20200324    //每次重新进模式界面还会调用这里，所以需要避免重复发送电量命令
                     if (ConnectService.canAskPower) {
                         handler.postDelayed(() -> {
                             ConnectService.canAskPower = false;
@@ -206,7 +206,6 @@ public class MainActivity extends BaseActivity {
         llRemote.setVisibility(View.GONE);
         //启动主服务
         startMainService();
-//        ConnectService.needConnect = true;
         initUnit();
         initParamInfo();
         //初始化广播接收器
@@ -727,7 +726,6 @@ public class MainActivity extends BaseActivity {
             public void onDismiss(DialogInterface dialog) {
                 if (!languageChangeDialog.getCloseStatus()) {
                     //切换语言不需要重连 //G?
-//                    ConnectService.needConnect = false;
                     Intent intent = new Intent(MainActivity.this, ConnectService.class);
                     stopService(intent);
                     Intent intentSplash = new Intent(MainActivity.this, MainActivity.class);
@@ -910,7 +908,6 @@ public class MainActivity extends BaseActivity {
         if (receiver != null) {
             unregisterReceiver(receiver);
         }
-//        ConnectService.needConnect = false;
         Intent intent = new Intent(MainActivity.this, ConnectService.class);
         stopService(intent);
         super.onDestroy();

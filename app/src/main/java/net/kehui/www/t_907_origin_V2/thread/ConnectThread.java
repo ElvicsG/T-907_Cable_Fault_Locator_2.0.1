@@ -68,7 +68,6 @@ public class ConnectThread extends Thread {
             int processedByte = 0;
             int mimProcessedDataLen = 0;
             boolean needProcessSimData = false;
-            Log.e("【DEBUG】", "初始化" + needAddData);
 
             while (true) {
                 //接收设备数据
@@ -124,7 +123,6 @@ public class ConnectThread extends Thread {
                                     Arrays.fill(tempBuffer, (byte) 0);
                                     System.arraycopy(convertBuffer, 0, tempBuffer, 0, remainByte);
                                     Log.e("【新数据处理】", "继续，有待处理消息，继续下次循环，长度：" + remainByte);
-//                                    continue;     //GC?
                                 }
                             }
                             //数据长度：0x04——电量命令，截9个
@@ -150,7 +148,6 @@ public class ConnectThread extends Thread {
                                     Arrays.fill(tempBuffer, (byte) 0);
                                     System.arraycopy(convertBuffer, 0, tempBuffer, 0, remainByte);
                                     Log.e("【新数据处理】", "继续，有待处理消息，继续下次循环，长度：" + remainByte);
-//                                    continue;     //GC?
                                 }
                             }
                             //非SIM波形数据头，不需要补齐状态——截需要的长度，不够要补齐数据
@@ -159,7 +156,7 @@ public class ConnectThread extends Thread {
                                     //非处理中数据，初始化为当前接收的数据长度，也就是直接是波形数据的。
                                     remainByte = bytes;
                                 }
-                                if (remainByte == waveLen) {
+                                if (remainByte >= waveLen) {    //GT20220801    ==
                                     //长度和需要的波形长度一致
                                     Log.e("【新数据处理】", "一次性长度一致，不用补齐数据");
                                     byte[] waveBytes = new byte[remainByte];
@@ -191,7 +188,6 @@ public class ConnectThread extends Thread {
                                     //待处理字节数大于每段的长度，需要找出一段SIM数据，进行处理。
                                     needProcessSimData = true;
                                     Log.e("【新数据处理】", "继续，SIM有待处理数据继续循环，剩余：" + remainByte + "/SIM每段长度：" + waveSimLen);
-//                                    continue;     //GC?
                                 } else {
                                     needAddData = true;
                                     Log.e("【新数据处理】", "中断，SIM需要补全数据跳出循环，剩余：" + remainByte + "/SIM每段长度：" + waveSimLen);
@@ -237,8 +233,6 @@ public class ConnectThread extends Thread {
                                         remainByte = remainByte - waveLen;
                                         processedByte = 0;
                                         needAddData = false;Log.e("【新数据处理】", "继续，数据超长，继续，剩余：" + remainByte + "/需要：" + waveLen);
-//                                        continue;     //GC?
-
                                     } else {
                                         int i = 0;Log.e("【新数据处理】", "中断，长度不够，继续补全，跳出，剩余：" + remainByte + "/需要：" + waveLen);
                                         break;
@@ -290,7 +284,6 @@ public class ConnectThread extends Thread {
                                             System.arraycopy(convertBytes, 0, tempBuffer, 0, remainByte);
                                             needProcessSimData = true;
                                             Log.e("【新数据处理】", "继续解析，剩余：" + remainByte + "/需要：" + waveSimLen + "/已处理：" + mimProcessedDataLen);
-//                                            continue;     //GC?
                                         }
 
                                     } else {
@@ -304,7 +297,7 @@ public class ConnectThread extends Thread {
                                 else if ((( tempBuffer[3] & 0xff) == WAVE_SIM || (tempBuffer[3] & 0xff) == 0x88 || (tempBuffer[3] & 0xff) == 0x99
                                         || (tempBuffer[3] & 0xff) == 0xAA || (tempBuffer[3] & 0xff) == 0xBB || (tempBuffer[3] & 0xff) == 0xCC
                                         || (tempBuffer[3] & 0xff) == 0xDD || (tempBuffer[3] & 0xff) == 0xEE || (tempBuffer[3] & 0xff) == 0xFF)
-                                        && needAddData) {  //GC? 有必要有？
+                                        && needAddData) {
 
                                     System.arraycopy(buffer, 0, tempBuffer, remainByte, bytes);
                                     remainByte += bytes;
@@ -313,7 +306,6 @@ public class ConnectThread extends Thread {
                                         needProcessSimData = true;
                                         needAddData = false;
                                         Log.e("【新数据处理】", "继续，SIM有待处理数据，继续，剩余：" + remainByte + "/需要：" + waveSimLen + "/已处理：" + mimProcessedDataLen);
-//                                        continue;     //GC?
 
                                     } else {
                                         needAddData = true;

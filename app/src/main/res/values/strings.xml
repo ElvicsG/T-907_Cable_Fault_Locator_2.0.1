@@ -182,7 +182,7 @@
     <string name="chineseSpace">&#12288;</string>
     <string name="testAgain">请再次测试!</string>
     <string name="company_name">山东科汇电力自动化股份有限公司</string>
-    <string name="v_name">V2.0.1</string>
+    <string name="v_name">V2.0.4</string>
     <string name="current_device">当前设备编号：</string>
     <string name="current_device_set_success">当前设备编号设置成功，请重启APP！</string>
     <string name="current_device_set_none">输入为空，未保存！</string>

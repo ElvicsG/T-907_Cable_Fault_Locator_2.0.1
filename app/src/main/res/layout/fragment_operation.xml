@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:src="@drawable/bg_pulshw_selector"
-            android:visibility="gone" /><!--//GC20220801-->
+            android:visibility="gone" /><!--TDR波宽度屏蔽掉-->
 
         <ImageView
             android:id="@+id/wavePrevious"
@@ -90,8 +90,7 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:src="@drawable/bg_lead_selector"
-            android:visibility="gone" /><!--//GC20220801-->
+            android:src="@drawable/bg_lead_selector" />
 
         <ImageView
             android:id="@+id/btn_file1"

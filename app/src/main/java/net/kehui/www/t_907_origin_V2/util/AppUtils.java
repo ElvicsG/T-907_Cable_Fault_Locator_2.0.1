@@ -10,7 +10,7 @@ import net.kehui.www.t_907_origin_V2.application.MyApplication;
 public class AppUtils {
 
     private AppUtils() {
-        throw new UnsupportedOperationException("u can't instantiate me...");
+        throw new UnsupportedOperationException("tdrTurning can't instantiate me...");
     }
 
     /**

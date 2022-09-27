@@ -22,15 +22,20 @@ import androidx.room.Room;
 
 public class BaseActivity extends AppCompatActivity {
 
-    public boolean rangeChanged;    //GC20220801
     /**
      * sparkView图形绘制部分
      */
     public MyChartAdapterBase myChartAdapterMainWave;
 
-    public boolean gainButtonChanged;
-    public boolean balanceButtonChanged;
-    public boolean waveButtonChanged = true;
+    public boolean isCom;
+    public boolean isMemory;
+    public boolean isDatabase;
+    public boolean alreadyDisplayWave;  //GC20220822
+
+    /**
+     * 设备编号全局变量 //GC20220520
+     */
+    public String currentDevice;
 
     /**
      * 波形参数
@@ -39,6 +44,7 @@ public class BaseActivity extends AppCompatActivity {
     public int modeBefore;
     public int range;
     public int rangeBefore;
+    public int rangeMemory; //GC20220709
     public int rangeState;
     public int gain;
     public double velocity;
@@ -47,16 +53,7 @@ public class BaseActivity extends AppCompatActivity {
     public int balance;
     public int delay;
     public int inductor;
-    //public int returnnumber;
-    /**
-     * 波宽度全局变量
-     */
     public int pulseWidth;
-    /**
-     * 设备编号全局变量 //GC20220520
-     */
-    public String currentDevice;
-
     /**
      * 0xF7,0xF7,0xED,0xBF,0xA5,0x4D,0x00,0x00
      *  247, 247, 237, 191, 165,  77,   0,   0
@@ -64,37 +61,7 @@ public class BaseActivity extends AppCompatActivity {
      */
     public int pulseWidthSim;
     public int selectSim;
-    public boolean isCom;
-    public boolean isMemory;
-    public boolean isDatabase;
-    public int[] pulseRemove = {75, 75, 75, 169, 600, 844, 1669, 2391, 2391};
-    public int[] pulsetdrRemove11 = {22,22,36,36,76,92,138,288,576}; //做判断使用，是否在零点附近
-    public int[] pulsetdrRemove1 = {4,4,8,16,32,64,128,256,512}; //jk20210309 判断向上向下
-    public int[] pulsetdrRemove = {10,10,15,18,32,64,128,256,512};//判断向上向下后的 已经知道波形向上 去除点数，
-    public int[] pulselongtdrRemove = {45,45,66,74,86,92,138,288,576};  //jk202210303 低压脉冲去除波头  切换范围使用
-    public int[] tdrPoint = {4,5,6,8,10,25,25,25,25};  //自动测距在对长距离因取点问题与实际距离不符的现象时的程序去除点数
-    public int[] tdrPointuse = {4,4,8,16,32,64,128,256,512}; //脉宽里的点归零
-    public int[] secondtdr = {28,28,36,36,76,92,138,288,576}; //jk20220411
 
-    public int g;  //低压脉冲极值最大或最小点
-    public int u;  //低压脉冲曲线拟合脉冲起始点
-    public int autoLocation; //低压脉冲故障点位置
-    public int autoLocation1; //过渡使用
-
-    public int step = 8;
-    public int count = 6;
-    public int balanceState;
-    public boolean isLongClick;
-    public boolean longTestInit;
-    public boolean balanceIsReady;
-    public boolean rangeIsReady;
-    public int rangeAdjust = 0;
-    public int secondMAx;
-    public int secondMIn;
-    public int secondMAxPos;
-    public int secondMInPos;
-    public int Median_value = 128; //jk20210519  基准数
-    public int tdr_d = 0;  //jk20220411
     /**
      * 波形原始数据数组
      */
@@ -110,21 +77,6 @@ public class BaseActivity extends AppCompatActivity {
     public int[] simArray7;
     public int[] simArray8;
     public int[] simArray;
-    /**
-     * SIM筛选  //GC20200529
-     */
-    public int[] overlapNum = new int[8];
-    public int[] simSum = new int[9];
-    public double[] simArray0Filter = new double[65560];
-    public double[] simArray1Filter = new double[65560];
-    public double[] simArray2Filter = new double[65560];
-    public double[] simArray3Filter = new double[65560];
-    public double[] simArray4Filter = new double[65560];
-    public double[] simArray5Filter = new double[65560];
-    public double[] simArray6Filter = new double[65560];
-    public double[] simArray7Filter = new double[65560];
-    public double[] simArray8Filter = new double[65560];
-    public boolean receiveSimOver;
 
     /**
      * 波形绘制数据数组（抽点510个）
@@ -171,21 +123,51 @@ public class BaseActivity extends AppCompatActivity {
     public int moverMoveValue = 0;
 
     /**
-     * ICM自动测距参数
+     * TDR、SIM自动测距相关参数
      */
+    public int[] pulseRemovePoint = {4, 4, 8, 16, 32, 64, 128, 256, 512};    //TDR去脉宽点数   //jk20220711tdr
+    public int[] pulseRemoveTdrWave = {52, 52, 52, 92, 276, 380, 732, 1040, 1040};      //TDR去波头    //jk20220711tdr
+    public int[] pulseRemoveSimWave = {64, 64, 64, 144, 512, 720, 1424, 2040, 2040};    //SIM去波头    //jk20220711Sim
+    public int tdrExtreme;      //TDR极值
+    public int tdrTurning;      //TDR转折处
+    public int tdrAutoLocation; //TDR自动定位位置
+    public int step = 8;
+    public int count = 6;
     public int gainState;
-    public int breakdownPosition;
-    public int breakBk;
-    public int faultResult;
+    public int balanceState;
+    public boolean isLongClick;
+    public boolean longTestInit;
+    public boolean balanceIsReady;
+    public boolean rangeIsReady;
+    public int rangeAdjust = 0;
+    public int medianValue = 128;  //基准数
+    /**
+     * SIM自动筛选  //GC20200529
+     */
+    public int[] overlapNum = new int[8];
+    public int[] simSum = new int[9];
+    public double[] simArray0Filter = new double[65560];
+    public double[] simArray1Filter = new double[65560];
+    public double[] simArray2Filter = new double[65560];
+    public double[] simArray3Filter = new double[65560];
+    public double[] simArray4Filter = new double[65560];
+    public double[] simArray5Filter = new double[65560];
+    public double[] simArray6Filter = new double[65560];
+    public double[] simArray7Filter = new double[65560];
+    public double[] simArray8Filter = new double[65560];
+    public double[] simArrayF = new double[65560];  //jk20220711Sim
+    public boolean receiveSimOver;
+    public double[] tdrFilter = new double[65560]; //jk20220711tdr
+    /**
+     * ICM自动测距相关参数
+     */
+    public int breakdownPosition;   //ICM故障点击穿位置（向下转折处）
+    public int faultResult;         //ICM自动计算得到的差值（向下转折到向上转折之间点数）
     public double[] waveArrayFilter = new double[65560];
     public double[] waveArrayIntegral = new double[65560];
     public double[] s1 = new double[65560];
     public double[] s2 = new double[65560];
-
-    /**
-     * ICM自动测距参数    //GC20191231
-     */
-    public boolean breakDown;
+    public boolean breakDown;   //是否击穿  //GC20191231
 
     /**
      * 测试缆信息添加    //GC20200103
@@ -309,7 +291,6 @@ public class BaseActivity extends AppCompatActivity {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-        //G??   让程序变卡？
         initParameter();
     }
 
@@ -319,6 +300,7 @@ public class BaseActivity extends AppCompatActivity {
     private void initParameter() {
         mode = TDR;
         range = RANGE_500;
+        rangeMemory = RANGE_500;    //GC20220709
         rangeState = 1;
         gain = 13;
         velocity = 172;
@@ -326,8 +308,8 @@ public class BaseActivity extends AppCompatActivity {
         densityMax = 1;
         balance = 5;
         inductor = 3;
-        //二次脉冲多组数据选择
-        selectSim = 1;
+        //初始化SIM序号为0，控制波形上翻、下翻按钮状态  //GC20220820
+        selectSim = 0;
 
         dataMax = 540;
         dataLength = 510;
@@ -357,10 +339,7 @@ public class BaseActivity extends AppCompatActivity {
         gainState = 0;
         //平衡状态
         balanceState = 0;
-        //故障击穿时刻对应的那一点
         breakdownPosition = 0;
-        //击穿点
-        breakBk = 0;
         //数据库相关 //20200520 //G?
         BaseAppData db = Room.databaseBuilder(getApplicationContext(), BaseAppData.class, "database-wave").allowMainThreadQueries().build();
         dao = db.dataDao();
@@ -383,15 +362,12 @@ public class BaseActivity extends AppCompatActivity {
 /*————enNuo————*/
 //EN20200324    发送命令和获取电量修改，增加条件限制，避免极端条件下会多次尝试连接
 //20200407  电量获取修改
-//20200416  未连接不执行
-//20200520  数据库相关
 //20200521  界面相关
 //20200522  单位转化逻辑修正
 //20200523  其它优化
 
 /*——————————其它——————————*/
-//GC?  //G??
-//GN界面优化可能用到
+//GC?
 //GT 调试
 //GT20200619    每个点高度显示
 /*——————————其它——————————*/
@@ -416,11 +392,6 @@ public class BaseActivity extends AppCompatActivity {
 //GC20200601    筛选显示优化
 //GC20200606    ICM滤波、增益直流分量参数修改
 //GC20200609    SIM自动筛选判断条件增加
-
-//A20190821  a待定
-//A20200527  增益大小判断微调
-//A20200601  断线故障处理优化
-//A20200606  重合系数微调
 /*——————————自动测距调整——————————*/
 
 //GC20200313    增益显示转为百分比
@@ -430,11 +401,9 @@ public class BaseActivity extends AppCompatActivity {
 //GC20200330    SIM标记光标添加
 //GC20200331    不同范围发射不同脉宽功能添加
 //GC20200424    不同模式下初始化发射的不同命令
-//GC20200428    连接线程的变量初始化修改
 //GC20200525    界面布局优化
 //GC20200527    SIM方式下脉宽命令发送
 //GC20200528    波形滑动区域控制
-//GC20200604    按钮状态用户交互优化      //后续优化保留  //GC20200604
 //GC20200611    缩放后移动滑块时画光标bug修正
 //GC20200612    SIM标记光标（可以自定义）
 //GC20200613    延时修改、按钮状态
@@ -449,11 +418,11 @@ public class BaseActivity extends AppCompatActivity {
 //jk20200804    二次脉冲光标定位
 //jk20200904    更改起始判断
 //jk20201022    低压脉冲自动定位以133为中心点
-//jk20201023    去掉数据库打开波形自动定位
 //jk20201130    多次脉冲增益判断数值更改
 //jk20201130    多次脉冲延时间隔增加
 //jk20201130    脉冲电流延长线不选就不计算
 //jk20210202    保存延长线参数
+//jk20210206    解决电源按键问题
 //jk20210420    脉冲电流容错处理  添加标志false_flag
 //jk20210527    求出曲线拟合后求解纵坐标值为0时横坐标的结果  一元三次方程求解
 
@@ -461,8 +430,6 @@ public class BaseActivity extends AppCompatActivity {
 
 /*——————————2.0.1版本整理——————————*/
 //jk20210123    直接进入测试方式界面1
-//jk20210130    切换方式重新绘制波形
-
 //GC20211214    服务中toast只可以跟随系统语言
 /**
  * //                       _ooOoo_
@@ -492,9 +459,6 @@ public class BaseActivity extends AppCompatActivity {
 //20200520  数据库相关
 //GC20210125    波形数据以文件形式保存
 
-//GT屏蔽算法
-//jk20220411    最新算法修改
-
 //GC20220517    添加设备编号输入弹窗
 //GC20220520    实现设备编号本地保存读取
 //GC20220621    如果是安卓10.0，需要后台获取连接的wifi名称则添加进程获取位置信息权限
@@ -503,12 +467,32 @@ public class BaseActivity extends AppCompatActivity {
 //GC20220622    低压脉冲方式下调整增益发送测试命令功能代码优化
 //去掉activity_mode无用布局文件
 //GC20220701    本地存储范围记录
-//GC20220706    切换范围相关代码简化DEBUG
-//GC20220709    范围切换按钮状态变化代码简化DEBUG
-//GC20220727    fragment显示调整
-//GC20220801    操作fragment波宽度、延长线离线状态初始化 / 切换范围后“取消测试”波形重绘 / TDR增益调整后不发测试命令
-//GC20220808    打开数据库BUG修复/fragment对话框BUG修复
-//GC20220810    弹窗按钮控制
+//GC20220709    范围切换按钮状态变化代码简化，SIM范围要跟随TDR变化   //GC20220731 TDR自动测试范围记录
+//GC20220801    TDR增益调整后不发测试命令
+//GC20220808    打开数据库BUG修复
+//GC20220810    弹窗外部按钮点击控制
 
-//GC20220709    SIM范围要跟随TDR变化   //GC20220731 TDR自动测试范围记录
+/*——————————2.0.4版本整理——————————*/
+//GC20220812    ICM增益调整后切换至TDR增益未响应 / 延长线界面修改 / SIM波形序号显示后前面没有空格
+//GC20220814    针对开路测试情况，SIM虚光标定位到零点
+//jk20220711Sim         SIM自动测距算法修改，多次脉冲找起始点修改，利用两条波形滤波后的差值进行精确查找  考虑故障点近端的情况，需要往前找
+//jk20220711tdrRange    低压脉冲范围切换规整，先调增益再切范围
+//jk20220711tdr         低压脉冲波形判断条件更改
+//GC20220819    方式、范围、调节、操作fragment显示状态设置、按照TDR方式初始化
+//GC20220820    操作栏SIM波形上翻、下翻按钮状态控制
+//GC20220821    数据库多个方式可打开设置
+//GC20220822    放大、缩小、还原按钮状态控制；横向滑块控制
+//GC20220824    调节栏增益、平衡、延时、波速按钮状态控制
+//GC20220825    离线状态控制
+//GC20220914    ICM方式下的“延长线”按钮屏蔽/版本号添加
+
+
+
+
+//GT20220801    数据接收改动
+//GT屏蔽算法
+//以下未改
 //GC20220806    点击SIM范围自动寻找
+ /*——————————算法调整——————————*/
+//jk20220922    TDR算法开路波形容错调整
+/*——————————算法调整——————————*/

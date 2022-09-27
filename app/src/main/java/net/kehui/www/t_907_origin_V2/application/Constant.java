@@ -70,13 +70,13 @@ public class Constant {
     public static boolean isTesting = false;
 
     /**
-     * 接收的非SIM波形数据长度、单条SIM波形数据长度    //GC20200428    //GC? 与恩诺不同
+     * 接收的非SIM波形数据长度、单条SIM波形数据长度
      */
     public static int waveLen = 549;
     public static int waveSimLen = 549;
 
     /**
-     * 是否需要补齐波形数据    //GC20200428   //GC? 与恩诺不同
+     * 是否需要补齐波形数据
      */
     public static boolean needAddData = false;
 
