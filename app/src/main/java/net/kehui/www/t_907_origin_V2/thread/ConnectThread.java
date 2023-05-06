@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
+import static net.kehui.www.t_907_origin_V2.ConnectService.needReconnect;
 import static net.kehui.www.t_907_origin_V2.application.Constant.needAddData;
 import static net.kehui.www.t_907_origin_V2.application.Constant.waveLen;
 import static net.kehui.www.t_907_origin_V2.application.Constant.waveSimLen;
@@ -97,6 +98,12 @@ public class ConnectThread extends Thread {
                         if ((tempBuffer[0] & 0xff) != 235 && !needAddData && !needProcessSimData) {
                             //判断不是数据头：0xeb（235）；不需要补齐数据；不是处理SIM数据——认为无效
                             Log.e("【新数据处理】", "无效头数据，跳出");
+                            /*Log.e("【新数据处理】", "无效头数据，跳出" + needAddData + " " + needProcessSimData + " "
+                                    + (tempBuffer[0] & 0xff) + " " + (tempBuffer[1] & 0xff) + " "  + (tempBuffer[2] & 0xff) + " "  + (tempBuffer[3] & 0xff) + " "
+                                    + (tempBuffer[4] & 0xff) + " " + (tempBuffer[5] & 0xff) + " "  + (tempBuffer[6] & 0xff) + " "  + (tempBuffer[7] & 0xff));   //GC20221203
+                            //波形数据混入其它信息后抛掉多余部分   //GC20221203
+                            remainByte = 0;
+                            Arrays.fill(tempBuffer, (byte) 0);*/
                             break;
                         } else {
                             //增加判断数据头0xaa（170）
@@ -339,10 +346,12 @@ public class ConnectThread extends Thread {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            //EN20200324
-            handler.sendEmptyMessage(ConnectService.DEVICE_DISCONNECTED);
-            handler.sendEmptyMessage(ConnectService.DEVICE_DO_CONNECT);
-            Log.e("【SOCKET连接】", "socket异常，重连。");
+            if (needReconnect) {    //先判断，避免无可用网络和socket异常重复执行建立连接的操作   //GC20230112
+                needReconnect = false;
+                handler.sendEmptyMessage(ConnectService.DEVICE_DISCONNECTED);
+                handler.sendEmptyMessage(ConnectService.DEVICE_DO_CONNECT);
+                Log.e("【SOCKET连接】", e.getMessage() + "socket异常，发送广播给modeActivity设置界面状态，然后尝试去建立连接。");    //GT20230506
+            }
             e.printStackTrace();
         }
     }

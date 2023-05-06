@@ -1,5 +1,6 @@
 package net.kehui.www.t_907_origin_V2.view;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -237,8 +238,6 @@ public class ModeActivity extends BaseActivity {
     private int fenzi2;
     private int currentActionDownX = 0;
 
-    //20200407
-    private boolean allowSetRange = true;
     //20200523
     private boolean canClickCancelButton;
     //设置是否需要进入页面接收数据，此处是为了适配从主页面展示波形时重复接收数据
@@ -310,6 +309,7 @@ public class ModeActivity extends BaseActivity {
                 Constant.isTesting = false;
                 ConnectService.canAskPower = true;
                 allowSetRange = true;
+                allowSetMode = true;    //波形测试结束后可以点击   //GC20221019
                 tvTest.setEnabled(true);
                 Log.e("【请求电量时机控制】", "波形绘制完毕，允许请求电量。");
                 break;
@@ -320,6 +320,7 @@ public class ModeActivity extends BaseActivity {
                     organizeWaveData();
                     displayWave();
                 } catch (Exception l_ex) {
+                    Log.e("【测试】", "打开数据库");
                 }
                 break;
             default:
@@ -343,7 +344,6 @@ public class ModeActivity extends BaseActivity {
                 case BROADCAST_ACTION_DEVICE_CONNECTED:
                     //服务中toast只可以跟随系统语言     //GC20211214
                     Toast.makeText(ModeActivity.this, R.string.connect_success, Toast.LENGTH_SHORT).show();
-                    Log.e("ModeActivity", "连接成功");
                     //网络连接，更换网络图标
                     ConnectService.isConnected = true;
                     ivWifiStatus.setImageResource(R.drawable.ic_wifi_connected);
@@ -353,6 +353,8 @@ public class ModeActivity extends BaseActivity {
                     }
                     Constant.isTesting = false;
                     allowSetRange = true;
+                    allowSetMode = true;        //重新连接成功后可以点击   //GC20221019
+                    allowSetOperation = true;   //重新连接成功后可以点击   //GC20221019
                     alreadyDisplayWave = false;
                     //如果网络连接后于读取本地波形数据，则再网络连接时设置读出的几个参数。
                     if (!isReceiveData || isDatabase) {
@@ -625,6 +627,7 @@ public class ModeActivity extends BaseActivity {
             Log.e("DIA", "正在接受数据隐藏" + " 波形绘制完成");
         }
         alreadyDisplayWave = true;
+        allowSetOperation = true;    //波形绘制完成后可以点击   //GC20221019
         setZoomInOutRes();  //GC20220822
     }
 
@@ -708,11 +711,11 @@ public class ModeActivity extends BaseActivity {
             if (hasSavedPulseWidth) {
                 //保存过脉宽才进行读取和初始化操作   //GC20200331
                 pulseWidth = paramInfo.getPulseWidth();
-                etPulseWidth.setText(String.valueOf(pulseWidth));
+//                etPulseWidth.setText(String.valueOf(pulseWidth));
             }
         }
 
-        etPulseWidth.addTextChangedListener(new TextWatcher() {
+        /*etPulseWidth.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -735,7 +738,7 @@ public class ModeActivity extends BaseActivity {
             public void afterTextChanged(Editable s) {
 
             }
-        });
+        });*/
 
     }
 
@@ -760,7 +763,7 @@ public class ModeActivity extends BaseActivity {
                 //初始化脉宽数值（未保存过脉宽） //GC20200331
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 40;
-                    etPulseWidth.setText(String.valueOf(40));
+//                    etPulseWidth.setText(String.valueOf(40));
                 }
                 //初始化SIM的脉宽值    //GC20200527
                 pulseWidthSim = 320;
@@ -775,7 +778,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 40;
-                    etPulseWidth.setText(String.valueOf(40));
+//                    etPulseWidth.setText(String.valueOf(40));
                 }
                 pulseWidthSim = 320;
             } else if (localRange > 250 && localRange <= 500) {
@@ -789,7 +792,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 40;
-                    etPulseWidth.setText(String.valueOf(40));
+//                    etPulseWidth.setText(String.valueOf(40));
                 }
                 pulseWidthSim = 320;
             } else if (localRange > 500 && localRange <= 1000) {
@@ -803,7 +806,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 80;
-                    etPulseWidth.setText(String.valueOf(80));
+//                    etPulseWidth.setText(String.valueOf(80));
                 }
                 pulseWidthSim = 320;
             } else if (localRange > 1000 && localRange <= 2000) {
@@ -817,7 +820,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 160;
-                    etPulseWidth.setText(String.valueOf(160));
+//                    etPulseWidth.setText(String.valueOf(160));
                 }
                 pulseWidthSim = 720;
             } else if (localRange > 2000 && localRange <= 4000) {
@@ -831,7 +834,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 320;
-                    etPulseWidth.setText(String.valueOf(320));
+//                    etPulseWidth.setText(String.valueOf(320));
                 }
                 pulseWidthSim = 2560;
             } else if (localRange > 4000 && localRange <= 8000) {
@@ -845,7 +848,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 640;
-                    etPulseWidth.setText(String.valueOf(640));
+//                    etPulseWidth.setText(String.valueOf(640));
                 }
                 pulseWidthSim = 3600;
             } else if (localRange > 8000 && localRange <= 16000) {
@@ -859,7 +862,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 1280;
-                    etPulseWidth.setText(String.valueOf(1280));
+//                    etPulseWidth.setText(String.valueOf(1280));
                 }
                 pulseWidthSim = 7120;
             } else if (localRange > 16000 && localRange <= 32000) {
@@ -873,7 +876,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 2560;
-                    etPulseWidth.setText(String.valueOf(2560));
+//                    etPulseWidth.setText(String.valueOf(2560));
                 }
                 pulseWidthSim = 10200;
             } else if (localRange > 32000) {
@@ -887,7 +890,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth) {
                     pulseWidth = 5120;
-                    etPulseWidth.setText(String.valueOf(5120));
+//                    etPulseWidth.setText(String.valueOf(5120));
                 }
                 pulseWidthSim = 10200;
             }
@@ -903,7 +906,7 @@ public class ModeActivity extends BaseActivity {
             //GC20200331
             if (!hasSavedPulseWidth) {
                 pulseWidth = 40;
-                etPulseWidth.setText(String.valueOf(40));
+//                etPulseWidth.setText(String.valueOf(40));
             }
             //GC20200527
             pulseWidthSim = 320;
@@ -1684,82 +1687,85 @@ public class ModeActivity extends BaseActivity {
             double[] atemp = new double[8];
             double[] b = new double[4];
             double[][] a = new double[4][4];
-
-            for (int h = tdrTurning; h < tdrExtreme; h++) {
-                X[h - tdrTurning] = h - tdrTurning;
-                Y[h - tdrTurning] = tdrFilter[h];    //jk20220711tdr
-            }
-            for (int i = 0; i < tdrExtreme - tdrTurning; i++) {
-                atemp[1] += X[i];
-                atemp[2] += Math.pow(X[i], 2);
-                atemp[3] += Math.pow(X[i], 3);
-                atemp[4] += Math.pow(X[i], 4);
-                atemp[5] += Math.pow(X[i], 5);
-                atemp[6] += Math.pow(X[i], 6);
-                b[0] += Y[i];
-                b[1] += X[i] * Y[i];
-                b[2] += Math.pow(X[i], 2) * Y[i];
-                b[3] += Math.pow(X[i], 3) * Y[i];
-            }
-
-            atemp[0] = tdrExtreme - tdrTurning;
-
-            for (int i1 = 0; i1 < 4; i1++) {
-                int k = i1;
-                for (int j = 0; j < 4; j++) {
-                    a[i1][j] = atemp[k++];
+            if (tdrExtreme - tdrTurning < 1000) { //jk20221020
+                for (int h = tdrTurning; h < tdrExtreme; h++) {
+                    X[h - tdrTurning] = h - tdrTurning;
+                    Y[h - tdrTurning] = tdrFilter[h];    //jk20220711tdr
                 }
-            }
+                for (int i = 0; i < tdrExtreme - tdrTurning; i++) {
+                    atemp[1] += X[i];
+                    atemp[2] += Math.pow(X[i], 2);
+                    atemp[3] += Math.pow(X[i], 3);
+                    atemp[4] += Math.pow(X[i], 4);
+                    atemp[5] += Math.pow(X[i], 5);
+                    atemp[6] += Math.pow(X[i], 6);
+                    b[0] += Y[i];
+                    b[1] += X[i] * Y[i];
+                    b[2] += Math.pow(X[i], 2) * Y[i];
+                    b[3] += Math.pow(X[i], 3) * Y[i];
+                }
 
-            for (int k = 0; k < 3; k++) {
-                int column = k;
-                double mainelement = a[k][k];
-                for (int i2 = k; i2 < 4; i2++) {
-                    if (Math.abs((a[i2][k])) > mainelement) {
-                        mainelement = Math.abs((a[i2][k]));
-                        column = i2;
+                atemp[0] = tdrExtreme - tdrTurning;
+
+                for (int i1 = 0; i1 < 4; i1++) {
+                    int k = i1;
+                    for (int j = 0; j < 4; j++) {
+                        a[i1][j] = atemp[k++];
                     }
                 }
 
-                for (int j = k; j < 4; j++) {
-                    double atemp_1 = a[k][j];
-                    a[k][j] = a[column][j];
-                    a[column][j] = atemp_1;
-                }
+                for (int k = 0; k < 3; k++) {
+                    int column = k;
+                    double mainelement = a[k][k];
+                    for (int i2 = k; i2 < 4; i2++) {
+                        if (Math.abs((a[i2][k])) > mainelement) {
+                            mainelement = Math.abs((a[i2][k]));
+                            column = i2;
+                        }
+                    }
 
-                double btemp = b[k];
-                b[k] = b[column];
-                b[column] = btemp;
-
-                for (int i3 = k + 1; i3 < 4; i3++) {
-                    double Mik = a[i3][k] / a[k][k];
                     for (int j = k; j < 4; j++) {
-                        a[i3][j] -= Mik * a[k][j];
+                        double atemp_1 = a[k][j];
+                        a[k][j] = a[column][j];
+                        a[column][j] = atemp_1;
                     }
-                    b[i3] -= Mik * b[k];
+
+                    double btemp = b[k];
+                    b[k] = b[column];
+                    b[column] = btemp;
+
+                    for (int i3 = k + 1; i3 < 4; i3++) {
+                        double Mik = a[i3][k] / a[k][k];
+                        for (int j = k; j < 4; j++) {
+                            a[i3][j] -= Mik * a[k][j];
+                        }
+                        b[i3] -= Mik * b[k];
+                    }
                 }
-            }
 
-            b[3] /= a[3][3];
+                b[3] /= a[3][3];
 
-            for (int i = 2; i >= 0; i--) {
-                double sum = 0;
-                for (int j = i + 1; j < 4; j++) {
-                    sum += a[i][j] * b[j];
+                for (int i = 2; i >= 0; i--) {
+                    double sum = 0;
+                    for (int j = i + 1; j < 4; j++) {
+                        sum += a[i][j] * b[j];
+                    }
+                    b[i] = (b[i] - sum) / a[i][i];
                 }
-                b[i] = (b[i] - sum) / a[i][i];
-            }
 
-            int autoLocationTemp;
-            //盛金公式  //jk20220711tdr
-            autoLocationTemp = solve3Polynomial(b[3], b[2], b[1], b[0]) + tdrTurning;
-            if(Math.abs(autoLocationTemp - tdrTurning) > pulseRemovePoint[rangeState]){
-                autoLocationTemp = tdrTurning;
+                int autoLocationTemp;
+                //盛金公式  //jk20220711tdr
+                autoLocationTemp = solve3Polynomial(b[3], b[2], b[1], b[0]) + tdrTurning;
+                if(Math.abs(autoLocationTemp - tdrTurning) > pulseRemovePoint[rangeState]){
+                    autoLocationTemp = tdrTurning;
+                }
+                if (autoLocationTemp <= pulseRemovePoint[rangeState] * 2) {
+                    autoLocationTemp = 0;
+                }
+                tdrAutoLocation = autoLocationTemp; //jk20220711tdr
+            } else {
+                tdrAutoLocation = tdrTurning;
             }
-            if (autoLocationTemp <= pulseRemovePoint[rangeState] * 2) {
-                autoLocationTemp = 0;
-            }
-            tdrAutoLocation = autoLocationTemp; //jk20220711tdr
         }else{
             tdrAutoLocation = 0;
         }
@@ -1816,7 +1822,7 @@ public class ModeActivity extends BaseActivity {
             setGain(gain);
             if (!hasSavedPulseWidth) {
                 pulseWidth = 40;
-                etPulseWidth.setText(String.valueOf(40));
+//                etPulseWidth.setText(String.valueOf(40));
             }
             setPulseWidth(pulseWidth);
         }
@@ -2013,7 +2019,7 @@ public class ModeActivity extends BaseActivity {
                             pulseWidth = 80;
                             setPulseWidth(80);
                         }, 20);
-                        etPulseWidth.setText(String.valueOf(80));
+//                        etPulseWidth.setText(String.valueOf(80));
                     }
                     handler.postDelayed(ModeActivity.this::clickTest, 100);
                     return;
@@ -2026,7 +2032,7 @@ public class ModeActivity extends BaseActivity {
                             pulseWidth = 160;
                             setPulseWidth(160);
                         }, 20);
-                        etPulseWidth.setText(String.valueOf(160));
+//                        etPulseWidth.setText(String.valueOf(160));
                     }
                     handler.postDelayed(ModeActivity.this::clickTest, 100);
                     return;
@@ -2039,7 +2045,7 @@ public class ModeActivity extends BaseActivity {
                             pulseWidth = 320;
                             setPulseWidth(320);
                         }, 20);
-                        etPulseWidth.setText(String.valueOf(320));
+//                        etPulseWidth.setText(String.valueOf(320));
                     }
                     handler.postDelayed(ModeActivity.this::clickTest, 100);
                     return;
@@ -2052,7 +2058,7 @@ public class ModeActivity extends BaseActivity {
                             pulseWidth = 640;
                             setPulseWidth(640);
                         }, 20);
-                        etPulseWidth.setText(String.valueOf(640));
+//                        etPulseWidth.setText(String.valueOf(640));
                     }
                     handler.postDelayed(ModeActivity.this::clickTest, 100);
                     return;
@@ -2065,7 +2071,7 @@ public class ModeActivity extends BaseActivity {
                             pulseWidth = 1280;
                             setPulseWidth(1280);
                         }, 20);
-                        etPulseWidth.setText(String.valueOf(1280));
+//                        etPulseWidth.setText(String.valueOf(1280));
                     }
                     handler.postDelayed(ModeActivity.this::clickTest, 100);
                     return;
@@ -2078,7 +2084,7 @@ public class ModeActivity extends BaseActivity {
                             pulseWidth = 2560;
                             setPulseWidth(2560);
                         }, 20);
-                        etPulseWidth.setText(String.valueOf(2560));
+//                        etPulseWidth.setText(String.valueOf(2560));
                     }
                     handler.postDelayed(ModeActivity.this::clickTest, 100);
                     return;
@@ -2091,7 +2097,7 @@ public class ModeActivity extends BaseActivity {
                             pulseWidth = 5120;
                             setPulseWidth(5120);
                         }, 20);
-                        etPulseWidth.setText(String.valueOf(5120));
+//                        etPulseWidth.setText(String.valueOf(5120));
                     }
                     //G?
                     rangeCount = 1;
@@ -2841,7 +2847,7 @@ public class ModeActivity extends BaseActivity {
         }
         //软件滤波
         softwareFilter();
-        //积分
+        //积分——为了判断是否放电
         integral();
         //2.击穿放电判断
         breakdownJudgment();
@@ -3476,6 +3482,7 @@ public class ModeActivity extends BaseActivity {
             Diff[i] =  (waveArrayFilter[i + 1] - waveArrayFilter[i]);
         }
 
+        //找故障点放电脉冲极值位置——脉冲的前半段，所以找min
         for (i = start + faultResult; i < (dataMax - 50); i++) {
             if ((Diff[i] < min) && (Diff[i] < 0)) {
                 min = Diff[i];
@@ -3483,17 +3490,21 @@ public class ModeActivity extends BaseActivity {
                 pos = i - (start + faultResult);
             }
         }
+        //pos就是故障点放电脉冲极值位置  //GC20230224  //GN?
         pos = pos + (start + faultResult);
 
         w1 = pos - 30;
         w2 = pos + 70;
         w3 = pos - (start + faultResult);
+
         for(i = w1; i < w2; i++) {
+            //取极值点前30个和后70个共100个点放入D1
             D1[i - w1] = waveArrayFilter[i];
         }
 
         for (i = (start + faultResult); i < pos; i++) {
             for(k = i; k < (i + 100); k++) {
+                //取start + faultResult后100个点放入D2
                 D2[k - i] = waveArrayFilter[k];
             }
             p = 0.0;
@@ -4279,7 +4290,7 @@ public class ModeActivity extends BaseActivity {
                             }
                             if (min6Pos < maxPos + 60) {
                                 selectSim6 = true;
-                                Log.e("SIM筛选2", "6极小值符合要求  " + " /min6Pos" + min6Pos);
+                                Log.e("SIM筛选2", "6极小值符合要求  " + " /min6Pos = " + min6Pos);
                             }else {
                                 Log.e("SIM筛选2", "6极小值不符合要求" + " /min6Pos = " + min6Pos);
                             }
@@ -4359,9 +4370,9 @@ public class ModeActivity extends BaseActivity {
                             }
                             if (min8Pos < maxPos + 60) {
                                 selectSim8 = true;
-                                Log.e("SIM筛选2", "8极小值符合要求  " + " /min8Pos = " + min8Pos + " /maxPos = " + maxPos);
+                                Log.e("SIM筛选2", "8极小值符合要求  " + " /min8Pos = " + min8Pos);
                             }else {
-                                Log.e("SIM筛选2", "8极小值不符合要求" + " /min8Pos = " + min8Pos + " /maxPos = " + maxPos);
+                                Log.e("SIM筛选2", "8极小值不符合要求" + " /min8Pos = " + min8Pos);
                             }
                         }else {
                             Log.e("SIM筛选2", "8未找到极小值");
@@ -4434,6 +4445,7 @@ public class ModeActivity extends BaseActivity {
      * 相关计算
      */
     int n, n1, n2, n3, n4, n5, n6, n7, n8, p;
+    int n1Temp, n2Temp, n3Temp, n4Temp, n5Temp, n6Temp, n7Temp, n8Temp; //jk20221019
     public void simRelevantJudgment() {
         simFilter();
         int selectWaveNum = 1;
@@ -4456,9 +4468,14 @@ public class ModeActivity extends BaseActivity {
                     break;
                 }
             }
+            n1Temp = n1; //jk20221019
             while (n1 > 1){
                 if(Math.abs(simArray1Filter[n1+1]-simArray0Filter[n1+1]) <= 1.5) {
                     n1 = n1 + 1;
+                    if (n1 == dataLength) { //jk20221019
+                        n1 = n1Temp;
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -4497,9 +4514,14 @@ public class ModeActivity extends BaseActivity {
                     break;
                 }
             }
+            n2Temp = n2; //jk20221019
             while (n2 > 1){
                 if(Math.abs(simArray2Filter[n2+1]-simArray0Filter[n2+1]) <= 1.5) {
                     n2 = n2 + 1;
+                    if (n2 == dataLength) { //jk20221019
+                        n2 = n2Temp;
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -4537,9 +4559,14 @@ public class ModeActivity extends BaseActivity {
                     break;
                 }
             }
+            n3Temp = n3;
             while (n3 > 1){
                 if(Math.abs(simArray3Filter[n3+1]-simArray0Filter[n3+1]) <= 1.5) {
                     n3 = n3 + 1;
+                    if (n3 == dataLength) { //jk20221019
+                        n3 = n3Temp;
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -4577,10 +4604,14 @@ public class ModeActivity extends BaseActivity {
                     break;
                 }
             }
-
+            n4Temp = n4;
             while (n4 > 1){
                 if(Math.abs(simArray4Filter[n4+1]-simArray0Filter[n4+1]) <= 1.5) {
                     n4 = n4 + 1;
+                    if (n4 == dataLength) { //jk20221019
+                        n4 = n4Temp;
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -4618,9 +4649,14 @@ public class ModeActivity extends BaseActivity {
                     break;
                 }
             }
+            n5Temp = n5;
             while (n5 > 1){
                 if(Math.abs(simArray5Filter[n5+1]-simArray0Filter[n5+1]) <= 1.5) {
                     n5 = n5 + 1;
+                    if (n5 == dataLength) { //jk20221019
+                        n5 = n5Temp;
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -4658,9 +4694,14 @@ public class ModeActivity extends BaseActivity {
                     break;
                 }
             }
+            n6Temp = n6;
             while (n6 > 1){
                 if(Math.abs(simArray6Filter[n6+1]-simArray0Filter[n6+1]) <= 1.5) {
                     n6 = n6 + 1;
+                    if (n6 == dataLength) { //jk20221019
+                        n6 = n6Temp;
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -4698,9 +4739,14 @@ public class ModeActivity extends BaseActivity {
                     break;
                 }
             }
+            n7Temp = n7;
             while (n7 > 1){
                 if(Math.abs(simArray7Filter[n7+1]-simArray0Filter[n7+1]) <= 1.5) {
                     n7 = n7 + 1;
+                    if (n7 == dataLength) { //jk20221019
+                        n7 = n7Temp;
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -4731,15 +4777,20 @@ public class ModeActivity extends BaseActivity {
                     if (simArray8[n8] == simArray8[n8-5]|| simArray8[n8] > medianValue) {
                         break ;
                     }else{
-                        n8 = n8 -5;
+                        n8 = n8 - 5;
                     }
                 } else {
                     break;
                 }
             }
+            n8Temp = n8;
             while (n8 > 1){
                 if(Math.abs(simArray8Filter[n8+1]-simArray0Filter[n8+1]) <= 1.5) {
                     n8 = n8 + 1;
+                    if (n8 == dataLength) { //jk20221019
+                        n8 = n8Temp;
+                        break;
+                    }
                 } else {
                     break;
                 }
@@ -4847,80 +4898,84 @@ public class ModeActivity extends BaseActivity {
         double[] b = new double[4];
         double[][] a = new double[4][4];
 
-        for (int h = simTurning; h < simExtreme; h++) {
-            X[h - simTurning] = h - simTurning;
-            Y[h - simTurning] = simArrayF[h];    //jk20220711Sim
-        }
-
-        for (int i = 0; i < simExtreme - simTurning; i++) {
-            atemp[1] += X[i];
-            atemp[2] += Math.pow(X[i], 2);
-            atemp[3] += Math.pow(X[i], 3);
-            atemp[4] += Math.pow(X[i], 4);
-            atemp[5] += Math.pow(X[i], 5);
-            atemp[6] += Math.pow(X[i], 6);
-            b[0] += Y[i];
-            b[1] += X[i] * Y[i];
-            b[2] += Math.pow(X[i], 2) * Y[i];
-            b[3] += Math.pow(X[i], 3) * Y[i];
-        }
-
-        atemp[0] = simExtreme - simTurning;
-
-        for (int i1 = 0; i1 < 4; i1++) {
-            int k = i1;
-            for (int j = 0; j < 4; j++) {
-                a[i1][j] = atemp[k++];
+        if (simExtreme - simTurning < 1000) { //jk20221020
+            for (int h = simTurning; h < simExtreme; h++) {
+                X[h - simTurning] = h - simTurning;
+                Y[h - simTurning] = simArrayF[h];    //jk20220711Sim
             }
-        }
 
-        for (int k = 0; k < 3; k++) {
-            int column = k;
-            double mainelement = a[k][k];
-            for (int i2 = k; i2 < 4; i2++) {
-                if (Math.abs((a[i2][k])) > mainelement) {
-                    mainelement = Math.abs((a[i2][k]));
-                    column = i2;
+            for (int i = 0; i < simExtreme - simTurning; i++) {
+                atemp[1] += X[i];
+                atemp[2] += Math.pow(X[i], 2);
+                atemp[3] += Math.pow(X[i], 3);
+                atemp[4] += Math.pow(X[i], 4);
+                atemp[5] += Math.pow(X[i], 5);
+                atemp[6] += Math.pow(X[i], 6);
+                b[0] += Y[i];
+                b[1] += X[i] * Y[i];
+                b[2] += Math.pow(X[i], 2) * Y[i];
+                b[3] += Math.pow(X[i], 3) * Y[i];
+            }
+
+            atemp[0] = simExtreme - simTurning;
+
+            for (int i1 = 0; i1 < 4; i1++) {
+                int k = i1;
+                for (int j = 0; j < 4; j++) {
+                    a[i1][j] = atemp[k++];
                 }
             }
-            for (int j = k; j < 4; j++) {
-                double atemp_1 = a[k][j];
-                a[k][j] = a[column][j];
-                a[column][j] = atemp_1;
-            }
-            double btemp = b[k];
-            b[k] = b[column];
-            b[column] = btemp;
-            for (int i3 = k + 1; i3 < 4; i3++) {
-                double Mik = a[i3][k] / a[k][k];
+
+            for (int k = 0; k < 3; k++) {
+                int column = k;
+                double mainelement = a[k][k];
+                for (int i2 = k; i2 < 4; i2++) {
+                    if (Math.abs((a[i2][k])) > mainelement) {
+                        mainelement = Math.abs((a[i2][k]));
+                        column = i2;
+                    }
+                }
                 for (int j = k; j < 4; j++) {
-                    a[i3][j] -= Mik * a[k][j];
+                    double atemp_1 = a[k][j];
+                    a[k][j] = a[column][j];
+                    a[column][j] = atemp_1;
                 }
-                b[i3] -= Mik * b[k];
+                double btemp = b[k];
+                b[k] = b[column];
+                b[column] = btemp;
+                for (int i3 = k + 1; i3 < 4; i3++) {
+                    double Mik = a[i3][k] / a[k][k];
+                    for (int j = k; j < 4; j++) {
+                        a[i3][j] -= Mik * a[k][j];
+                    }
+                    b[i3] -= Mik * b[k];
+                }
             }
-        }
 
-        b[3] /= a[3][3];
+            b[3] /= a[3][3];
 
-        for (int i = 2; i >= 0; i--) {
-            double sum = 0;
-            for (int j = i + 1; j < 4; j++) {
-                sum += a[i][j] * b[j];
+            for (int i = 2; i >= 0; i--) {
+                double sum = 0;
+                for (int j = i + 1; j < 4; j++) {
+                    sum += a[i][j] * b[j];
+                }
+                b[i] = (b[i] - sum) / a[i][i];
             }
-            b[i] = (b[i] - sum) / a[i][i];
-        }
-        int autoLocation = 0;
-        //求出曲线拟合后求解纵坐标值为0时横坐标的结果  一元三次方程求解  //jk20210527
-//        autoLocation = equationSolving(b[3], b[2], b[1], b[0], -5, 5) + simTurning;
-        autoLocation = solve3Polynomial(b[3], b[2], b[1], b[0]) + simTurning;  //jk20220711Sim
-        if (autoLocation <= 0) {  //对于结果为0的补充
-            autoLocation = simTurning;
-            //针对开路测试情况，SIM虚光标定位到零点    //GC20220814
-            if (simTurning == 0){
-                autoLocation = simOriginalZero;
+            int autoLocation = 0;
+            //求出曲线拟合后求解纵坐标值为0时横坐标的结果  一元三次方程求解  //jk20210527
+    //        autoLocation = equationSolving(b[3], b[2], b[1], b[0], -5, 5) + simTurning;
+            autoLocation = solve3Polynomial(b[3], b[2], b[1], b[0]) + simTurning;  //jk20220711Sim
+            if (autoLocation <= 0) {  //对于结果为0的补充
+                autoLocation = simTurning;
+                //针对开路测试情况，SIM虚光标定位到零点    //GC20220814
+                if (simTurning == 0) {
+                    autoLocation = simOriginalZero;
+                }
             }
+            simAutoLocation = autoLocation;
+        } else {
+            simAutoLocation = simTurning;
         }
-        simAutoLocation = autoLocation;
 
         //清标志位
         selectSim1 = false;
@@ -5287,6 +5342,8 @@ public class ModeActivity extends BaseActivity {
             //利用比较功能绘制SIM的第二条波形数据
             isCom = true;
         }
+        //如果放大缩小过还原到最初状态    //GC20221025
+        currentStart = 0;
     }
 
     /**
@@ -5357,10 +5414,6 @@ public class ModeActivity extends BaseActivity {
             default:
                 break;
         }
-        //方式变化时，选取判断收取波形数据的点数（横向滑条绘制相关） //GC20220825
-        selectWaveLength();
-        //GC20190709
-        switchDensity();
         //发送指令
         command = COMMAND_MODE;
         dataTransfer = mode;
@@ -5460,11 +5513,6 @@ public class ModeActivity extends BaseActivity {
      * @param range 需要发送的范围控制命令值 / 响应信息栏范围变化
      */
     public void setRange(int range) {
-        //20200407
-        if (allowSetRange == false) {
-            return;
-        }
-        allowSetRange = false;
         this.range = range;
         switch (range) {
             case RANGE_250:
@@ -5477,7 +5525,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 40;
-                    etPulseWidth.setText(String.valueOf(40));
+//                    etPulseWidth.setText(String.valueOf(40));
                 }
                 //切换范围时改变SIM的发射脉宽   //GC20200527
                 if (mode == SIM) {
@@ -5513,7 +5561,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 40;
-                    etPulseWidth.setText(String.valueOf(40));
+//                    etPulseWidth.setText(String.valueOf(40));
                 }
                 if (mode == SIM) {
                     pulseWidthSim = 320;
@@ -5548,7 +5596,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 80;
-                    etPulseWidth.setText(String.valueOf(80));
+//                    etPulseWidth.setText(String.valueOf(80));
                 }
                 if (mode == SIM) {
                     pulseWidthSim = 320;
@@ -5582,7 +5630,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 160;
-                    etPulseWidth.setText(String.valueOf(160));
+//                    etPulseWidth.setText(String.valueOf(160));
                 }
                 if (mode == SIM) {
                     pulseWidthSim = 720;
@@ -5616,7 +5664,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 320;
-                    etPulseWidth.setText(String.valueOf(320));
+//                    etPulseWidth.setText(String.valueOf(320));
                 }
                 if (mode == SIM) {
                     pulseWidth = 2560;
@@ -5650,7 +5698,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 640;
-                    etPulseWidth.setText(String.valueOf(640));
+//                    etPulseWidth.setText(String.valueOf(640));
                 }
                 if (mode == SIM) {
                     pulseWidth = 3600;
@@ -5684,7 +5732,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 1280;
-                    etPulseWidth.setText(String.valueOf(1280));
+//                    etPulseWidth.setText(String.valueOf(1280));
                 }
                 if (mode == SIM) {
                     pulseWidthSim = 7120;
@@ -5718,7 +5766,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 2560;
-                    etPulseWidth.setText(String.valueOf(2560));
+//                    etPulseWidth.setText(String.valueOf(2560));
                 }
                 if (mode == SIM) {
                     pulseWidthSim = 10200;
@@ -5752,7 +5800,7 @@ public class ModeActivity extends BaseActivity {
                 }
                 if (!hasSavedPulseWidth && mode == TDR) {
                     pulseWidth = 5120;
-                    etPulseWidth.setText(String.valueOf(5120));
+//                    etPulseWidth.setText(String.valueOf(5120));
                 }
                 if (mode == SIM) {
                     pulseWidthSim = 10200;
@@ -5807,19 +5855,13 @@ public class ModeActivity extends BaseActivity {
                 } else if (Constant.CurrentUnit == FT_UNIT) {
                     tvRangeValue.setText(getResources().getString(R.string.btn_250m_to_ft));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 40;
-                        setPulseWidth(40);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(40));
+                    pulseWidth = 40;
+//                    etPulseWidth.setText(String.valueOf(40));
                 }
-                //切换范围时改变SIM的发射脉宽   //GC20200527
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
+                    pulseWidthSim = 320;
                 }
                 rangeFragment.btn250m.setEnabled(false);
                 rangeFragment.btn500m.setEnabled(true);
@@ -5847,19 +5889,13 @@ public class ModeActivity extends BaseActivity {
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_500m_to_ft));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 40;
-                        setPulseWidth(40);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(40));
+                    pulseWidth = 40;
+//                    etPulseWidth.setText(String.valueOf(40));
                 }
-                //切换范围时改变SIM的发射脉宽   //GC20200527
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
+                    pulseWidthSim = 320;
                 }
                 rangeFragment.btn250m.setEnabled(true);
                 rangeFragment.btn500m.setEnabled(false);
@@ -5887,18 +5923,13 @@ public class ModeActivity extends BaseActivity {
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_1km_to_yingli));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 80;
-                        setPulseWidth(80);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(80));
+                    pulseWidth = 80;
+//                    etPulseWidth.setText(String.valueOf(80));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 320;
-                        setPulseWidth(320);
-                    }, 20);
+                    pulseWidthSim = 320;
                 }
                 rangeFragment.btn250m.setEnabled(true);
                 rangeFragment.btn500m.setEnabled(true);
@@ -5926,18 +5957,13 @@ public class ModeActivity extends BaseActivity {
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_2km_to_yingli));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 160;
-                        setPulseWidth(160);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(160));
+                    pulseWidth = 160;
+//                    etPulseWidth.setText(String.valueOf(160));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 720;
-                        setPulseWidth(720);
-                    }, 20);
+                    pulseWidthSim = 720;
                 }
                 rangeFragment.btn250m.setEnabled(true);
                 rangeFragment.btn500m.setEnabled(true);
@@ -5965,18 +5991,13 @@ public class ModeActivity extends BaseActivity {
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_4km_to_yingli));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 320;
-                        setPulseWidth(320);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(320));
+                    pulseWidth = 320;
+//                    etPulseWidth.setText(String.valueOf(320));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 2560;
-                        setPulseWidth(2560);
-                    }, 20);
+                    pulseWidthSim = 2560;
                 }
                 rangeFragment.btn250m.setEnabled(true);
                 rangeFragment.btn500m.setEnabled(true);
@@ -6004,18 +6025,13 @@ public class ModeActivity extends BaseActivity {
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_8km_to_yingli));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 640;
-                        setPulseWidth(640);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(640));
+                    pulseWidth = 640;
+//                    etPulseWidth.setText(String.valueOf(640));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 3600;
-                        setPulseWidth(3600);
-                    }, 20);
+                    pulseWidthSim = 3600;
                 }
                 rangeFragment.btn250m.setEnabled(true);
                 rangeFragment.btn500m.setEnabled(true);
@@ -6043,18 +6059,13 @@ public class ModeActivity extends BaseActivity {
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_16km_to_yingli));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 1280;
-                        setPulseWidth(1280);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(1280));
+                    pulseWidth = 1280;
+//                    etPulseWidth.setText(String.valueOf(1280));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 7120;
-                        setPulseWidth(7120);
-                    }, 20);
+                    pulseWidthSim = 7120;
                 }
                 rangeFragment.btn250m.setEnabled(true);
                 rangeFragment.btn500m.setEnabled(true);
@@ -6082,18 +6093,13 @@ public class ModeActivity extends BaseActivity {
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_32km_to_yingli));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 2560;
-                        setPulseWidth(2560);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(2560));
+                    pulseWidth = 2560;
+//                    etPulseWidth.setText(String.valueOf(2560));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 10200;
-                        setPulseWidth(10200);
-                    }, 20);
+                    pulseWidthSim = 10200;
                 }
                 rangeFragment.btn250m.setEnabled(true);
                 rangeFragment.btn500m.setEnabled(true);
@@ -6121,18 +6127,13 @@ public class ModeActivity extends BaseActivity {
                 } else {
                     tvRangeValue.setText(getResources().getString(R.string.btn_64km_to_yingli));
                 }
+                //getBundleExtra报错尝试修改  //GT20221019
                 if (!hasSavedPulseWidth && mode == TDR) {
-                    handler.postDelayed(() -> {
-                        pulseWidth = 5120;
-                        setPulseWidth(5120);
-                    }, 20);
-                    etPulseWidth.setText(String.valueOf(5120));
+                    pulseWidth = 5120;
+//                    etPulseWidth.setText(String.valueOf(5120));
                 }
                 if (mode == SIM) {
-                    handler.postDelayed(() -> {
-                        pulseWidthSim = 10200;
-                        setPulseWidth(10200);
-                    }, 20);
+                    pulseWidthSim = 10200;
                 }
                 rangeFragment.btn250m.setEnabled(true);
                 rangeFragment.btn500m.setEnabled(true);
@@ -6164,6 +6165,18 @@ public class ModeActivity extends BaseActivity {
         command = COMMAND_RANGE;
         dataTransfer = range;
         startService();
+        //getBundleExtra报错尝试修改  //GT20221019
+        if (mode == TDR) {
+            handler.postDelayed(() -> {
+                //脉宽
+                setPulseWidth(pulseWidth);
+            }, 40);
+        } else if (mode == SIM) {
+            handler.postDelayed(() -> {
+                //脉宽
+                setPulseWidth(pulseWidthSim);
+            }, 40);
+        }
 
     }
 
@@ -6504,6 +6517,7 @@ public class ModeActivity extends BaseActivity {
         //如果未连接不执行
         if (!ConnectService.isConnected) {
             Toast.makeText(ModeActivity.this, R.string.test_on_no_connect, Toast.LENGTH_SHORT).show();
+            allowSetOperation = true;    //未连接,操作可以点击 //GC20221019
             return;
         }
         //如果测试中不执行后续代码
@@ -6533,7 +6547,6 @@ public class ModeActivity extends BaseActivity {
     /**
      * @param index 侧边栏设置   //jk20210123
      */
-
     public void setTabSelection(int index) {
         //开启一个Fragment事务
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -6915,6 +6928,11 @@ public class ModeActivity extends BaseActivity {
             Constant.SSID = currentDevice;
             StateUtils.setString(ModeActivity.this, AppConfig.CURRENT_DEVICE,currentDevice);
             Toast.makeText(this, getResources().getString(R.string.current_device_set_success), Toast.LENGTH_SHORT).show();
+            //点击确认后重启APP    //GC20230113
+            Intent intent = new Intent(ModeActivity.this, ConnectService.class);
+            stopService(intent);
+            Intent intentSplash = new Intent(ModeActivity.this, MainActivity.class);
+            startActivity(intentSplash);
         }
     }
 
@@ -6933,10 +6951,10 @@ public class ModeActivity extends BaseActivity {
         // 01 初始化操作值
         if (etPulseWidth.getText().toString().isEmpty() || "0".equals(etPulseWidth.getText().toString())) {
             //输入为空时认为没有保存操作   //GC20200331
-            etPulseWidth.setText(String.valueOf(pulseWidth));
+//            etPulseWidth.setText(String.valueOf(pulseWidth));
             hasSavedPulseWidth = false;
         } else {
-            pulseWidth = Integer.valueOf(etPulseWidth.getText().toString());
+//            pulseWidth = Integer.valueOf(etPulseWidth.getText().toString());
             //已保存过脉宽 //GC20200331
             hasSavedPulseWidth = true;
         }
@@ -7080,6 +7098,8 @@ public class ModeActivity extends BaseActivity {
                                 tvTest.setEnabled(true);
                                 Constant.isTesting = false;
                                 allowSetRange = true;
+                                allowSetMode = true;        //取消测试后按钮可以点击   //GC20221019
+                                allowSetOperation = true;   //取消测试后按钮可以点击   //GC20221019
                                 command = COMMAND_TEST;
                                 dataTransfer = CANCEL_TEST;
                                 startService();
@@ -7097,7 +7117,6 @@ public class ModeActivity extends BaseActivity {
             command = COMMAND_TEST;
             dataTransfer = TESTING;
             startService();
-
             //EN20200324
             ConnectService.canAskPower = false;
         }
@@ -7107,13 +7126,19 @@ public class ModeActivity extends BaseActivity {
      * 选择方式、范围后立刻测试
      */
     public void modeRangeTest(){
-        //记忆TDR方式下的范围   //GC20220709
-        if (mode == TDR) {
-            rangeMemory = range;
+        if (rangeChanged) {  //SIM方式按照记忆的TDR范围变化BUG  //GC20221017
+            rangeChanged = false;
+            //记忆TDR方式下的范围   //GC20220709
+            if (mode == TDR) {
+                rangeMemory = range;
+            }
         }
-        //SIM方式按照记忆的TDR范围初始化    //GC20220709
-        if (mode == SIM) {
-            range = rangeMemory;
+        if (modeChanged) {  //SIM方式按照记忆的TDR范围变化BUG  //GC20221017
+            modeChanged = false;
+            //SIM方式按照记忆的TDR范围初始化    //GC20220709
+            if (mode == SIM) {
+                range = rangeMemory;
+            }
         }
         handler.postDelayed(() -> {
             //范围
@@ -7122,7 +7147,8 @@ public class ModeActivity extends BaseActivity {
         //如果未连接不执行（点击方式、范围）  //GC20220825
         if (!ConnectService.isConnected) {
             Toast.makeText(ModeActivity.this, R.string.test_on_no_connect, Toast.LENGTH_SHORT).show();
-            allowSetRange = true;   //范围可以点击
+            allowSetRange = true;   //未连接,范围可以点击
+            allowSetMode = true;    //未连接,方式可以点击 //GC20221019
             return;
         }
         handler.postDelayed(() -> {
@@ -7181,6 +7207,7 @@ public class ModeActivity extends BaseActivity {
         } else {
             Toast.makeText(this, getResources().getString(R.string.You_have_no_memory_data_can_not_compare), Toast.LENGTH_SHORT).show();
         }
+        allowSetOperation = true;    //GC20221019
     }
 
     /**
@@ -7195,6 +7222,7 @@ public class ModeActivity extends BaseActivity {
             modeBefore = mode;
             rangeBefore = range;
         }
+        allowSetOperation = true;    //GC20221019
     }
 
     /**
@@ -7207,7 +7235,7 @@ public class ModeActivity extends BaseActivity {
         bundle.putInt(BUNDLE_MODE_KEY, mode);
         bundle.putInt(BUNDLE_COMMAND_KEY, command);
         bundle.putInt(BUNDLE_DATA_TRANSFER_KEY, dataTransfer);
-        intent.putExtra(BUNDLE_PARAM_KEY, bundle);
+        intent.putExtra(BUNDLE_PARAM_KEY, bundle);  //GT20221019
         startService(intent);
     }
 

@@ -35,8 +35,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginStart="@dimen/dp_6"
-        android:text="V2.0.4"
-        android:textColor="@color/blue_0095b3"
+        android:text="V2.0.6"
+        android:textColor="@color/white"
         android:textSize="@dimen/sp_6" /><!--版本号添加//GC20220914-->
 
     <!--信息提示框-->

@@ -31,6 +31,11 @@ public class BaseActivity extends AppCompatActivity {
     public boolean isMemory;
     public boolean isDatabase;
     public boolean alreadyDisplayWave;  //GC20220822
+    public boolean rangeChanged;    //GC20221017
+    public boolean modeChanged;    //GC20221017
+    public boolean allowSetRange;   //GC20221019
+    public boolean allowSetMode;
+    public boolean allowSetOperation;
 
     /**
      * 设备编号全局变量 //GC20220520
@@ -361,7 +366,7 @@ public class BaseActivity extends AppCompatActivity {
 
 /*————enNuo————*/
 //EN20200324    发送命令和获取电量修改，增加条件限制，避免极端条件下会多次尝试连接
-//20200407  电量获取修改
+//20200407  电量获取修改  //TODO 20200407 增加测试中控制
 //20200521  界面相关
 //20200522  单位转化逻辑修正
 //20200523  其它优化
@@ -426,8 +431,6 @@ public class BaseActivity extends AppCompatActivity {
 //jk20210420    脉冲电流容错处理  添加标志false_flag
 //jk20210527    求出曲线拟合后求解纵坐标值为0时横坐标的结果  一元三次方程求解
 
-//jk20210714    网络连接去除一个判断
-
 /*——————————2.0.1版本整理——————————*/
 //jk20210123    直接进入测试方式界面1
 //GC20211214    服务中toast只可以跟随系统语言
@@ -485,14 +488,26 @@ public class BaseActivity extends AppCompatActivity {
 //GC20220824    调节栏增益、平衡、延时、波速按钮状态控制
 //GC20220825    离线状态控制
 //GC20220914    ICM方式下的“延长线”按钮屏蔽/版本号添加
+//GC20221017    SIM方式按照记忆的TDR范围变化BUG（907方式、范围一个方法写的，所以需要分开记录）
+//GC20221019    方式、范围按钮快速点击限制处理
+/*——————————2.0.5版本整理——————————*/
+//GC20221025    数据库打开波形后记忆比较操作BUG
+/*——————————2.0.6版本整理——————————*/
+//GC20221203    波形数据混入其它信息后抛掉多余部分——有可能有，未验证XXXXXXXX
+//GC20230112    添加只有在连接到指定SSID时才会成功建立设备连接的限制功能/建立网络连接的条件限制逻辑梳理
+//GC20230113    添加断开已连接的其它WiFi的功能，避免设备切换时无法自主切换网络/设备编号更改完毕后点击确认后重启APP
 
 
 
 
 //GT20220801    数据接收改动
 //GT屏蔽算法
+//GT20221019    getBundleExtra报错尝试修改（作用不大，数据库离线命令发送）
 //以下未改
 //GC20220806    点击SIM范围自动寻找
  /*——————————算法调整——————————*/
 //jk20220922    TDR算法开路波形容错调整
+//jk20221019    SIM算法数组下标越界异常处理
+//jk20221020    数组容错处理
+//GC20220926    判断逻辑优化
 /*——————————算法调整——————————*/

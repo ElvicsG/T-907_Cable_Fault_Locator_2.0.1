@@ -8,7 +8,7 @@
     <string name="btn_setting">设置</string>
     <string name="btn_test">测试</string>
     <string name="btn_tdr">低压脉冲</string>
-    <string name="btn_icm">脉冲电流—冲闪</string>
+    <string name="btn_icm">脉冲电流-冲闪</string>
     <string name="btn_icm_decay">脉冲电流-直闪</string>
     <string name="btn_sim">多次脉冲</string>
     <string name="btn_decay">衰减法</string>

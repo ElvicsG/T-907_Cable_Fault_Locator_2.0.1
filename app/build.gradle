@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "net.kehui.www.t_907_origin_V2"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
-        versionName "2.0.4"
+        versionName "2.0.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         javaCompileOptions {
@@ -80,6 +80,6 @@ dependencies {
     implementation 'pub.devrel:easypermissions:1.2.0'
     implementation 'android.arch.paging:runtime:1.0.1'  //20200523
     implementation 'com.android.support:percent:28.0.0'
-    implementation 'ru.alexbykov:nopermission:1.1.2' //jk20210714
+    implementation 'ru.alexbykov:nopermission:1.1.2'
 
 }

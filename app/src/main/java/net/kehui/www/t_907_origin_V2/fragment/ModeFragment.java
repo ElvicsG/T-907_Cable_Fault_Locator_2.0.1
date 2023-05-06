@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
+import net.kehui.www.t_907_origin_V2.ConnectService;
 import net.kehui.www.t_907_origin_V2.R;
 import net.kehui.www.t_907_origin_V2.view.ModeActivity;
 
@@ -59,6 +60,15 @@ public class ModeFragment extends Fragment {
 
     @OnClick({R.id.btn_tdr, R.id.btn_icm, R.id.btn_sim, R.id.btn_decay, R.id.btn_icmc})
     public void onViewClicked(View view) {
+        if (!ConnectService.isConnected) {
+            ((ModeActivity) Objects.requireNonNull(getActivity())).allowSetMode = true;    //未连接,操作可以点击 //GC20221019
+        }
+        //快速点击限制    //GC20221019
+        if ( ((ModeActivity) Objects.requireNonNull(getActivity())).allowSetMode == false) {
+            return;
+        }
+        ((ModeActivity) Objects.requireNonNull(getActivity())).allowSetMode = false;
+        ((ModeActivity) Objects.requireNonNull(getActivity())).modeChanged = true;     //范围切换后状态记录 //GC20221017
         switch (view.getId()) {
             case R.id.btn_tdr:
                ((ModeActivity) Objects.requireNonNull(getActivity())).setMode(0x11);
