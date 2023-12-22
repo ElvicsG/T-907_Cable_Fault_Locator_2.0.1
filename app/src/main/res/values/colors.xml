@@ -22,5 +22,19 @@
     <color name="blue_808080">#808080</color>
     <color name="blue_0095b3">#0095b3</color>
     <color name="blue_999999">#999999</color>
+    <color name="black2">#002140</color>
+    <color name="gray1">#353c46</color>
+    <color name="gray4">#444444</color>
+    <color name="green">#05c005</color>
+    <color name="red">#9a3023</color>
+    <color name="main_color">#2263ab</color>
+    <color name="blue4">#173047</color>
+    <color name="blue6">#051b2d</color>
+    <color name="red2">#993123</color>
+    <color name="gray9">#999999</color>
+    <color name="yellow2">#e89207</color>
+    <color name="blue5">#00d2ff</color>
+    <color name="gray2">#7a7a7a</color>
+    <color name="gray14">#6f6b66</color>
 
 </resources>

@@ -11,6 +11,7 @@ import net.kehui.www.t_907_origin_V2.base.BaseActivity;
 import net.kehui.www.t_907_origin_V2.entity.Data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,8 +29,7 @@ public class RecordsAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
-        RecordsHolder holder = new RecordsHolder(View.inflate(viewGroup.getContext(), R.layout.item_record
-                , null));
+        RecordsHolder holder = new RecordsHolder(View.inflate(viewGroup.getContext(), R.layout.item_record, null));
         return holder;
     }
 
@@ -37,9 +37,9 @@ public class RecordsAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
 
         RecordsHolder holder = (RecordsHolder) viewHolder;
+//        Collections.reverse(datas);   //设置倒序
         Data data = datas.get(position);
-        //记录显示中英文切换      //GC20200525
-//        holder.tvRecord.setText("Record" + (position + 1));
+//        holder.tvRecord.setText("Record" + (position + 1));   //记录显示中英文切换      //GC20200525
         holder.tvRecord.setText(BaseActivity.mContext.getResources().getString(R.string.record) + (position + 1));
         int[] selectedPara = data.para;
         int[] selectedWave = data.waveData;
@@ -61,9 +61,7 @@ public class RecordsAdapter extends RecyclerView.Adapter {
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
                 int pos = holder.getLayoutPosition();
-                onItemClickListener.onItemClick(holder.itemView, selectedId, selectedPara,
-                        selectedWave,
-                        selectedSim, pos);
+                onItemClickListener.onItemClick(holder.itemView, selectedId, selectedPara, selectedWave, selectedSim, pos);
             }
         });
 

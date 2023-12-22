@@ -148,12 +148,13 @@ public class OperationFragment extends Fragment {
                 ((ModeActivity) Objects.requireNonNull(getActivity())).allowSetOperation = true;    //GC20221019
                 break;
             case  R.id.btn_file1:
-                ((ModeActivity) getActivity()). showFileView();
+                ((ModeActivity) getActivity()).showFileView();
                 ((ModeActivity) Objects.requireNonNull(getActivity())).allowSetOperation = true;    //GC20221019
                break;
             case R.id.btn_update1:
-                ((ModeActivity) getActivity()).showUp();
-                ((ModeActivity) getActivity()).downloadFile1();
+//                ((ModeActivity) getActivity()).downloadFile1();
+//                ((ModeActivity) getActivity()).showUp();          //更新变为语言切换  //GC20230912
+                ((ModeActivity) getActivity()).showCurrentDevice(); //更新变为设备编号修改    //GC20231214
                 ((ModeActivity) Objects.requireNonNull(getActivity())).allowSetOperation = true;    //GC20221019
                 break;
             case R.id.btn_lead1:    //延长线去掉
@@ -169,7 +170,7 @@ public class OperationFragment extends Fragment {
      */
     @OnLongClick({R.id.btn_update1})
     public boolean onLongClick2(View view){
-        ((ModeActivity) getActivity()).showCurrentDevice();
+        ((ModeActivity) getActivity()).showCurrentDevice(); //长按事件  //GC20231214
         //弹窗弹出时操作栏按钮需无效，否则会被点击    //GC20220810
         ((ModeActivity) getActivity()).setOperationFalse();
         return true;

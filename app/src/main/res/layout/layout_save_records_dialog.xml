@@ -58,7 +58,8 @@
                         android:singleLine="true"
                         android:text="1"
                         android:textColor="@color/T_F2"
-                        android:textSize="@dimen/sp_11" />
+                        android:textSize="@dimen/sp_11"
+                        android:maxLength="12" /><!--maxLength限制长度//GC20231207-->
 
                     <View
                         android:layout_width="wrap_content"
@@ -192,7 +193,9 @@
                         android:singleLine="true"
                         android:text=""
                         android:textColor="@color/T_F2"
-                        android:textSize="@dimen/sp_11" />
+                        android:textSize="@dimen/sp_11"
+                        android:inputType="number"
+                        android:maxLength="5" /><!--maxLength限制长度//GC20231207--><!--number限制输入只为数字//GC20231207-->
 
                     <TextView
                         android:id="@+id/tv_cable_length_unit"
@@ -239,7 +242,8 @@
                         android:singleLine="true"
                         android:text="100"
                         android:textColor="@color/T_F2"
-                        android:textSize="@dimen/sp_11" />
+                        android:textSize="@dimen/sp_11"
+                        android:enabled="false" /><!--限制不可更改//GC20231207-->
 
                     <TextView
                         android:id="@+id/tv_fault_location_unit"
@@ -325,7 +329,8 @@
                         android:singleLine="true"
                         android:text=""
                         android:textColor="@color/T_F2"
-                        android:textSize="@dimen/sp_11" />
+                        android:textSize="@dimen/sp_11"
+                        android:maxLength="14" /><!--maxLength限制长度//GC20231207-->
 
                     <View
                         android:layout_width="wrap_content"
@@ -359,7 +364,8 @@
                         android:singleLine="true"
                         android:text=""
                         android:textColor="@color/T_F2"
-                        android:textSize="@dimen/sp_11" />
+                        android:textSize="@dimen/sp_11"
+                        android:maxLength="14" /><!--maxLength限制长度//GC20231207-->
 
                     <View
                         android:layout_width="wrap_content"

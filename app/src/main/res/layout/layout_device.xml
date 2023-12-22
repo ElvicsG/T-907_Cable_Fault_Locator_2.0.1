@@ -51,10 +51,10 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:inputType="number"
+            android:inputType="phone"
             android:minWidth="@dimen/dp_96"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp" /><!--inputType="number"//GC20231116-->
     </LinearLayout>
 
     <LinearLayout

@@ -1,6 +1,7 @@
 package net.kehui.www.t_907_origin_V2.ui;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -171,7 +172,8 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
     }
 
     private void setEtDate() {
-        SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
+        SimpleDateFormat dateSdf = new SimpleDateFormat("yyyy/MM/dd", Locale.US);   //GC20230609    年份格式修改
+//        SimpleDateFormat dateSdf = new SimpleDateFormat("yy/MM/dd", Locale.US);
         SimpleDateFormat timeSdf = new SimpleDateFormat("HH:mm:ss", Locale.US);
         date = dateSdf.format(date1);
         time = timeSdf.format(date1);
@@ -203,7 +205,7 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
                 tvMode.setText(getContext().getResources().getString(R.string.btn_icm_decay));
                 Constant.Mode = ICM_DECAY;
                 modeName = "ICMDECAY";
-                modeSave = 1;
+                modeSave = 1;   //modeSave = 4; //GC20230609
                 break;
             case SIM:
                 tvMode.setText(getContext().getResources().getString(R.string.btn_sim));
@@ -215,7 +217,7 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
                 tvMode.setText(getContext().getResources().getString(R.string.btn_decay));
                 Constant.Mode = DECAY;
                 modeName = "DECAY";
-                modeSave = 1;
+                modeSave = 1;   //modeSave = 3; //GC20230609
                 break;
             default:
                 break;
@@ -233,7 +235,7 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
                     tvRange.setText(getContext().getResources().getString(R.string.btn_250m));
                 }
                 Constant.Range = RANGE_250;
-                rangeSave = 0;  //本地存储范围记录  //GC20220701
+                rangeSave = 0;  //本地存储范围记录  //GC20220701    //rangeSave = 8;    //GC20230609
                 break;
             case RANGE_500:
                 if (CurrentUnit == FT_UNIT) {
@@ -387,7 +389,7 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
             case R.id.tv_save:
                 final Data data = formatData(new Data());
                 Flowable.create((FlowableOnSubscribe<List>) e -> {
-                    dao.insertData(data);
+                    dao.insertData(data);   //保存时   //GC20230629
                     List list = Arrays.asList(dao.query());
                     e.onNext(list);
                     e.onComplete();
@@ -449,6 +451,7 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
         } else {
             data.line = "";
         }
+        data.line = tvCableLength.getText().toString(); //save界面保存电缆长度  //GC20231211
 
         data.phase = Constant.Phase + "";
         data.tester = tvOperator.getText().toString().trim();
@@ -467,35 +470,70 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
     /**
      * 波形数据以文件形式保存     //GC20210125
      */
-    String waveData = "";
-    byte modeSave;
-    byte rangeSave;
+    private byte modeSave;  //保存到文件时方式的值    //GC20231226
+    private byte rangeSave; //保存到文件时范围的值
     private void saveClick() {
-        initDataName();
+        initDataName(); //根据方式和时间生成名字   //GC20231226
         //直接将int数组转变为byte数组（int数据大小未超过byte显示）
         int length = Constant.WaveData.length;
-        byte[] bytes = new byte[length + 20];
+        byte[] bytes;
+        if (modeSave == 2) {    //GC20230609
+            bytes = new byte[length * 2 + 20];
+        } else {
+            bytes = new byte[length + 20];
+        }
         bytes[0] = modeSave;
         bytes[1] = rangeSave;
         bytes[2] = (byte) Constant.SaveToDBGain;
-        for (int i = 3; i < 20; i++) {
+        //GC20230609
+        byte[] bytes1 = shortToByte((short) Constant.Velocity); //波速度
+        bytes[3] = bytes1[1];   //高8位
+        bytes[4] = bytes1[0];   //低8位
+        /*bytes[3] = (byte) (velocityTemp/256);   //高8位
+        bytes[4] = (byte) (velocityTemp%256);   //低8位*/
+        byte[] bytes2 = shortToByte((short) Math.abs(Constant.PositionV - Constant.PositionR));    //虚实光标距离
+        bytes[5] = bytes2[1];   //高8位
+        bytes[6] = bytes2[0];   //低8位
+        byte[] bytes3 = shortToByte((short) Constant.PositionR); //实光标
+        bytes[7] = bytes3[1];   //高8位
+        bytes[8] = bytes3[0];   //低8位
+//        for (int i = 3; i < 20; i++) {    //GC20230609
+        for (int i = 9; i < 20; i++) {
             bytes[i] = 0;
         }
         for (int i = 20, j = 0; j < length; i++, j++) {
             bytes[i] = (byte) Constant.WaveData[j];
         }
+        if (modeSave == 2) {    //GC20230609    多次脉冲第二条波形添加
+            for (int i = 20 + length, j = 0; j < length; i++, j++) {
+                bytes[i] = (byte) Constant.SimData[j];
+            }
+        }
         //根据byte数组生成文件，保存到手机上
         createFileWithByte(bytes);
-        waveData = "";
         //弹出信息提示
 //        Toast.makeText(ModeActivity.this, "生成文件成功！", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * short转byte
+     */
+    public static byte[] shortToByte(short number) {
+        int temp = number;
+        byte[] b = new byte[2];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = Integer.valueOf(temp & 0xff).byteValue();
+            // 向右移8位
+            temp = temp >> 8;
+        }
+        return b;
     }
 
     private String fileName;
     private String modeName;
     private void initDataName() {
 //        fileName = "byte_to_file";
-        fileName = modeName + Constant.Date.trim() + Constant.Time.trim();
+        fileName = modeName + Constant.Date.trim() + Constant.Time.trim();  //方式在前，907单独  //GC20231208
         fileName = fileName.replaceAll(":","");
         fileName = fileName.replaceAll("/","");
     }
@@ -506,11 +544,16 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
      */
     private void createFileWithByte(byte[] bytes) {
         //在sd卡中设置新目录存放文件
-        String path  = Environment.getExternalStorageDirectory().getPath();
-        File file = new File(path + "/907");
-        //创建FileOutputStream对象
+        String path;    //GC20231208
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {    //GC20231208
+            path = Environment.getExternalStorageDirectory().getPath();
+        } else {
+            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"; //安卓9以后权限改动的位置 //GC20231208
+        }
+
+        File file = new File(path + "/907");//创建FileOutputStream对象
         FileOutputStream outputStream = null;
-        //创建BufferedOutputStream对象
+        //创建BufferedOutputStream对象android:requestLegacyExternalStorage
         BufferedOutputStream bufferedOutputStream = null;
         try {
             // 如果目录不存在则创建
@@ -547,6 +590,7 @@ public class SaveRecordsDialog extends BaseDialog implements View.OnClickListene
                 }
             }
         }
+
     }
 
 }

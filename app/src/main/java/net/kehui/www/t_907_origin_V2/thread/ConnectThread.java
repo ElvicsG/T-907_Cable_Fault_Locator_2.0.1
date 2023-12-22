@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
-import static net.kehui.www.t_907_origin_V2.ConnectService.needReconnect;
 import static net.kehui.www.t_907_origin_V2.application.Constant.needAddData;
 import static net.kehui.www.t_907_origin_V2.application.Constant.waveLen;
 import static net.kehui.www.t_907_origin_V2.application.Constant.waveSimLen;
@@ -346,13 +345,13 @@ public class ConnectThread extends Thread {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            if (needReconnect) {    //先判断，避免无可用网络和socket异常重复执行建立连接的操作   //GC20230112
-                needReconnect = false;
+            if (!e.getMessage().equals("Software caused connection abort")) { //GT20230506
+                //EN20200324
                 handler.sendEmptyMessage(ConnectService.DEVICE_DISCONNECTED);
-                handler.sendEmptyMessage(ConnectService.DEVICE_DO_CONNECT);
-                Log.e("【SOCKET连接】", e.getMessage() + "socket异常，发送广播给modeActivity设置界面状态，然后尝试去建立连接。");    //GT20230506
+                handler.sendEmptyMessageDelayed(ConnectService.DEVICE_DO_CONNECT, 2000);
+                Log.e("【SOCKET连接】", e.getMessage() + "socket异常，发送广播给modeActivity设置界面状态，然后尝试去建立连接。");
+                e.printStackTrace();
             }
-            e.printStackTrace();
         }
     }
 

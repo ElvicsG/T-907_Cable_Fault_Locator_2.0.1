@@ -101,6 +101,7 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
     private int selectedId;
     private int mode;
     private int pos;
+    private int spModePos;  //GC20230913
 
     //加载类型
     //0是第一次 1是加载
@@ -143,7 +144,27 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
             spMode.setVisibility(View.GONE);
             tvSelectModeText.setVisibility(View.GONE);
         }*/
-        //测试方式可选择 //GC20220821
+        //bug修正，根据方式的不同选择下拉菜单的位置，以初始化加载的记录（通过方式区分）  //GC20230913
+        switch (mode) {
+            case 0x11:  //TDR
+                spModePos = 0;
+                break;
+            case 0x22:  //ICM
+                spModePos = 1;
+                break;
+            case 0x33:  //SIM
+                spModePos = 3;
+                break;
+            case 0x44:  //DECAY
+                spModePos = 4;
+                break;
+            case 0x55:  //ICM_DECAY
+                spModePos = 2;
+                break;
+            default:
+                break;
+        }
+        //直接进入方式界面，可选择其他方式下的记录  //GC20220821
         setSpMode();
 
     }
@@ -181,6 +202,8 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
     private void initAdapter() {
         adapter = new RecordsAdapter();
         layoutManager = new LinearLayoutManager(getContext());
+//        layoutManager.setReverseLayout(true);   //列表翻转  //GC20230913
+//        layoutManager.setStackFromEnd(true);    //列表再底部开始展示，反转后由上面开始展示    //GC20231116列表不翻转
         rvRecords.setLayoutManager(layoutManager);
         rvRecords.setAdapter(adapter);
         rvRecords.setItemAnimator(new DefaultItemAnimator());
@@ -189,11 +212,11 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
             selectedId = dataId;
             //GC20190713
             Constant.Para = selectedPara;
-            Data waveData = GetWaveData(selectedId);
+            Data waveData = GetWaveData(selectedId);    //显示时   //GC20230629
             Constant.WaveData = waveData.waveData;
             Constant.SimData = waveData.waveDataSim;
             Constant.PositionR = adapter.datas.get(position).positionReal;
-            Constant.PositonV = adapter.datas.get(position).positionVirtual;
+            Constant.PositionV = adapter.datas.get(position).positionVirtual;
             Constant.SaveLocation = adapter.datas.get(position).location;
             pos = position;
             setDataByPosition(adapter.datas.get(position));
@@ -231,10 +254,10 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
         modeList.add(getContext().getResources().getString(R.string.btn_sim));
         modeList.add(getContext().getResources().getString(R.string.btn_decay));
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_spinner_item, modeList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, modeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spMode.setAdapter(adapter);
+        spMode.setSelection(spModePos, true);   //根据方式选择下拉菜单的位置    //GC20230913
         spMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -281,7 +304,7 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
             case R.id.iv_close:
                 dismiss();
                 break;
-            case R.id.tv_display:
+            case R.id.tv_display:   //数据库数据显示 //GC20230629
                 Intent intent = new Intent();
                 if (fromMain) {
                     intent.setClass(getContext(), ModeActivity.class);
@@ -349,7 +372,7 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
                     Constant.WaveData = waveData.waveData;
                     Constant.SimData = waveData.waveDataSim;
                     Constant.PositionR = adapter.datas.get(pos).positionReal;
-                    Constant.PositonV = adapter.datas.get(pos).positionVirtual;
+                    Constant.PositionV = adapter.datas.get(pos).positionVirtual;
                     Constant.SaveLocation = adapter.datas.get(pos).location;
                 }
             }
@@ -376,7 +399,7 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
                     Constant.WaveData = waveData.waveData;
                     Constant.SimData = waveData.waveDataSim;
                     Constant.PositionR = adapter.datas.get(pos).positionReal;
-                    Constant.PositonV = adapter.datas.get(pos).positionVirtual;
+                    Constant.PositionV = adapter.datas.get(pos).positionVirtual;
                     Constant.SaveLocation = adapter.datas.get(pos).location;
                 }
                 adapter.notifyDataSetChanged();
@@ -389,7 +412,7 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
 
     private Data GetWaveData(int selectedId) {
         Data[] data;
-        data = dao.queryWaveById(selectedId);
+        data = dao.queryWaveById(selectedId);   //显示时   //GC20230629
         return data[0];
 
     }
@@ -424,6 +447,8 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
                 if (loadType == 0) {
                     loadPage = 0;
                     if (list.size() > 0) {
+//                        int listLength = list.size() - 1;  //记录列表长度，定位到最后位置    //GC20230913
+                        int listLength = 0;  //定位位置为0    //GC20230913
                         isHas = true;
                         rlHasRecords.setVisibility(View.VISIBLE);
                         tvNoRecords.setVisibility(View.GONE);
@@ -432,17 +457,17 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
                         }
                         adapter.datas.addAll(list);
                         adapter.notifyDataSetChanged();
-                        adapter.changeSelected(0);  //方式改变后，刷新点击位置  //GC20220821
-                        setDataByPosition(list.get(0));
-                        selectedId = list.get(0).dataId;
+                        adapter.changeSelected(listLength);  //方式改变后，刷新点击位置  //GC20220821    //刷新定位到最列表后位置    //GC20230913
+                        setDataByPosition(list.get(listLength));
+                        selectedId = list.get(listLength).dataId;
                         //GC20190713
-                        Constant.Para = list.get(0).para;
+                        Constant.Para = list.get(listLength).para;
                         Data waveData = GetWaveData(selectedId);
                         Constant.WaveData = waveData.waveData;
                         Constant.SimData = waveData.waveDataSim;
-                        Constant.PositonV = list.get(0).positionVirtual;
-                        Constant.PositionR = list.get(0).positionReal;
-                        Constant.SaveLocation = list.get(0).location;
+                        Constant.PositionV = list.get(listLength).positionVirtual;
+                        Constant.PositionR = list.get(listLength).positionReal;
+                        Constant.SaveLocation = list.get(listLength).location;
                     } else {
                         rlHasRecords.setVisibility(View.GONE);
                         tvNoRecords.setVisibility(View.VISIBLE);
@@ -505,7 +530,7 @@ public class ShowRecordsDialog extends BaseDialog implements View.OnClickListene
         }
         tvPhase.setText(initPhase(Integer.valueOf(data.phase)));
         tvOperator.setText(data.tester);
-        tvTestSite.setText(data.tester);
+        tvTestSite.setText(data.testsite);    //测试地点加载错误，误添加tester  //GC20231211
 
     }
 

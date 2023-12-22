@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.percentlayout.widget.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00000000"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.percentlayout.widget.PercentRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_mode">
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/bg_dialog_close_big" />
+
+        <LinearLayout
+            android:id="@+id/ll_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_heightPercent="15%"
+            app:layout_marginLeftPercent="4%"
+            app:layout_marginRightPercent="4%">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="协助详情上传"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <androidx.percentlayout.widget.PercentRelativeLayout
+            android:id="@+id/rl_save_records"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_name"
+            app:layout_heightPercent="70%"
+            app:layout_marginLeftPercent="4%"
+            app:layout_marginRightPercent="4%"
+            android:gravity="center">
+
+            <!--协助信息填写区-->
+            <RelativeLayout
+                android:id="@+id/rl_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:gravity="center"
+                android:background="@drawable/shape_solide_back">
+
+                <RelativeLayout
+                    android:id="@+id/rl_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10">
+
+                    <TextView
+                        android:id="@+id/tv_cable_id_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cable_id"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <EditText
+                        android:id="@+id/tv_cable_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_toEndOf="@id/tv_cable_id_text"
+                        android:background="@null"
+                        android:minWidth="@dimen/dp_100"
+                        android:singleLine="true"
+                        android:text="1"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11"
+                        android:maxLength="12" /><!--maxLength限制长度//GC20231207-->
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/tv_cable_id"
+                        android:layout_alignStart="@id/tv_cable_id"
+                        android:layout_alignEnd="@id/tv_cable_id"
+                        android:background="@color/blue_72FBFD" />
+
+                    <TextView
+                        android:id="@+id/tv_date_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_cable_id"
+                        android:layout_alignEnd="@id/tv_cable_id_text"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/date_text"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <EditText
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_cable_id"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_toEndOf="@id/tv_date_text"
+                        android:background="@null"
+                        android:minWidth="@dimen/dp_100"
+                        android:text="2023年06月30号"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/tv_date"
+                        android:layout_alignStart="@id/tv_date"
+                        android:layout_alignEnd="@id/tv_date"
+                        android:background="@color/blue_72FBFD" />
+
+                    <TextView
+                        android:id="@+id/tv_mode_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_date_text"
+                        android:layout_alignEnd="@id/tv_cable_id_text"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/mode_text"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <EditText
+                        android:id="@+id/tv_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_date_text"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_toEndOf="@id/tv_mode_text"
+                        android:background="@null"
+                        android:minWidth="@dimen/dp_100"
+                        android:text=""
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/tv_mode"
+                        android:layout_alignStart="@id/tv_mode"
+                        android:layout_alignEnd="@id/tv_mode"
+                        android:background="@color/blue_72FBFD" />
+
+                    <TextView
+                        android:id="@+id/tv_range_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_mode_text"
+                        android:layout_alignEnd="@id/tv_cable_id_text"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/range_text"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <EditText
+                        android:id="@+id/tv_range"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_mode_text"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_toEndOf="@id/tv_range_text"
+                        android:background="@null"
+                        android:enabled="false"
+                        android:minWidth="@dimen/dp_100"
+                        android:text="@string/btn_500m"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/tv_range"
+                        android:layout_alignStart="@id/tv_range"
+                        android:layout_alignEnd="@id/tv_range"
+                        android:background="@color/blue_72FBFD" />
+
+                    <TextView
+                        android:id="@+id/tv_cable_length_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_range"
+                        android:layout_alignEnd="@id/tv_cable_id_text"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/cable_length"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <EditText
+                        android:id="@+id/tv_cable_length"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_range"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_toEndOf="@id/tv_cable_length_text"
+                        android:background="@null"
+                        android:minWidth="@dimen/dp_100"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11"
+                        android:inputType="number"
+                        android:maxLength="5" /><!--maxLength限制长度//GC20231207--><!--number限制输入只为数字//GC20231207-->
+
+                    <TextView
+                        android:id="@+id/tv_cable_length_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_range"
+                        android:layout_alignEnd="@id/tv_cable_length"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="m"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/tv_cable_length"
+                        android:layout_alignStart="@id/tv_cable_length"
+                        android:layout_alignEnd="@id/tv_cable_length"
+                        android:background="@color/blue_72FBFD" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_10"
+                    android:layout_marginEnd="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_toEndOf="@+id/rl_1"><!--android:layout_alignParentEnd="true"-->
+
+                    <TextView
+                        android:id="@+id/tv_fault_location_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fault_location_text"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <EditText
+                        android:id="@+id/tv_fault_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/tv_fault_location_text"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:background="@null"
+                        android:minWidth="@dimen/dp_100"
+                        android:singleLine="true"
+                        android:text="100"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11"
+                        android:enabled="false" /><!--限制不可更改//GC20231207-->
+
+                    <TextView
+                        android:id="@+id/tv_fault_location_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignEnd="@id/tv_fault_location"
+                        android:text="m"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/tv_fault_location"
+                        android:layout_alignStart="@id/tv_fault_location"
+                        android:layout_alignEnd="@id/tv_fault_location"
+                        android:background="@color/blue_72FBFD" />
+
+                    <TextView
+                        android:id="@+id/tv_phase_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_fault_location"
+                        android:layout_alignEnd="@id/tv_fault_location_text"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/phase_text"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <EditText
+                        android:id="@+id/tv_phase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_fault_location"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_toEndOf="@id/tv_phase_text"
+                        android:background="@null"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <Spinner
+                        android:id="@+id/sp_phase"
+                        android:layout_width="@dimen/dp_100"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_fault_location"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_toEndOf="@+id/tv_phase_text"
+                        android:gravity="end"
+                        app:layout_column="4" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/sp_phase"
+                        android:layout_alignStart="@id/sp_phase"
+                        android:layout_alignEnd="@id/sp_phase"
+                        android:background="@color/blue_72FBFD" />
+
+
+                    <TextView
+                        android:id="@+id/tv_operator_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_phase_text"
+                        android:layout_alignEnd="@id/tv_fault_location_text"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/tv_tester"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11"
+                        android:maxLength="14" /><!--maxLength限制长度//GC20231207-->
+
+                    <EditText
+                        android:id="@+id/tv_operator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_phase"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_toEndOf="@id/tv_operator_text"
+                        android:background="@null"
+                        android:minWidth="@dimen/dp_100"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/tv_operator"
+                        android:layout_alignStart="@id/tv_operator"
+                        android:layout_alignEnd="@id/tv_operator"
+                        android:background="@color/blue_72FBFD" />
+
+                    <TextView
+                        android:id="@+id/tv_test_site_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_operator_text"
+                        android:layout_alignEnd="@id/tv_fault_location_text"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="@string/test_site_text"
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11"
+                        android:maxLength="14" /><!--maxLength限制长度//GC20231207-->
+
+                    <EditText
+                        android:id="@+id/tv_test_site"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_operator_text"
+                        android:layout_marginStart="@dimen/dp_2"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_toEndOf="@id/tv_test_site_text"
+                        android:background="@null"
+                        android:minWidth="@dimen/dp_100"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/T_F2"
+                        android:textSize="@dimen/sp_11" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dp_0_5"
+                        android:layout_below="@id/tv_test_site"
+                        android:layout_alignStart="@id/tv_test_site"
+                        android:layout_alignEnd="@id/tv_test_site"
+                        android:background="@color/blue_72FBFD" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <!--测试Get-->
+            <RelativeLayout
+                android:id="@+id/rl_Get"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_toEndOf="@+id/rl_info"
+                android:background="@drawable/bg_mode_wave"
+                android:gravity="center_vertical"
+                app:layout_heightPercent="65%">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tv_Get"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Get"
+                        android:gravity="center"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/sp_13"
+                        android:background="@drawable/shape_solide_0ff6ff" />
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toEndOf="@id/tv_Post">
+
+                        <TextView
+                            android:id="@+id/tv_Content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary" />
+                    </ScrollView>
+
+                    <TextView
+                        android:id="@+id/tv_Post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Post"
+                        android:layout_below="@id/tv_Get"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/sp_13"
+                        android:background="@drawable/shape_solide_0ff6ff" />
+
+                    <TextView
+                        android:id="@+id/tv_Post2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Post2"
+                        android:layout_below="@id/tv_Post"
+                        android:gravity="center"
+                        android:layout_marginTop="@dimen/dp_20"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/sp_13"
+                        android:background="@drawable/shape_solide_0ff6ff" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <!--协助波形显示区-->
+            <RelativeLayout
+                android:id="@+id/rl_wave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_toEndOf="@+id/rl_info"
+                android:background="@drawable/bg_mode_wave"
+                android:gravity="center"
+                android:visibility="gone"
+                app:layout_heightPercent="45%">
+
+                <LinearLayout
+                    android:id="@+id/ll_wave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <!--波形框-->
+                    <net.kehui.www.t_907_origin_V2.ui.SparkView.SparkView
+                        android:id="@+id/mainWave"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorAccent"
+                        android:padding="@dimen/dp_4"
+                        app:spark_lineColor="@color/blue_303f9f"
+                        app:spark_scrubEnabled="true" />
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.percentlayout.widget.PercentRelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@id/rl_save_records"
+            android:gravity="end"
+            android:padding="@dimen/dp_5"
+            app:layout_heightPercent="15%"
+            app:layout_marginLeftPercent="4%"
+            app:layout_marginRightPercent="4%">
+
+            <TextView
+                android:id="@+id/tv_save_assist"
+                android:layout_width="@dimen/dp_75"
+                android:layout_height="@dimen/dp_25"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:background="@drawable/shape_solide_0ff6ff"
+                android:gravity="center"
+                android:text="@string/btn_save"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/sp_13" />
+
+            <Button
+                android:id="@+id/btn_upload_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:background="@drawable/shape_solide_0ff6ff"
+                android:drawableStart="@drawable/ic_assist_list_upload"
+                android:drawablePadding="5dp"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                android:text="@string/upload"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/sp_13" />
+
+            <Button
+                android:id="@+id/btn_back_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_30"
+                android:background="@drawable/shape_solide_0ff6ff"
+                android:drawableStart="@drawable/ic_assist_list_back"
+                android:drawablePadding="5dp"
+                android:paddingStart="@dimen/dp_10"
+                android:paddingEnd="@dimen/dp_10"
+                android:text="@string/back"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/sp_13" />
+        </LinearLayout>
+
+    </androidx.percentlayout.widget.PercentRelativeLayout>
+
+</androidx.percentlayout.widget.PercentRelativeLayout>

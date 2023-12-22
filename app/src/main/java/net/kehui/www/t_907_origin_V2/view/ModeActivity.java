@@ -1,6 +1,5 @@
 package net.kehui.www.t_907_origin_V2.view;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,7 +8,9 @@ import android.content.IntentFilter;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,13 +26,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -46,13 +53,22 @@ import net.kehui.www.t_907_origin_V2.R;
 import net.kehui.www.t_907_origin_V2.adpter.MyChartAdapterBase;
 import net.kehui.www.t_907_origin_V2.application.AppConfig;
 import net.kehui.www.t_907_origin_V2.application.Constant;
+import net.kehui.www.t_907_origin_V2.application.MyApplication;
 import net.kehui.www.t_907_origin_V2.base.BaseActivity;
+import net.kehui.www.t_907_origin_V2.entity.DataAssist;
 import net.kehui.www.t_907_origin_V2.entity.ParamInfo;
 import net.kehui.www.t_907_origin_V2.fragment.AdjustFragment;
 import net.kehui.www.t_907_origin_V2.fragment.ModeFragment;
 import net.kehui.www.t_907_origin_V2.fragment.OperationFragment;
 import net.kehui.www.t_907_origin_V2.fragment.RangeFragment;
+import net.kehui.www.t_907_origin_V2.net.CallBackCustom;
+import net.kehui.www.t_907_origin_V2.net.OkHttpUtils;
+import net.kehui.www.t_907_origin_V2.retrofit.T907CallBackCustom;
+import net.kehui.www.t_907_origin_V2.retrofit.T907RetrofitUtils;
 import net.kehui.www.t_907_origin_V2.ui.AppUpdateDialog;
+import net.kehui.www.t_907_origin_V2.ui.AssistDetailDialog;
+import net.kehui.www.t_907_origin_V2.ui.AssistRecordDialog;
+import net.kehui.www.t_907_origin_V2.ui.LanguageChangeDialog;
 import net.kehui.www.t_907_origin_V2.ui.MoveView;
 import net.kehui.www.t_907_origin_V2.ui.MoveWaveView;
 import net.kehui.www.t_907_origin_V2.ui.SaveRecordsDialog;
@@ -63,6 +79,8 @@ import net.kehui.www.t_907_origin_V2.util.AppUtils;
 import net.kehui.www.t_907_origin_V2.util.StateUtils;
 import net.kehui.www.t_907_origin_V2.util.UnitUtils;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -70,6 +88,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -231,6 +254,8 @@ public class ModeActivity extends BaseActivity {
     @BindView(R.id.et_current_device_id)
     EditText etCurrentDeviceId;
 
+    private static final String TAG = "ModeActivity";  //GC20231213
+
     private int index;
     //计算滑动时的基数
     private int fenzi1;
@@ -250,6 +275,7 @@ public class ModeActivity extends BaseActivity {
     private RangeFragment rangeFragment;
     private AdjustFragment adjustFragment;
     private OperationFragment operationFragment;
+    private LanguageChangeDialog languageChangeDialog;  //添加语言切换对话框   //GC20230912
 
     /**
      * 定义bundle的key-value
@@ -434,23 +460,17 @@ public class ModeActivity extends BaseActivity {
         }
     };
 
-    /**
-     * 开始下载文件
-     */
-    public void showUp(){
-        Toast.makeText(ModeActivity.this, R.string.check_update, Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (MainActivity.baseset == 1) {
+//        if (MainActivity.baseset == 1) {  //直接进入Mode界面的方法修改    //GC20230911
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_mode);
             Log.e("【启动页面】", "进入mode页面。");
 //            Log.e("【启动页面】", "baseset" + MainActivity.baseset);
             ButterKnife.bind(this);
 
-            mode = getIntent().getIntExtra(BUNDLE_MODE_KEY, 0);
+            startModeService(); //启动主服务 //GC20230911
+            mode = getIntent().getIntExtra(BUNDLE_MODE_KEY, 0x11); //0改为0x11    //GC20230913
             isReceiveData = getIntent().getBooleanExtra("isReceiveData", true);
             initUnit();
             initSparkView();    //画直线
@@ -471,9 +491,17 @@ public class ModeActivity extends BaseActivity {
                 intent.putExtra("display_action", ModeActivity.DISPLAY_DATABASE);
                 sendBroadcast(intent);
             }
-        }
-        MainActivity.baseset = 0;   //jk20210206  解决电源按键问题
+//        } //GC20230911
+//        MainActivity.baseset = 0;   //jk20210206  解决电源按键问题
 //        Log.e("【启动页面】", "baseset1" + MainActivity.baseset);
+    }
+
+    /**
+     *  //启动主服务    //GC20230911
+     */
+    public void startModeService() {
+        Intent intent = new Intent(ModeActivity.this, ConnectService.class);
+        startService(intent);
     }
 
     /**
@@ -502,6 +530,8 @@ public class ModeActivity extends BaseActivity {
                 false, 0, false);
         mainWave.setAdapter(myChartAdapterMainWave);
         setMoveView();
+//        Constant.WaveData = null;   //需要保存的数据赋值null   //GC20231208
+        Constant.allowSave = false;   //初始化不可保存   //GC20231208
         Log.i("Draw", "初始化绘制结束");
         //初始化清空自动测距参考信息
         tvInformation.setText("");
@@ -615,6 +645,7 @@ public class ModeActivity extends BaseActivity {
         //画波形
         myChartAdapterMainWave.setmTempArray(waveDraw);
         myChartAdapterMainWave.setShowCompareLine(isCom);
+        Constant.allowSave = true;   //绘制波形可保存   //GC20231208
         if (mode == SIM) {
             if (isCom) {
                 myChartAdapterMainWave.setmCompareArray(waveCompare);
@@ -1477,6 +1508,8 @@ public class ModeActivity extends BaseActivity {
         adjustFragment.btnGainMinus.setEnabled(true);
         adjustFragment.btnBalancePlus.setVisibility(View.GONE);
         adjustFragment.btnBalanceMinus.setVisibility(View.GONE);
+        adjustFragment.btnDelayPlus.setVisibility(View.GONE);   //直闪方式没有延时 //GC20231207
+        adjustFragment.btnDelayMinus.setVisibility(View.GONE);
         //操作栏fragment显示
         operationFragment.btnMemory.setVisibility(View.VISIBLE);
         operationFragment.btnCompare.setVisibility(View.VISIBLE);
@@ -1516,10 +1549,8 @@ public class ModeActivity extends BaseActivity {
         adjustFragment.btnGainMinus.setEnabled(true);
         adjustFragment.btnBalancePlus.setVisibility(View.GONE);
         adjustFragment.btnBalanceMinus.setVisibility(View.GONE);
-        adjustFragment.btnDelayPlus.setVisibility(View.GONE);
+        adjustFragment.btnDelayPlus.setVisibility(View.GONE);   //SIM方式没有延时 //GC20230911
         adjustFragment.btnDelayMinus.setVisibility(View.GONE);
-        adjustFragment.btnDelayPlus.setVisibility(View.VISIBLE);
-        adjustFragment.btnDelayMinus.setVisibility(View.VISIBLE);
         //操作栏fragment显示
         operationFragment.btnMemory.setVisibility(View.GONE);
         operationFragment.btnCompare.setVisibility(View.GONE);
@@ -1598,10 +1629,10 @@ public class ModeActivity extends BaseActivity {
             if (range == RANGE_250) {
                 distance = (((double) cursorDistance * velocity / 2) * k) / 2 * 0.01;
             }
-           } else if ((mode == ICM) || (mode == ICM_DECAY)) {
+        } else if ((mode == ICM) || (mode == ICM_DECAY)) {
             //有测试线缆     //GC20200103
             //Log.e("leadCat", "leadCat" + MainActivity.leadCat);
-          if ((leadLength > 0) && (catlead1 == 1)) {  //jk20201130  脉冲电流延长线不选就不计算//if (leadLength > 0) {
+            if ((leadLength > 0) && (catlead1 == 1)) {  //jk20201130  脉冲电流延长线不选就不计算//if (leadLength > 0) {
                 //实际点数
                 l = (int) (leadLength * 2000 / leadVop / 10);
                 lFault = cursorDistance - l;
@@ -3084,7 +3115,7 @@ public class ModeActivity extends BaseActivity {
         //GC20200109 DC方式下处理
         breakdownPosition = 140;
         if(range >= 6) {//25M采样
-            if(breakdownPosition > (50/4)) {//需要修改，32km和64km采样频率变了，需要调整参数
+            if(breakdownPosition > (50/4)) {//需0要修改，32km和64km采样频率变了，需要调整参数
                 w1 = breakdownPosition - (50/4);      //相关窗左侧
             } else {
                 w1 = breakdownPosition;
@@ -3585,6 +3616,9 @@ public class ModeActivity extends BaseActivity {
             }
             //距离显示
             calculateDistance(Math.abs(pointDistance - zero));
+        } else {
+            Log.e(" ICM算法光标", "进入容错 ");
+            false_flag = 0; //GC20231107
         }
     }
 
@@ -4581,7 +4615,7 @@ public class ModeActivity extends BaseActivity {
 
             r = correlationCalculation(simArray0Filter, simArray3Filter, n3);
             r1 = correlationCalculation(simArray0Filter, simArray3Filter, n);
-            Log.e("SIM筛选3", "3 相关系数r3 = " + r + " /整体相关系数 = " + r1  + " /负脉冲起始点" + n3);
+            Log.e("SIM筛选3", "3 相关系数 r3 = " + r + " /整体相关系数 = " + r1  + " /负脉冲起始点" + n3);
             if ( (r - r1) > 0.1 ) {
                 if (r > rMax) {
                     rMax = r;
@@ -5305,11 +5339,12 @@ public class ModeActivity extends BaseActivity {
         setVelocityNoCmd(Constant.Para[3]);
         Constant.ModeValue = Constant.Para[0];
         Constant.RangeValue = Constant.Para[1];
-        Constant.Gain = Constant.Para[2];
+//        Constant.Gain = Constant.Para[2]; //setGain应该是已经传递给Constant.Gain了   //GC20231226
+        Constant.SaveToDBGain = Constant.Para[2];   //数据库数据打开后再次保存时增益赋值  //GC20231226
         Constant.Velocity = Constant.Para[3];
         //实光标、虚光标、比例
         zero = Constant.PositionR;
-        pointDistance = Constant.PositonV;
+        pointDistance = Constant.PositionV;
         positionVirtual = pointDistance / densityMax;
         positionReal = zero / densityMax;
         mainWave.setScrubLineVirtual(positionVirtual);
@@ -6455,7 +6490,9 @@ public class ModeActivity extends BaseActivity {
                 break;
             case R.id.tv_help:
                 closeAllView();
-                showHelpModeDialog();
+//                showHelpModeDialog(); //屏蔽协助功能入口需放开  //GC202306201
+                //点击“帮助”按钮2  //GC20230629
+                showAssistRecordDialog();  //协助功能的入口  //GC202306201
                 break;
             case R.id.tv_lead_save:
                 llLead.setVisibility(View.GONE);
@@ -6469,6 +6506,11 @@ public class ModeActivity extends BaseActivity {
             case R.id.tv_records_save:
                 llRecords.setVisibility(View.GONE);
                 setOperationRestore();    //GC20220810
+//                if (Constant.WaveData == null) {  //初始化不可保存   //GC20231208
+                if (!Constant.allowSave) {
+                    Toast.makeText(this, "无有效数据，无法保存！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 showSaveDialog();
                 break;
             case R.id.tv_file_records:
@@ -6928,7 +6970,7 @@ public class ModeActivity extends BaseActivity {
             Constant.SSID = currentDevice;
             StateUtils.setString(ModeActivity.this, AppConfig.CURRENT_DEVICE,currentDevice);
             Toast.makeText(this, getResources().getString(R.string.current_device_set_success), Toast.LENGTH_SHORT).show();
-            //点击确认后重启APP    //GC20230113
+            //点击确认后重启APP（该方法失败）    //GC20230113
             Intent intent = new Intent(ModeActivity.this, ConnectService.class);
             stopService(intent);
             Intent intentSplash = new Intent(ModeActivity.this, MainActivity.class);
@@ -7023,6 +7065,439 @@ public class ModeActivity extends BaseActivity {
         showRecordsDialog.setMode(mode);
         if (!showRecordsDialog.isShowing()) {
             showRecordsDialog.show();
+        }
+    }
+
+    private Handler handlerOkHttp = new Handler(Looper.getMainLooper());    //GC20231212
+
+    /**
+     * 弹出“协助详情上传”对话框   //GC20230630
+     */
+    String tvCableIdAssist;
+    String tvCableLengthAssist;
+    String tvFaultLocationAssist;
+    String tvOperatorAssist;
+    String tvTestSiteAssist;
+    public void showAssistDetailDialog() {
+        AssistDetailDialog assistDetailDialog = new AssistDetailDialog(this);
+        Constant.ModeValue = mode;
+        //TODO 20191226 存储zero和pointDistance
+        assistDetailDialog.setPositionReal(zero);
+        assistDetailDialog.setPositionVirtual(pointDistance);
+        if (!assistDetailDialog.isShowing()) {
+            assistDetailDialog.show();
+            //外部点击禁止
+            assistDetailDialog.setCanceledOnTouchOutside(false);
+            //点击“保存”按钮事件
+            assistDetailDialog.saveAssistance(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //线缆编号——5.对应AssistHelpVO.cableId  //协助详情可修改内容 //GC20231226
+                    tvCableIdAssist = assistDetailDialog.tvCableId.getText().toString();
+                    //电缆长度——6.对应AssistHelpVO.cableLen
+                    tvCableLengthAssist = assistDetailDialog.tvCableLength.getText().toString();   //GC20231211
+                    tvFaultLocationAssist = assistDetailDialog.tvFaultLocation.getText().toString();    //故障距离数据转移  //GC20230630
+                    //测试人员——3.对应AssistHelpVO.testUser
+                    tvOperatorAssist = assistDetailDialog.tvOperator.getText().toString().trim();
+                    //测试地点——4.对应AssistHelpVO.testLoc
+                    tvTestSiteAssist = assistDetailDialog.tvTestSite.getText().toString().trim();
+                    initDetail();   //GC2023060
+                    clickSave();
+                    assistDetailDialog.dismiss();
+                    showAssistRecordDialog();  //保存完数据后弹出协助记录  //GC20230630
+                }
+            });
+            //点击“发起Get请求”  //GC20231212
+            assistDetailDialog.clickGet(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    assistDetailDialog.tvContent.setText("");  //点击按钮先清空
+                    //同步请求，会阻塞，调用需要new一个新的线程，相当于手动异步 //GC20231212
+                    /*new Thread(){
+                        @Override
+                        public void run() {
+                            try {
+                                String context = OkHttpUtils.getInstance().doGet("https://www.httpbin.org/get?a=1&b=2"); //同步执行
+                                handlerOkHttp.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        assistDetailDialog.tvContent.setText(context);
+                                        Log.i(TAG,"doGet同步" + context); //日志显示  //GC20231213
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();*/
+                    //异步请求 //GC20231212 https://www.baidu.com/
+                    OkHttpUtils.getInstance().doGet("https://www.httpbin.org/get?c=3&d=4", new CallBackCustom() {
+                        @Override
+                        public void onSuccess(String result) {
+                            assistDetailDialog.tvContent.setText(result);
+                            Log.i(TAG,"doGet异步" + result ); //日志显示  //GC20231213
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            assistDetailDialog.tvContent.setText("");
+                            Toast.makeText(ModeActivity.this,"网络操作失败",Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onThrowable(Throwable t) {
+                        }
+                    });
+                }
+            });
+            //点击“Post”  //GC20231212
+            assistDetailDialog.clickPost(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    assistDetailDialog.tvContent.setText("");  //点击按钮先清空
+                    HashMap<String, String> stringStringHashMap = new HashMap<>();
+                    stringStringHashMap.put("a","2");   //表格体   //GC20231213
+                    stringStringHashMap.put("b","2");   //表格体
+                    OkHttpUtils.getInstance().doPost("https://www.httpbin.org/post", new CallBackCustom() { //测试服务器 //GC20231213
+                        @Override
+                        public void onSuccess(String result) {
+                            assistDetailDialog.tvContent.setText(result);
+                            Log.i(TAG,"doPost异步" + result ); //日志显示  //GC20231213
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            assistDetailDialog.tvContent.setText("");
+                            Toast.makeText(ModeActivity.this,"OkHttp网络操作失败",Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onThrowable(Throwable t) {
+                        }
+                    }
+                    ,stringStringHashMap);  //hashMap连接后整理起来的FormBody
+                }
+            });
+            //点击“Post2”  //GC20231216
+            assistDetailDialog.clickPost2(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    assistDetailDialog.tvContent.setText("");  //点击按钮先清空
+
+//                    RetrofitUtils.getInstance().doRetrofitPost(new CallBackCustom() {
+                    T907RetrofitUtils.getInstance().doRetrofitGet(new T907CallBackCustom() {   //点击“POST2”按钮//GC20231220
+                        @Override
+                        public void onSuccess(String result) {
+                            assistDetailDialog.tvContent.setText(result);
+//                            Log.i(TAG,"doRetrofitPost" + result ); //日志显示  //GC20231216
+                            Log.i(TAG,"doRetrofitGet" + result ); //日志显示  //GC20231220
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+
+                        @Override
+                        public void onThrowable(Throwable t) {
+                            assistDetailDialog.tvContent.setText("doRetrofitGet网络操作失败");
+                            Toast.makeText(ModeActivity.this,"doRetrofitGet网络操作失败",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void initDetail() { //点击保存前有些数据需要赋值   //GC20230630
+        int mode = Constant.ModeValue;
+        switch (mode) {
+            case TDR:
+                modeName = "TDR";
+                modeSave = 0;
+                break;
+            case ICM:
+                modeName = "ICM";
+                modeSave = 1;
+                break;
+            case ICM_DECAY:
+                modeName = "ICMDECAY";
+                modeSave = 1;
+                break;
+            case SIM:
+                modeName = "SIM";
+                modeSave = 2;
+                break;
+            case DECAY:
+                modeName = "DECAY";
+                modeSave = 1;
+                break;
+            default:
+                break;
+        }
+        int range = Constant.RangeValue;
+        switch (range) {
+            case RANGE_250:
+                rangeSave = 0;  //本地存储范围记录  //GC20220701    //rangeSave = 8;    //GC20230609
+                break;
+            case RANGE_500:
+                rangeSave = 0;  //GC20220701
+                break;
+            case RANGE_1_KM:
+                rangeSave = 1;  //GC20220701
+                break;
+            case RANGE_2_KM:
+                rangeSave = 2;
+                break;
+            case RANGE_4_KM:
+                rangeSave = 3;
+                break;
+            case RANGE_8_KM:
+                rangeSave = 4;
+                break;
+            case RANGE_16_KM:
+                rangeSave = 5;
+                break;
+            case RANGE_32_KM:
+                rangeSave = 6;
+                break;
+            case RANGE_64_KM:
+                rangeSave = 7;
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * 协助详情上传：点击“保存”
+     */
+    private void clickSave() {
+        final DataAssist data = formatData(new DataAssist());
+        Flowable.create((FlowableOnSubscribe<List>) e -> {
+            daoAssist.insertData(data);   //保存时   //GC20230629
+            List list = Arrays.asList(daoAssist.query());
+            e.onNext(list);
+            e.onComplete();
+        }, BackpressureStrategy.BUFFER)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<List>() {
+            @Override
+            public void onSubscribe(Subscription s) {
+                s.request(Long.MAX_VALUE);
+            }
+
+            @Override
+            public void onNext(List list) {
+                //数据库保存提示 //20200520
+//                        Toast.makeText(getContext(), list.size() + "", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Toast.makeText(ModeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onComplete() {
+                //数据库保存修改   //20200520
+                Toast.makeText(ModeActivity.this, R.string.save_success, Toast.LENGTH_SHORT).show();
+            }
+        });
+        //点击“保存”按钮后存储文件 //GC20210125
+        saveClick();
+    }
+
+    /**
+     * 数据库数据赋值
+     * @param data
+     * @return
+     */
+    private ParamInfo paramInfo;
+    private DataAssist formatData(DataAssist data) {
+        paramInfo = (ParamInfo) StateUtils.getObject(ModeActivity.this, Constant.PARAM_INFO_KEY);   //GC20231211
+
+        data.date = Constant.Date.trim();
+        data.cableId = tvCableIdAssist; //GC20230630
+        data.time = Constant.Time.trim();
+        data.mode = Constant.Mode + "";
+        data.range = Constant.Range;
+        data.location = Constant.SaveLocation;
+
+        if (data.location == 0) {
+            if (!TextUtils.isEmpty(tvFaultLocationAssist)) {    //GC20230630
+                data.location = Double.parseDouble(tvFaultLocationAssist);
+            }
+        }
+
+        if (paramInfo != null) {
+            data.line = paramInfo.getCableLength();
+        } else {
+            data.line = "";
+        }
+        data.line = tvCableLengthAssist; //save界面保存电缆长度  //GC20231211
+
+        data.phase = Constant.Phase + "";
+        data.tester = tvOperatorAssist;
+        data.testsite = tvTestSiteAssist;
+        data.waveData = Constant.WaveData;
+        data.waveDataSim = Constant.SimData;
+
+        //TODO 20191226 存储zero 和pointDistance
+        data.positionReal = positionReal;
+        data.positionVirtual = positionVirtual;
+        //参数数据 方式  范围 增益 波速度
+        data.para = new int[]{Constant.ModeValue, Constant.RangeValue, Constant.SaveToDBGain, (int) Constant.Velocity};
+        return data;
+    }
+
+    /**
+     * 波形数据以文件形式保存     //GC20210125
+     */
+    private byte modeSave;  //保存到文件时方式的值
+    private byte rangeSave; //保存到文件时范围的值
+    private void saveClick() {
+        initDataName(); //根据方式和时间生成名字   //GC
+        //直接将int数组转变为byte数组（int数据大小未超过byte显示）
+        int length = Constant.WaveData.length;
+        byte[] bytes;
+        if (modeSave == 2) {    //GC20230609
+            bytes = new byte[length * 2 + 20];
+        } else {
+            bytes = new byte[length + 20];
+        }
+        bytes[0] = modeSave;
+        bytes[1] = rangeSave;
+        bytes[2] = (byte) Constant.SaveToDBGain;
+        //GC20230609
+        byte[] bytes1 = shortToByte((short) Constant.Velocity); //波速度
+        bytes[3] = bytes1[1];   //高8位
+        bytes[4] = bytes1[0];   //低8位
+        /*bytes[3] = (byte) (velocityTemp/256);   //高8位
+        bytes[4] = (byte) (velocityTemp%256);   //低8位*/
+        byte[] bytes2 = shortToByte((short) Math.abs(Constant.PositionV - Constant.PositionR));    //虚实光标距离
+        bytes[5] = bytes2[1];   //高8位
+        bytes[6] = bytes2[0];   //低8位
+        byte[] bytes3 = shortToByte((short) Constant.PositionR); //实光标
+        bytes[7] = bytes3[1];   //高8位
+        bytes[8] = bytes3[0];   //低8位
+//        for (int i = 3; i < 20; i++) {    //GC20230609
+        for (int i = 9; i < 20; i++) {
+            bytes[i] = 0;
+        }
+        for (int i = 20, j = 0; j < length; i++, j++) {
+            bytes[i] = (byte) Constant.WaveData[j];
+        }
+        if (modeSave == 2) {    //GC20230609    多次脉冲第二条波形添加
+            for (int i = 20 + length, j = 0; j < length; i++, j++) {
+                bytes[i] = (byte) Constant.SimData[j];
+            }
+        }
+        //根据byte数组生成文件，保存到手机上
+        createFileWithByte(bytes);
+        //弹出信息提示
+//        Toast.makeText(ModeActivity.this, "生成文件成功！", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * short转byte
+     */
+    public static byte[] shortToByte(short number) {
+        int temp = number;
+        byte[] b = new byte[2];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = Integer.valueOf(temp & 0xff).byteValue();
+            // 向右移8位
+            temp = temp >> 8;
+        }
+        return b;
+    }
+
+    private String fileName;
+    private String modeName;
+    private void initDataName() {
+//        fileName = "byte_to_file";
+        fileName = modeName + Constant.Date.trim() + Constant.Time.trim();  //方式在前，907单独  //GC20231208
+        fileName = fileName.replaceAll(":","");
+        fileName = fileName.replaceAll("/","");
+    }
+
+    /**
+     * 根据byte数组生成文件
+     * @param bytes 生成文件用到的byte数组
+     */
+    private void createFileWithByte(byte[] bytes) {
+        //在sd卡中设置新目录存放文件
+        String path;    //GC20231208
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {    //GC20231208
+            path  = Environment.getExternalStorageDirectory().getPath();
+        } else {
+            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/"; //安卓9以后权限改动 //GC20231208
+        }
+        File file = new File(path + "/907ASSIST");    //协助存储文件夹   //GC20230922
+        //创建FileOutputStream对象
+        FileOutputStream outputStream = null;
+        //创建BufferedOutputStream对象
+        BufferedOutputStream bufferedOutputStream = null;
+        try {
+            // 如果目录不存在则创建
+            if (!file.exists()) {
+                file.mkdir();
+            }
+            // 在文件系统中根据路径创建一个新的空文件
+            file.createNewFile();
+            // 获取FileOutputStream对象
+            outputStream = new FileOutputStream(file + "/" + fileName);
+            // 获取BufferedOutputStream对象
+            bufferedOutputStream = new BufferedOutputStream(outputStream);
+            // 往文件所在的缓冲输出流中写byte数据
+            bufferedOutputStream.write(bytes);
+            // 刷出缓冲输出流，该步很关键，要是不执行flush()方法，那么文件的内容是空的。
+            bufferedOutputStream.flush();
+        } catch (Exception e) {
+            // 打印异常信息
+            e.printStackTrace();
+        } finally {
+            // 关闭创建的流对象
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bufferedOutputStream != null) {
+                try {
+                    bufferedOutputStream.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 弹出“协助记录”对话框  //GC20230630
+     */
+    public void showAssistRecordDialog() {
+        AssistRecordDialog assistRecordDialog = new AssistRecordDialog(this);
+        assistRecordDialog.setMode(mode);
+        if (!assistRecordDialog.isShowing()) {
+            assistRecordDialog.show();
+            //外部点击禁止
+            assistRecordDialog.setCanceledOnTouchOutside(false);
+            //点击“发起协助”按钮事件
+            assistRecordDialog.initiateNewAssist(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!Constant.allowSave) {
+                        Toast.makeText(ModeActivity.this, "无有效数据，无法上传！", Toast.LENGTH_SHORT).show(); //GC20231208
+                        return;
+                    }
+                    assistRecordDialog.dismiss();
+                    showAssistDetailDialog(); //弹出“协助详情上传”对话框    //GC20230630
+                }
+            });
         }
     }
 
@@ -7587,6 +8062,55 @@ public class ModeActivity extends BaseActivity {
     }
 
     /**
+     * 开始下载文件   //改为语言更换   //GC20230912
+     */
+    public void showUp() {
+//        Toast.makeText(ModeActivity.this, R.string.check_update, Toast.LENGTH_SHORT).show();
+        showLanguageChangeDialog(); //GC20230912
+    }
+
+    /**
+     * 语言更换对话框   //GC20230912
+     */
+    private void showLanguageChangeDialog() {
+        languageChangeDialog = new LanguageChangeDialog(this);
+        if (!languageChangeDialog.isShowing()) {
+            languageChangeDialog.show();
+        }
+        languageChangeDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (!languageChangeDialog.getCloseStatus()) {
+                    //切换语言不需要重连
+                    Intent intent = new Intent(ModeActivity.this, ConnectService.class);
+                    stopService(intent);
+                    Intent intentSplash = new Intent(ModeActivity.this, ModeActivity.class);
+                    startActivity(intentSplash);
+
+                }
+            }
+        });
+    }
+
+    /**
+     * 语言更换成功后刷新并记录 //GC20230912
+     */
+    @Override
+    protected void onResume() {
+        String languageType = StateUtils.getString(MyApplication.getInstances(), AppConfig.CURRENT_LANGUAGE, "follow_sys"); //默认跟随系统语言  //GC20230912
+        Constant.currentLanguage = languageType;    //GC20230912
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        /*if (receiver != null) {
+            unregisterReceiver(receiver);
+        }*/
+        super.onPause();
+    }
+
+    /**
      * //G? 不知道干啥
      * @param outState
      */
@@ -7600,6 +8124,9 @@ public class ModeActivity extends BaseActivity {
         if (receiver != null) {
             unregisterReceiver(receiver);
         }
+        //Destroy停止服务   //GC20230912
+        Intent intent = new Intent(ModeActivity.this, ConnectService.class);    //GC20230912
+        stopService(intent);
         super.onDestroy();
     }
 

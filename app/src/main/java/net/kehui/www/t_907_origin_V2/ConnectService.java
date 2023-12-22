@@ -1,8 +1,11 @@
 package net.kehui.www.t_907_origin_V2;
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -23,12 +26,13 @@ import android.os.PatternMatcher;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import net.kehui.www.t_907_origin_V2.application.AppConfig;
 import net.kehui.www.t_907_origin_V2.base.BaseActivity;
 import net.kehui.www.t_907_origin_V2.application.Constant;
-import net.kehui.www.t_907_origin_V2.demo1.WifiAutoConnectManager;
 import net.kehui.www.t_907_origin_V2.thread.ConnectThread;
 import net.kehui.www.t_907_origin_V2.thread.ProcessThread;
 import net.kehui.www.t_907_origin_V2.tookit.IWifiDisConnectListener;
@@ -77,10 +81,9 @@ public class ConnectService extends Service {
      */
     public static boolean isConnected;
     /**
-     * 用于判断是否需要重新连接/是否执行connectDevice的方法   //GC20230112
+     * 用于判断是否执行DEVICE_DO_CONNECT   //GC20230508
      */
-    public static boolean needReconnect = true;
-    public static boolean doConnectDevice;
+    public static boolean doConnect = false;
     /**
      *是否正在连接中    //20200523
      */
@@ -119,13 +122,19 @@ public class ConnectService extends Service {
 
     @Override
     public void onCreate() {
-        //初始化网络SSID，默认为T-907，可长按操作栏“更新”按钮更改     //GC20220520
+
+        //获取需要连接的SSID，默认为T-907，可长按操作栏“更新”按钮更改     //GC20220520
         Constant.SSID = StateUtils.getString(ConnectService.this, AppConfig.CURRENT_DEVICE, "T-907-0");
         if ((Constant.SSID).length() == 7) {    //如果本地存储的SSID是默认的“T-907-0”，默认去连接“T-907”
             if ( "0".equals( (Constant.SSID).substring(6) ) ) {
                 Constant.SSID = "T-907";
+//                Constant.SSID = "T-907-1200-05";    //GC20231116
             }
         }
+        handler.sendEmptyMessage(DEVICE_DO_CONNECT);    //尝试去执行连接操作 //GC20230508
+        //EN20200324
+        Log.e("【SOCKET连接】", "服务启动");
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
@@ -133,7 +142,6 @@ public class ConnectService extends Service {
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(receiver, intentFilter);
         this.bytesDataQueue = new ArrayBlockingQueue(100);
-        Log.e("【SOCKET连接】", "服务启动");
 
         Runnable runnable = new Runnable() {
             @Override
@@ -169,14 +177,15 @@ public class ConnectService extends Service {
             case DEVICE_DISCONNECTED:
 //                Toast.makeText(ConnectService.this, getResources().getString(R.string.disconnect), Toast.LENGTH_LONG).show();
                 sendBroadcast(BROADCAST_ACTION_DEVICE_CONNECT_FAILURE, null, null);
+                //连接断开时，重置变量 //EN20200324
+                socket = null;
+                connectThread = null;
+                processThread = null;
                 break;
             case DEVICE_DO_CONNECT:
 //                Toast.makeText(ConnectService.this, getResources().getString(R.string.communication_failed), Toast.LENGTH_LONG).show();
                 if (!isConnecting) {
-                    connectWifi();
-                    if (doConnectDevice) {  //添加条件判断，只有在连接到制定SSID时才会建立设备连接  //GC20230112
-                        connectDevice();
-                    }
+                    connectWifi();  //连接指定WiFi  //GC20230509
                 }
                 break;
             case GET_COMMAND:
@@ -208,33 +217,32 @@ public class ConnectService extends Service {
                 ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 assert connectivityManager != null;
                 NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-                if (info != null) {
-                    if (info.isConnected()) {
-                        handler.sendEmptyMessage(DEVICE_DO_CONNECT);
-                        Log.e("【SOCKET连接】", "有网络，尝试去建立连接");
-                    }
-                } else {
-                    try {
-                        connectThread.getOutputStream().flush();
-                        connectThread.getOutputStream().close();
-                        connectThread.getSocket().close();
-                        socket = null;
-                        connectThread = null;
-                        processThread = null;
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                    if (needReconnect) {    //先判断，避免无可用网络和socket异常重复执行建立连接的操作   //GC20230112
-                        needReconnect = false;
+                //低于安卓10才执行 //GC20230510
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {  //GC20231116 网络连接方式不区分安卓版本
+                    if (info != null) {
+                        if (info.isConnected() && !doConnect) { //添加doConnect，平板WIFI已连接到设定的SSID，不重复执行连接操作   //GC20230508
+                            Log.e("【SOCKET连接】", "网络连接状态变化，WiFi连接，尝试去执行连接操作");
+                            handler.sendEmptyMessage(DEVICE_DO_CONNECT);
+                        }
+                    } else {
+                        doConnect = false;  //断开连接  //GC20230508
+                        Log.e("【SOCKET连接】", "网络连接状态变化，WiFi断开，执行断开操作");
                         handler.sendEmptyMessage(DEVICE_DISCONNECTED);
-                        handler.sendEmptyMessage(DEVICE_DO_CONNECT);
-                        Log.e("【SOCKET连接】", "无可用网络，发送广播给modeActivity设置界面状态，然后尝试去建立连接");
+                        try {
+                            connectThread.getOutputStream().flush();
+                            connectThread.getOutputStream().close();
+                            connectThread.getSocket().close();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                     }
-                }
+//                } //GC20231116 网络连接方式不区分安卓版本
             }
         }
     };
 
+    private ConnectivityManager.NetworkCallback networkCallback;    //GC20230510
+    private NetworkRequest request;
     private void connectWifi() {
         WifiUtil wifiUtil = new WifiUtil(this);
         if (wifiUtil.checkState() != 3) {
@@ -247,53 +255,144 @@ public class ConnectService extends Service {
             if (currentSSID != null) {
                 currentSSID = currentSSID.substring(1, currentSSID.length() - 1);
             }
-//            if (!wifiUtil.getSSID().contains(Constant.SSID)) {
-            if (!Objects.equals(currentSSID, Constant.SSID)) {  //不能用contains，设备编号都包括T-907，会造成连接到其它非设定编号的T-907  //GC20230112
-                doConnectDevice = false;    //GC20230112
+            if (!Objects.equals(currentSSID, Constant.SSID)) {  //不能用contains，设备编号都包括T-907，会造成连接到其它非设定编号的T-907  //GC20230508
                 Log.e("【SOCKET连接】", "平板WIFI未连接到设定的SSID ");
-                WifiManagerProxy.get().init(getApplication());
-                //断开已连接的其它WiFi  //GC20230113
-                if (currentSSID != null) {
-                    WifiManagerProxy.get().disConnect(currentSSID, new IWifiDisConnectListener() {
+                //before安卓10的写法
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {  //GC20231116 网络连接方式不区分安卓版本
+                    WifiManagerProxy.get().init(getApplication());
+                    //断开已连接的其它WiFi  //GC20230113
+                    if (currentSSID != null) {
+                        if (!currentSSID.equals("unknown ssid")) {  //"unknown ssid"状态为未连接任何网络，所以不需要去断开 //GC20230508
+                            WifiManagerProxy.get().disConnect(currentSSID, new IWifiDisConnectListener() {
+                                @Override
+                                public void onDisConnectSuccess() {
+                                    Log.e("【SOCKET连接】", "onDisConnectSuccess://取消已连接的SSID成功 ");
+                                }
+
+                                @Override
+                                public void onDisConnectFail(String errorMsg) {
+                                    Log.e("【SOCKET连接】", "onDisConnectFail: " + errorMsg + "//取消已连接的SSID失败 ");
+                                }
+                            });
+                        }
+                    }
+//                wifiUtil.addNetwork(wifiUtil.createWifiInfo(Constant.SSID, "123456789", 3));    //旧的连接写法
+                    //尝试建立需要的连接并监听   //GC20220621
+                    WifiManagerProxy.get().init(getApplication());
+                    WifiManagerProxy.get().connect(Constant.SSID, "123456789", new IWifiConnectListener() {
                         @Override
-                        public void onDisConnectSuccess() {
-                            Log.e("【SOCKET连接】", "onDisConnectSuccess://取消已连接的SSID成功 ");
-                            needReconnect = false;  //取消已连接网络后，避免监听提示无可用网络，再次执行建立连接的操作
+                        public void onConnectStart() {
+                            Log.e("【SOCKET连接】", "onConnectStart://IWifiConnectListener，开始监听网络变化 "); //GC20230508
                         }
 
                         @Override
-                        public void onDisConnectFail(String errorMsg) {
-                            Log.e("【SOCKET连接】", "onDisConnectFail: " + errorMsg + "//取消已连接的SSID失败 ");
+                        public void onConnectSuccess() {
+                            Log.e("【SOCKET连接】", "onConnectSuccess://连接设定的SSID成功 ");
+                            doConnect = true;   //GC20230508
+                            connectDevice();    //连接到设定SSID后才会建立设备连接  //GC20230509
+                        }
+
+                        @Override
+                        public void onConnectFail(String errorMsg) {
+                            Log.e("【SOCKET连接】", "onConnectFail: " + errorMsg + "//连接设定的SSID失败 ");   //GC20230508
                         }
                     });
-                }
-//                wifiUtil.addNetwork(wifiUtil.createWifiInfo(Constant.SSID, "123456789", 3));    //旧的连接写法
-                //尝试建立需要的连接并监听   //GC20220621
-                WifiManagerProxy.get().connect(Constant.SSID, "123456789", new IWifiConnectListener() {
-                    @Override
-                    public void onConnectStart() {
-                        Log.e("【SOCKET连接】", "onConnectStart://IWifiConnectListener，开始监听网络变化 ");
-                    }
-
-                    @Override
-                    public void onConnectSuccess() {
-                        Log.e("【SOCKET连接】", "onConnectSuccess://连接设定的SSID成功 ");
-                    }
-
-                    @Override
-                    public void onConnectFail(String errorMsg) {
-                        Log.e("【SOCKET连接】", "onConnectFail: " + errorMsg + "//连接设定的SSID失败 ");
-                        handler.sendEmptyMessageDelayed(DEVICE_DO_CONNECT, 20000);
-                    }
-                });
-
+//                } //GC20231116 网络连接方式不区分安卓版本
+                //after安卓10的写法
+//                else {
+//                    //String mac = getMac();
+//                    NetworkSpecifier specifier = new WifiNetworkSpecifier.Builder()
+////                            .setSsidPattern(new PatternMatcher(Constant.SSID, PatternMatcher.PATTERN_PREFIX))
+//                            .setSsid(Constant.SSID)
+//                            .setWpa2Passphrase("123456789")
+//                            .setBssidPattern(MacAddress.fromString("34:6F:24:00:00:00"),MacAddress.fromString("ff:ff:ff:00:00:00"))
+//                            .build();
+//                    //创建一个请求
+//                    request = new NetworkRequest.Builder()
+//                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)               //创建的是WIFI网络。
+//                            .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_RESTRICTED)   //网络不受限
+////                            .addCapability(NetworkCapabilities.NET_CAPABILITY_TRUSTED)          //信任网络，增加这个连个参数让设备连接wifi之后还联网
+//                            .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+//                            .setNetworkSpecifier(specifier)
+//                            .build();
+//
+//                    handler.postDelayed(() -> {
+//                        //服务延时建立    //GC20230510
+//                        NetworkCallback();
+//                    }, 100);
+//                }
             } else {
-                doConnectDevice = true; //GC20230112
-                Log.e("【SOCKET连接】", "平板WIFI已连接到设定的SSID ");
-                connectDevice();
+                if (!doConnect) {   //安卓10连接有可能走这儿，避免重复执行connectDevice   //GC20230509
+                    Log.e("【SOCKET连接】", "平板WIFI已连接到设定的SSID ");
+                    connectDevice();    //连接到设定SSID后才会建立设备连接  //GC20230509
+                    doConnect = true;   //GC20230508
+                }
             }
         } catch (Exception l_Ex) {
         }
+    }
+
+    /**
+     * 服务监听   //GC20230510
+     */
+    public void NetworkCallback() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // WiFi连接回调
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            //WiFi连接成功
+            @Override
+            public void onAvailable(Network network) {
+                // do success processing here.
+                //如果WiFi连接成功，下面的代码表示使用该wifi网络
+                if (!doConnect) {   //避免重复执行connectDevice   //GC20230509
+                    super.onAvailable(network);
+                    Log.e("【SOCKET连接】", "onAvailable://连接设定的SSID成功 ");
+                    connectivityManager.bindProcessToNetwork(network);
+//                    connectivityManager.unregisterNetworkCallback(networkCallback); //GC20230510
+                    connectDevice();    //连接到设定SSID后才会建立设备连接  //GC20230509
+                    Log.e("【SOCKET连接】", "onAvailable://执行connectDevice() ");
+                    doConnect = true;   //GC20230508
+                }
+            }
+            //WiFi连接失败
+            @Override
+            public void onUnavailable() {
+                // do failure processing here..
+                super.onUnavailable();
+                Log.e("【SOCKET连接】", "onUnavailable://连接设定的SSID失败1 ");
+//                connectivityManager.bindProcessToNetwork(null);
+//                connectivityManager.unregisterNetworkCallback(networkCallback); //GC20230510
+                doConnect = false;
+                handler.sendEmptyMessage(DEVICE_DISCONNECTED);  //断开连接  //GC20230508
+                try {
+                    connectThread.getOutputStream().flush();
+                    connectThread.getOutputStream().close();
+                    connectThread.getSocket().close();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                handler.sendEmptyMessageDelayed(ConnectService.DEVICE_DO_CONNECT, 10000);
+            }
+            //WiFi连接断开  //GC20230510
+            @Override
+            public void onLost(Network network) {
+                super.onLost(network);
+                Log.e("【SOCKET连接】", "onLost://设备WiFi已丢失 ");
+                doConnect = false;
+                handler.sendEmptyMessage(DEVICE_DISCONNECTED);  //断开连接  //GC20230508
+                try {
+                    connectThread.getOutputStream().flush();
+                    connectThread.getOutputStream().close();
+                    connectThread.getSocket().close();
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                handler.sendEmptyMessageDelayed(ConnectService.DEVICE_DO_CONNECT, 50000);
+            }
+        };
+        connectivityManager.requestNetwork(request, networkCallback);
     }
 
     private void connectDevice() {
@@ -324,7 +423,6 @@ public class ConnectService extends Service {
                         Log.e("【SOCKET连接】", "启动处理数据线程processThread");
                     }
                     isConnecting = false;
-                    needReconnect = true;   //设备连接成功后可以再次进行建立连接的操作   //GC20230112
                     Log.e("【SOCKET连接】", "设备连接成功，整个连接过程结束");
                 }
             } catch (IOException e) {
@@ -339,6 +437,7 @@ public class ConnectService extends Service {
                 handler.sendEmptyMessage(DEVICE_DISCONNECTED);
                 Log.e("【SOCKET连接】", "设备连接失败，需要重连");
                 isConnecting = false;
+                doConnect = false;   //GC20230510
                 handler.sendEmptyMessageDelayed(DEVICE_DO_CONNECT, 2000);
             }
         });
@@ -489,7 +588,7 @@ public class ConnectService extends Service {
     }
 
     /**
-     *发送广播
+     * 发送广播
      */
     public void sendBroadcast(String action, String extraKey, int[] extra) {
         try {
@@ -638,6 +737,10 @@ public class ConnectService extends Service {
         return null;
     }
 
+    /**
+     * 获取本机MAC地址    //GC20230506
+     * @return
+     */
     private String getMac() {
         String mac = "0";
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

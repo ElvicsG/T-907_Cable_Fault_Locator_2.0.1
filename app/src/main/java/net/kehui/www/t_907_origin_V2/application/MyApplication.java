@@ -10,9 +10,8 @@ import androidx.multidex.MultiDex;
 import net.kehui.www.t_907_origin_V2.util.MultiLanguageUtil;
 import net.kehui.www.t_907_origin_V2.util.StateUtils;
 
-
 /**
- * @author IF
+ * @author ELVICS-WORK
  */
 public class MyApplication extends Application {
 
@@ -22,12 +21,10 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-/*        CrashHandler handler = CrashHandler.getInstance();
-        Thread.setDefaultUncaughtExceptionHandler(handler);*/
 
         instances = this;
         MultiLanguageUtil.init(getApplicationContext());
-        String languageType = StateUtils.getString(MyApplication.getInstances(), AppConfig.CURRENT_LANGUAGE, "ch");
+        String languageType = StateUtils.getString(MyApplication.getInstances(), AppConfig.CURRENT_LANGUAGE, "follow_sys"); //默认跟随系统语言  //GC20230912
         MultiLanguageUtil.getInstance().updateLanguage(languageType);
         Constant.currentLanguage = languageType;
 
@@ -36,7 +33,7 @@ public class MyApplication extends Application {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        String languageType = StateUtils.getString(MyApplication.getInstances(), AppConfig.CURRENT_LANGUAGE, "ch");
+        String languageType = StateUtils.getString(MyApplication.getInstances(), AppConfig.CURRENT_LANGUAGE, "follow_sys"); //默认跟随系统语言  //GC20230912
         MultiLanguageUtil.getInstance().updateLanguage(languageType);
         Constant.currentLanguage = languageType;
 
@@ -50,7 +47,6 @@ public class MyApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        //android.support.multidex.MultiDex.install(this);
         MultiDex.install(this);
 
     }

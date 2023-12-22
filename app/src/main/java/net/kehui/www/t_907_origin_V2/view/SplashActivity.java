@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import net.kehui.www.t_907_origin_V2.entity.ParamInfo;
 import net.kehui.www.t_907_origin_V2.util.MultiLanguageUtil;
 import net.kehui.www.t_907_origin_V2.util.PermissionUtil;
 import net.kehui.www.t_907_origin_V2.util.StateUtils;
+import net.kehui.www.t_907_origin_V2.util.Utils907;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -87,7 +89,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                     sleep(2000);
                     //startService();
                     Intent intent = new Intent();
-                    intent.setClass(SplashActivity.this, MainActivity.class);
+                    intent.setClass(SplashActivity.this, ModeActivity.class);   //直接进入Mode界面方法修改，旧方法启动MainActivity    //GC20230911
                     //20200521  启动界面添加
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
@@ -102,6 +104,9 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
         initView();
 
+        //获取设备序列号   //GC20231224
+        Constant.deviceId = Utils907.getAndroidId(SplashActivity.this); //设备序列号——1.对应AssistHelpVO.deviceId  //协助详情可修改内容 //GC20231226
+        Log.e("设备序列号", Constant.deviceId);  //b0b8f2b33c43433f
     }
 
     /**

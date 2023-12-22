@@ -3,7 +3,9 @@ package net.kehui.www.t_907_origin_V2.base;
 import net.kehui.www.t_907_origin_V2.adpter.DataAdapter;
 import net.kehui.www.t_907_origin_V2.adpter.MyChartAdapterBase;
 import net.kehui.www.t_907_origin_V2.dao.DataDao;
+import net.kehui.www.t_907_origin_V2.dao.DataAssistDao;
 import net.kehui.www.t_907_origin_V2.global.BaseAppData;
+import net.kehui.www.t_907_origin_V2.global.BaseAppDataAssist;
 import net.kehui.www.t_907_origin_V2.util.MultiLanguageUtil;
 
 import android.content.Context;
@@ -51,8 +53,8 @@ public class BaseActivity extends AppCompatActivity {
     public int rangeBefore;
     public int rangeMemory; //GC20220709
     public int rangeState;
-    public int gain;
-    public double velocity;
+    public int gain;        //0~31
+    public double velocity; //90~300
     public int density;
     public int densityMax;
     public int balance;
@@ -275,8 +277,9 @@ public class BaseActivity extends AppCompatActivity {
     /**
      * 数据库存储波形部分
      */
-    public DataAdapter adapter;
     public DataDao dao;
+    public DataAssistDao daoAssist; //添加协助数据库   //GC20230629
+    public DataAdapter adapter;
     public int selectedId;
 
     public static BaseActivity baseActivity;
@@ -348,6 +351,9 @@ public class BaseActivity extends AppCompatActivity {
         //数据库相关 //20200520 //G?
         BaseAppData db = Room.databaseBuilder(getApplicationContext(), BaseAppData.class, "database-wave").allowMainThreadQueries().build();
         dao = db.dataDao();
+        //新建远程协助数据库 //GC20230629
+        BaseAppDataAssist dbAssist = Room.databaseBuilder(getApplicationContext(), BaseAppDataAssist.class, "database-waveAssist").allowMainThreadQueries().build();
+        daoAssist = dbAssist.dataAssistDao();
     }
 
     /*
@@ -359,6 +365,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
+        //系统语言等设置发生改变时会调用此方法，需要要重置app语言     //GC20230912
         super.attachBaseContext(MultiLanguageUtil.attachBaseContext(newBase));
     }
 
@@ -490,12 +497,56 @@ public class BaseActivity extends AppCompatActivity {
 //GC20220914    ICM方式下的“延长线”按钮屏蔽/版本号添加
 //GC20221017    SIM方式按照记忆的TDR范围变化BUG（907方式、范围一个方法写的，所以需要分开记录）
 //GC20221019    方式、范围按钮快速点击限制处理
+
 /*——————————2.0.5版本整理——————————*/
 //GC20221025    数据库打开波形后记忆比较操作BUG
 /*——————————2.0.6版本整理——————————*/
 //GC20221203    波形数据混入其它信息后抛掉多余部分——有可能有，未验证XXXXXXXX
-//GC20230112    添加只有在连接到指定SSID时才会成功建立设备连接的限制功能/建立网络连接的条件限制逻辑梳理
 //GC20230113    添加断开已连接的其它WiFi的功能，避免设备切换时无法自主切换网络/设备编号更改完毕后点击确认后重启APP
+//GC20230508    WiFi连接逻辑重新梳理
+//GC20230509    连接到设定SSID后才会建立设备连接
+//GC20230510    安卓10逻辑建立
+//GC20230609    波形以文件形式保存数据头包含信息补充
+
+/*——————————2.0.7版本整理——————————*/   //显示已更新到2.0.7
+
+/*———T-907 / A310 / 2000 / A309 同步修改———*/
+//GC20230911    Activity页面切换结构修改/SIM方式无延时   //1、直闪方式没有延时 / 2、保存输入字数限制、输入限制 //GC20231207
+//GC20230912    多语言切换功能添加
+//GC20230913    数据库记录倒叙显示/根据方式显示不同的波形记录————列表不翻转//GC20231116
+//GC20230922    协助存储文件夹位置————907独有   //1、android9以后对外部权限的改动 / 2、无有效数据时不保存（不上传——907独有）    //GC20231208
+//GC20231116    网络连接方式不区分安卓版本 / 其它网络连接测试————907独有
+//GC20231211    测试地点加载错误，误添加tester / save界面保存电缆长度
+//GC20231226    数据库数据打开后再次保存时增益赋值
+
+/*——————————网络框架应用学习——————————*/
+//GC20231212    引入okhttp库，网络流行框架OkHttp & Retrofit教程方法测试
+//GC20231213    界面卡顿十分严重，新建一个线程运行 / httpbin.org服务器试验，观察get、post方法请求后的response内容(以日志输出),理解服务器回传数据的格式以及意义
+//GC20231214    POST提交数据时，请求体中不同数据编码方式对应的内容：Java环境下书写方法观察httpbin.org服务器反馈的内容 / 借助谷歌插件Talend API Tester观察不同content-type对应的编码结果
+//GC20231215    引入logging-interceptor库，OkHttpClient.Builder时建立拦截器的作用观察分析（httpbin.org服务器测试）、建立缓存和Cookie的作用和分析（借助玩Android 开放API测试）
+//GC20231216    引入retrofit库，Retrofit的基本使用和注解（基于Httpbin服务器创建Java接口测试）： 一、 二、 三、
+//GC20231217    引入gson库，Retrofit添加转换器（基于WanAndroid服务器创建Java接口测试）：书写方法测试将服务器回传的json格式数据转化为JavaBean的效果
+//GC20231218    引入adapter-rxjava3和rxandroid库，Retrofit添加适配器（同上）：书写方法测试嵌套请求效果
+//GC20231219    上传下载文件
+//GC20231220    一、协助记录获取：get方法测试
+//GC20231221    二、协助详情获取
+//GC20231222    三、协助信息上传
+//GC20231223    一、协助记录获取：post方法测试
+/*——————————网络框架应用学习——————————*/
+
+//GC20230620    协助入口添加  //屏蔽协助功能入口  //GC202306201
+
+//GC20231210    安装包更新相关
+//GC20231211    协助记录：测试地点加载错误，误添加tester / 协助详情上传：save界面保存电缆长度
+//GC20231213    界面卡顿十分严重
+//GC20231214    “更新”按键修改单击事件为长按事件
+
+//GC20230628    协助记录UI修改——//GC20230629  新建远程协助数据库
+//GC20230630    协助记录：点击“发起新协助”按钮弹出协助详情上传界面，“返回”事件添加 /  协助详情：点击“保存”事件转到ModeActivity实现
+//GC20231224    获取设备序列号 / 系统当前时间时间
+//GC20231225    协助详情UI修改——//GC20231207
+//GC20231226    协助信息上传 / 数据库数据打开后再次保存时增益赋值
+
 
 
 
@@ -505,9 +556,14 @@ public class BaseActivity extends AppCompatActivity {
 //GT20221019    getBundleExtra报错尝试修改（作用不大，数据库离线命令发送）
 //以下未改
 //GC20220806    点击SIM范围自动寻找
- /*——————————算法调整——————————*/
+//GC20230506    获取本机MAC地址
+//GT20230506    Android10 网络断开测试
+/*——————————算法调整——————————*/
 //jk20220922    TDR算法开路波形容错调整
 //jk20221019    SIM算法数组下标越界异常处理
 //jk20221020    数组容错处理
 //GC20220926    判断逻辑优化
+//GC20231107    容错处理BUG修复
 /*——————————算法调整——————————*/
+//gc调试 要连接的WiFi名字   //网络SSID更改  //GC20220520    //GC20231116
+
